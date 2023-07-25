@@ -16,7 +16,7 @@ Videos, particularly any of reasonable size, shouldn't be stored/tracked by git.
 echo "/video/files" >> .gitignore
 ```
 
-As you use `next-video` you'll notice a `video/assets.json` file is created/updated. This file is used to map your local video files to their Mux assets. This file must be checked into git.
+As you use `next-video` you'll notice a `video/assets.json` file is created/updated. This file is used to map your local video files to the new, remotely-hosted video assets. This file must be checked into git.
 
 ## Usage
 
