@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "preserveWatchOutput": true,
+    "rootDir": "src",
+    "outDir": "./dist/types",
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "incremental": true,
+    "target": "ES2019",
+    "module": "ES2020",
+    "jsx": "react-jsx",
+    "sourceMap": true,
+    "composite": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "moduleResolution": "Node",
+    "baseUrl": "./packages",
+    "esModuleInterop": true,
+    "skipLibCheck": false,
+    "forceConsistentCasingInFileNames": true,
+    "typeRoots": ["node_modules/@types"]
+  },
+  "include": ["src/**/*"]
+}
