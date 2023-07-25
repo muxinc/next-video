@@ -1,4 +1,6 @@
 import Image from 'next/image'
+import Link from 'next/link'
+import Video from 'next-video'
 import styles from './page.module.css'
 
 export default function Home() {
@@ -6,8 +8,7 @@ export default function Home() {
     <main className={styles.main}>
       <div className={styles.description}>
         <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.js</code>
+          <Link href="./hello">Go to /hello</Link>
         </p>
         <div>
           <a
@@ -29,14 +30,7 @@ export default function Home() {
       </div>
 
       <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
+        <Video controls src="https://muxed.s3.amazonaws.com/ink.mp4" />
       </div>
 
       <div className={styles.grid}>
