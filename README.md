@@ -1,4 +1,4 @@
-`next-video`
+# `next-video`
 
 Next video is a react component for adding video to your [next.js](https://github.com/vercel/next.js) application. It extends the `<video>` element with features for automatic video optimization.
 * **Smart storage:** Store large video files outside of your git repo
