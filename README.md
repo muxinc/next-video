@@ -4,8 +4,8 @@ Next video is a react component for adding video to your [next.js](https://githu
 * **Smart storage:** Store large video files outside of your git repo
 * **Optimized quality**: Automatically optimize video files for better playback performance
 * **Faster startup:** Deliver using CDNs for faster start times
-* **More compatibility:** Use videos that aren’t supported natively by browsers
-* **Posters & Previews:** No-setup placeholder images and timeline hover thumbnails
+* **Wider compatibility:** Use videos that aren’t supported natively by browsers
+* **Posters & Previews:** Zero-config placeholder images and timeline hover thumbnails
 * **Customizable UI:** Choose from themes or build your own player controls
 
 ```jsx
@@ -22,7 +22,7 @@ mkdir -p video/files
 Videos, particularly any of reasonable size, shouldn't be stored/tracked by git. We suggest adding `video/files` to your gitignore.
 
 ```bash
-echo "/video/files" >> .gitignore
+echo -e "/video/files\n\!/video/files/*.json" >> .gitignore
 ```
 
 Alternatively, if you'd like to store the original files you can install and enable [git-lfs](https://git-lfs.github.com/).
