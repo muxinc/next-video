@@ -1,6 +1,6 @@
 # `next-video`
 
-Next video is a react component for adding video to your [next.js](https://github.com/vercel/next.js) application. It extends the `<video>` element with features for automatic video optimization.
+Next video is a react component for adding video to your [next.js](https://github.com/vercel/next.js) application. It extends both the `<video>` element and your Next app with features for automatic video optimization.
 * **Smart storage:** Store large video files outside of your git repo
 * **Optimized quality**: Automatically optimize video files for better playback performance
 * **Faster startup:** Deliver using CDNs for faster start times
@@ -59,3 +59,13 @@ import NextVideo from 'next-video';
 If the hosted video is a single file like an MP4, the file will be automatically optimized for better deliverability and compatibility.
 
 If the hosted file is an adaptive manifest, like HLS or DASH, NextVideo will treat the video as if it has already been optimized.
+
+## Roadmap
+- [x] Automatic video optimzation
+- [x] Delivery via a CDN
+- [x] Automatically upload and process local source files
+- [x] Automatically process remote hosted source files
+- [ ] Customizable player
+- [ ] Connectors for additional video services
+- [ ] Easily allow end-users to upload video content
+- [ ] Easily allow end-users to live stream from your app
