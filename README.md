@@ -28,7 +28,7 @@ echo -e "/video/files\n\!/video/files/*.json" >> .gitignore
 Alternatively, if you'd like to store the original files you can install and enable [git-lfs](https://git-lfs.github.com/).
 
 ### Set up remote storage and optimization
-Vercel [recommends](https://vercel.com/guides/best-practices-for-hosting-videos-on-vercel-nextjs-mp4-gif) using a dedicated content platform for video, because large videos can lead to excessive bandwidth usage. By default, next-video uses [Mux](https://mux.com), which is built by the the creators of video.js, powers popular streaming apps like Patreon, and whose video performance monitoring is used on largest live events in the world.
+Vercel [recommends](https://vercel.com/guides/best-practices-for-hosting-videos-on-vercel-nextjs-mp4-gif) using a dedicated content platform for video, because large videos can lead to excessive bandwidth usage. By default, next-video uses [Mux](https://mux.com), which is built by the the creators of video.js, powers popular streaming apps like Patreon, and whose video performance monitoring is used on the largest live events in the world.
 * [Sign up for Mux](https://dashboard.mux.com/signup)
 * Create an access token
 * Add environment variables to `.env.local`
