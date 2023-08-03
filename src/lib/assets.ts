@@ -11,7 +11,6 @@ export type Asset = {
 	};
 	createdAt?: number;
 	updatedAt?: number;
-	providerDetails?: any; // { provider: 'mux', asset: {playbackId: 'abc123', assetId: 'def456' }}
 };
 
 function getAssetConfigPath(filePath: string) {
