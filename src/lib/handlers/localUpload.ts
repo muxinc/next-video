@@ -77,7 +77,7 @@ async function pollForUploadAsset(filePath: string, asset: Asset) {
 	}
 }
 
-async function createAndUploadToMux(asset: Asset) {
+export default async function createAndUploadToMux(asset: Asset) {
 	if (!asset.originalFilePath) {
 		console.error('- [next-video]: No filePath provided for asset.');
 		return;
@@ -130,6 +130,3 @@ async function createAndUploadToMux(asset: Asset) {
 
 	return pollForUploadAsset(src, processingAsset);
 }
-
-// Leaving off here, this is where I need to get things going from this point on.
-export default videoHandler('local.video.added', createAndUploadToMux);
