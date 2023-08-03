@@ -3,8 +3,8 @@ import path from 'node:path';
 import Mux from '@mux/mux-node';
 import { fetch as uFetch } from 'undici';
 
-import videoHandler from '../videoHandler';
 import { updateAsset, Asset } from '../assets';
+import log from '../logger';
 
 const mux = new Mux();
 
@@ -14,7 +14,7 @@ function sleep(ms: number) {
 
 async function pollForAssetReady(filePath: string, asset: Asset) {
 	if (!asset.externalIds?.assetId) {
-		console.error('- [next-video]: No assetId provided for asset.');
+		log('error', 'No assetId provided for asset.');
 		return;
 	}
 
@@ -34,7 +34,7 @@ async function pollForAssetReady(filePath: string, asset: Asset) {
 	}
 
 	if (muxAsset.status === 'ready') {
-		console.info(`- [next-video]: Asset is ready: ${filePath} (Mux Playback ID: ${playbackId}})`);
+		log('info', `Asset is ready: ${filePath} (Mux Playback ID: ${playbackId}})`);
 		return updateAsset(filePath, {
 			status: 'ready',
 			externalIds: {
@@ -52,7 +52,7 @@ async function pollForAssetReady(filePath: string, asset: Asset) {
 
 async function pollForUploadAsset(filePath: string, asset: Asset) {
 	if (!asset.externalIds?.uploadId) {
-		console.error('- [next-video]: No uploadId provided for asset.');
+		log('error', 'No uploadId provided for asset.');
 		return;
 	}
 
@@ -61,7 +61,7 @@ async function pollForUploadAsset(filePath: string, asset: Asset) {
 	const muxUpload = await mux.video.uploads.retrieve(uploadId);
 
 	if (muxUpload.asset_id) {
-		console.info(`- [next-video]: Asset is processing: ${filePath} (Mux ID: ${muxUpload.asset_id})`);
+		log('info', `Asset is processing: ${filePath} (Mux ID: ${muxUpload.asset_id})`);
 		const processingAsset = await updateAsset(filePath, {
 			status: 'processing',
 			externalIds: {
@@ -79,7 +79,7 @@ async function pollForUploadAsset(filePath: string, asset: Asset) {
 
 export default async function createAndUploadToMux(asset: Asset) {
 	if (!asset.originalFilePath) {
-		console.error('- [next-video]: No filePath provided for asset.');
+		log('error', 'No filePath provided for asset.');
 		return;
 	}
 
@@ -106,7 +106,7 @@ export default async function createAndUploadToMux(asset: Asset) {
 	const fileStats = await fileDescriptor.stat();
 	const stream = fileDescriptor.createReadStream();
 
-	console.info(`- [next-video]: Uploading file ${filePath} (${fileStats.size} bytes)`);
+	log('info', `Uploading file ${filePath} (${fileStats.size} bytes)`);
 
 	try {
 		// I'm having to do some annoying, defensive typecasting here becuase we need to fix some OAS spec stuff.
@@ -120,10 +120,10 @@ export default async function createAndUploadToMux(asset: Asset) {
 		stream.close();
 		await fileDescriptor.close();
 	} catch (e) {
-		console.error(e);
+		log('error', e);
 	}
 
-	console.info(`- [next-video]: File uploaded: ${filePath} (${fileStats.size} bytes)`);
+	log('info', `File uploaded: ${filePath} (${fileStats.size} bytes)`);
 	const processingAsset = await updateAsset(src, {
 		status: 'processing',
 	});

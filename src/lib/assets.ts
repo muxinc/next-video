@@ -1,5 +1,5 @@
 import { readFile, writeFile } from 'node:fs/promises';
-import path from 'node:path';
+import log from './logger';
 
 export type Asset = {
 	status?: 'pending' | 'uploading' | 'processing' | 'ready' | 'error';
@@ -41,7 +41,7 @@ export async function createAsset(filePath: string, assetDetails: Asset): Promis
 		await writeFile(assetPath, JSON.stringify(newAssetDetails), { flag: 'wx' });
 	} catch (err: any) {
 		if (err.code === 'EEXIST') {
-			console.info('- [next-video]: Asset file already exists.');
+			log('info', 'Asset file already exists.');
 			// The file already exists, and that's ok in this case. Ignore the error.
 			return;
 		}

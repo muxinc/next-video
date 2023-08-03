@@ -2,11 +2,12 @@ import chokidar from 'chokidar';
 import path from 'node:path';
 import { createAsset } from './assets.js';
 import { callHandlers } from './videoHandler';
+import log from './logger';
 
 import { FILES_PATH } from './config.js';
 
 async function init() {
-	console.info('- [next-video]: Watching for changes in the files directory:', FILES_PATH);
+	log('info', 'Watching for changes in the files directory:', FILES_PATH);
 	const watcher = chokidar.watch(FILES_PATH, {
 		ignored: /(^|[\/\\])\..*|\.json$/,
 		persistent: true,
@@ -19,21 +20,21 @@ async function init() {
 		});
 
 		if (newAsset) {
-			console.log(`- [next-video]: New file found: ${filePath}`);
+			log('info', `New file found: ${filePath}`);
 			callHandlers('local.video.added', newAsset);
 		}
 	});
 
 	process.on('exit', () => {
-		console.log('e tu brute');
+		log('info', 'NextVideo shutting down.');
 	});
 }
 
 export default async function withNextVideo(nextConfig: any) {
 	if (process.argv[2] === 'dev') {
-		console.info('- [next-video]: Initializing NextVideo.');
+		log('info', 'Initializing NextVideo.');
 		await init();
-		console.info('- [next-video]: NextVideo ready.');
+		log('info', 'NextVideo ready.');
 	}
 	return nextConfig;
 }
