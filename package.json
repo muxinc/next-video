@@ -2,12 +2,18 @@
   "name": "next-video",
   "version": "1.0.0",
   "description": "The easiest way to get started with video in your Next.js application. This library will automatically upload your videos to Mux and serve them from their CDN.",
-  "main": "dist/NextVideo.js",
+  "main": "dist/main.cjs",
+  "module": "dist/main.js",
+  "source": "src/main.ts",
+  "types": "dist/types.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "esbuild src/NextVideo.tsx --outdir=dist --watch",
-    "build": "esbuild src/NextVideo.tsx --outdir=dist"
+    "watch": "parcel watch",
+    "build": "parcel build"
   },
+  "bin": {
+    "mux": "bin/main.js"
+  },
+  "type": "module",
   "author": "Mux Lab <lab@mux.com>",
   "license": "MIT",
   "peerDependencies": {
@@ -23,12 +29,20 @@
       "optional": true
     }
   },
-  "dependencies": {
-    "esbuild": "0.18.16"
-  },
   "devDependencies": {
+    "@parcel/packager-ts": "^2.9.3",
+    "@parcel/transformer-typescript-types": "^2.9.3",
+    "@types/node": "^20.4.5",
     "@types/react": "^18.2.16",
+    "parcel": "^2.9.3",
     "react": "^18.2.0",
     "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "@mux/mux-node": "file:../mux-node/dist",
+    "@mux/mux-player-react": "^1.11.4",
+    "chokidar": "^3.5.3",
+    "lowdb": "^6.0.1",
+    "undici": "^5.22.1"
   }
 }
