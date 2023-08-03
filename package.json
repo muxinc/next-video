@@ -39,7 +39,7 @@
     "typescript": "^5.1.6"
   },
   "dependencies": {
-    "@mux/mux-node": "file:../mux-node/dist",
+    "@mux/mux-node": "github:stainless-sdks/mux-node#8.0.0-beta.1",
     "@mux/mux-player-react": "^1.11.4",
     "chokidar": "^3.5.3",
     "undici": "^5.22.1"
