@@ -88,6 +88,7 @@ export default async function createAndUploadToMux(asset: Asset) {
 	// Create a direct upload url
 	const upload = await mux.video.uploads.create({
 		cors_origin: '*',
+		// @ts-ignore
 		new_asset_settings: {
 			playback_policy: ['public'],
 		},
