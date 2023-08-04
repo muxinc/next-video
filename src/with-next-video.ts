@@ -37,40 +37,40 @@ export default async function withNextVideo(nextConfig: any) {
     log('info', 'NextVideo ready.');
   }
 
-  return nextConfig;
+  // return nextConfig;
 
-  // return Object.assign({}, nextConfig, {
-  //   webpack(config: any, options: any) {
-  //     const { isServer } = options;
+  return Object.assign({}, nextConfig, {
+    webpack(config: any, options: any) {
+      const { isServer } = options;
 
-  //     if (!options.defaultLoaders) {
-  //       throw new Error(
-  //         'This plugin is not compatible with Next.js versions below 5.0.0 https://err.sh/next-plugins/upgrade'
-  //       );
-  //     }
+      if (!options.defaultLoaders) {
+        throw new Error(
+          'This plugin is not compatible with Next.js versions below 5.0.0 https://err.sh/next-plugins/upgrade'
+        );
+      }
 
-  //     const prefix = nextConfig.assetPrefix || '';
-  //     const basePath = nextConfig.basePath || '';
+      // const prefix = nextConfig.assetPrefix || '';
+      // const basePath = nextConfig.basePath || '';
 
-  //     config.module.rules.push({
-  //       test: /\.(mp4|webm|mov|ogg|swf|ogv)$/,
-  //       use: [
-  //         {
-  //           loader: require.resolve('./webpack-loader'),
-  //           options: {
-  //             publicPath: `${prefix || basePath}/_next/static/videos/`,
-  //             outputPath: `${isServer ? '../' : ''}static/videos/`,
-  //             name: '[name]-[hash].[ext]',
-  //           },
-  //         },
-  //       ],
-  //     });
+      config.module.rules.push({
+        test: /\.(mp4|webm|mov|ogg|swf|ogv)$/,
+        use: [
+          {
+            loader: require.resolve('./webpack-loader'),
+            // options: {
+            //   publicPath: `${prefix || basePath}/_next/static/videos/`,
+            //   outputPath: `${isServer ? '../' : ''}static/videos/`,
+            //   name: '[name]-[hash].[ext]',
+            // },
+          },
+        ],
+      });
 
-  //     if (typeof nextConfig.webpack === 'function') {
-  //       return nextConfig.webpack(config, options);
-  //     }
+      if (typeof nextConfig.webpack === 'function') {
+        return nextConfig.webpack(config, options);
+      }
 
-  //     return config;
-  //   },
-  // });
+      return config;
+    },
+  });
 }
