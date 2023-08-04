@@ -1,6 +1,6 @@
 import videoHandler from './video-handler';
 import localUploadHandler from './handlers/local-upload';
-import './webpack-loader';
+
 // Don't love this little race condition... we gotta figure that one out.
 // Basically we need to make sure all the handlers are registered before we start watching for files.
 videoHandler('local.video.added', localUploadHandler);

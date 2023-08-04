@@ -25,7 +25,7 @@ Now you can just use `next-video` in your application! Let's say you've added a 
 ```tsx
 import NextVideo from 'next-video';
 
-<NextVideo src="/video/files/awesome-video.mp4" />
+<NextVideo src="/video/files/awesome-video.mp4" />;
 ```
 
 Any time you use the `NextVideo` component, it will check to see if the video has been uploaded to Mux. If it hasn't, it will upload it for you. If it has, it will use the Mux asset instead of the local file. If the local file is playable directly, it will be used until the upload is complete.

@@ -1,11 +1,11 @@
 import path from 'node:path';
 
 export default function loader(source) {
-	const options = this.getOptions();
+  const options = this.getOptions();
 
-	console.log(source);
+  console.log(source);
 
-	source = source.replace(/\[name\]/g, options.name);
+  source = source.replace(/\[name\]/g, options.name);
 
-	return `export default ${JSON.stringify(source)}`;
+  return `export default ${JSON.stringify(source)}`;
 }
