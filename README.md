@@ -9,7 +9,7 @@ Next video is a react component for adding video to your [next.js](https://githu
 - **Posters & Previews:** Zero-config placeholder images and timeline hover thumbnails
 - **Customizable UI:** Choose from themes or build your own player controls
 
-```jsx
+```tsx
 import myVideo from '/video/files/myVideo.mp4';
 import Video from 'next-video/video';
 
@@ -44,8 +44,6 @@ Alternatively you can bring your own video service. See [the guide](asdf.com).
 
 ## Local videos
 
-When you are running `next dev` and add videos to `video/files` they will be automatically uploaded to remote storage and optimized. You'll notice `video/files/[file-name].json` files are also created. These are used to map your local video files to the new, remotely-hosted video assets. These files must be checked into git.
-
 When you import a video file from `video/files` it will be automatically uploaded to remote storage and optimized. You'll notice `video/files/[file-name].json` files are also created. These are used to map your local video files to the new, remotely-hosted video assets. These json files must be checked into git.
 
 Now you can use the `<Video>` component in your application. Let's say you've added a file called `awesome-video.mp4` to `video/files`
@@ -54,7 +52,7 @@ Now you can use the `<Video>` component in your application. Let's say you've ad
 import awesomeVideo from '/video/files/awesome-video.mp4';
 import Video from 'next-video/video';
 
-<NextVideo src="/video/files/awesome-video.mp4" />;
+return <Video src={awesomeVideo} />;
 ```
 
 While a video is being uploaded and processed, `next-video` will attempt to play the local file.
@@ -63,24 +61,16 @@ While a video is being uploaded and processed, `next-video` will attempt to play
 
 For videos that are already hosted remotely (for example on AWS S3), set the `src` attribute to the URL of the remove file.
 
-```jsx
-import NextVideo from 'next-video';
+```tsx
+import Video from 'next-video/video';
+import remoteVideo from 'remoteVideo://www.mydomain.com/remote-video.mp4';
 
-return <Player src={awesomeVideo} />;
+return <Video src={remoteVideo} />;
 ```
 
 If the hosted video is a single file like an MP4, the file will be automatically optimized for better deliverability and compatibility.
 
 If the hosted file is an adaptive manifest, like HLS or DASH, NextVideo will treat the video as if it has already been optimized.
-
-## Bring your own player
-
-```jsx
-import OtherPlayer from 'other-player';
-import Video from '/video/files/myVideo.mp4';
-
-return <OtherPlayer src={Video.hls} />;
-```
 
 ## Roadmap
 
@@ -92,3 +82,7 @@ return <OtherPlayer src={Video.hls} />;
 - [ ] Connectors for additional video services
 - [ ] Easily allow end-users to upload video content
 - [ ] Easily allow end-users to live stream from your app
+
+```
+
+```
