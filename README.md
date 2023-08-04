@@ -82,7 +82,3 @@ If the hosted file is an adaptive manifest, like HLS or DASH, NextVideo will tre
 - [ ] Connectors for additional video services
 - [ ] Easily allow end-users to upload video content
 - [ ] Easily allow end-users to live stream from your app
-
-```
-
-```
