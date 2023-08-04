@@ -42,7 +42,7 @@ Now you can use the `<NextVideo>` component in your application. Let's say you'v
 ```tsx
 import NextVideo from 'next-video';
 
-<NextVideo src="/video/files/awesome-video.mp4" />
+<NextVideo src="/video/files/awesome-video.mp4" />;
 ```
 
 While a video is being uploaded and processed, `<NextVideo>` will attempt to play the local file.

@@ -1,0 +1,57 @@
+{
+  "name": "next-video",
+  "version": "1.0.0",
+  "description": "The easiest way to get started with video in your Next.js application. This library will automatically upload your videos to Mux and serve them from their CDN.",
+  "type": "module",
+  "main": "./dist/cjs/next-video.js",
+  "module": "./dist/next-video.js",
+  "exports": {
+    ".": {
+      "import": "./dist/next-video.js",
+      "require": "./dist/cjs/next-video.js",
+      "default": "./dist/next-video.js"
+    },
+    "./process": {
+      "import": "./dist/main.js",
+      "require": "./dist/cjs/main.js",
+      "default": "./dist/main.js"
+    }
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "npm run clean && (npm run build:esm & npm run build:cjs)",
+    "build:esm": "tsc --module es2020",
+    "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+    "postbuild:cjs": "echo '{\"type\": \"commonjs\"}' > ./dist/cjs/package.json"
+  },
+  "bin": {
+    "foo": "./dist/cli.js"
+  },
+  "author": "Mux Lab <lab@mux.com>",
+  "license": "MIT",
+  "peerDependencies": {
+    "@types/react": "^17.0.0 || ^18",
+    "react": "^17.0.2 || ^18",
+    "react-dom": "^17.0.2 || ^18"
+  },
+  "peerDependenciesMeta": {
+    "@types/react": {
+      "optional": true
+    },
+    "@types/react-dom": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^20.4.5",
+    "@types/react": "^18.2.16",
+    "react": "^18.2.0",
+    "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "@mux/mux-node": "github:stainless-sdks/mux-node#8.0.0-beta.1",
+    "@mux/mux-player-react": "^1.11.4",
+    "chokidar": "^3.5.3",
+    "undici": "^5.22.1"
+  }
+}
