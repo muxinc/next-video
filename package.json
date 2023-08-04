@@ -2,15 +2,31 @@
 	"name": "next-video",
 	"version": "1.0.0",
 	"description": "The easiest way to get started with video in your Next.js application. This library will automatically upload your videos to Mux and serve them from their CDN.",
-	"main": "dist/NextVideo.js",
+	"type": "module",
+	"main": "./dist/cjs/next-video.js",
+	"module": "./dist/next-video.js",
+	"exports": {
+    ".": {
+      "import": "./dist/next-video.js",
+      "require": "./dist/cjs/next-video.js",
+      "default": "./dist/next-video.js"
+    },
+    "./with-next-video": {
+      "import": "./dist/main.js",
+      "require": "./dist/cjs/main.js",
+      "default": "./dist/main.js"
+    }
+  },
 	"scripts": {
 		"clean": "rm -rf dist",
-		"build": "npm run clean && swc src -d dist -s && tsc"
+		"build": "npm run clean && (npm run build:esm & npm run build:cjs)",
+		"build:esm": "tsc --module es2020",
+		"build:cjs": "tsc --module commonjs --outDir dist/cjs",
+		"postbuild:cjs": "echo '{\"type\": \"commonjs\"}' > ./dist/cjs/package.json"
 	},
 	"bin": {
 		"main": "bin/main.js"
 	},
-	"type": "module",
 	"author": "Mux Lab <lab@mux.com>",
 	"license": "MIT",
 	"peerDependencies": {
@@ -27,13 +43,9 @@
 		}
 	},
 	"devDependencies": {
-		"@parcel/packager-ts": "^2.9.3",
-		"@parcel/transformer-typescript-types": "^2.9.3",
 		"@types/node": "^20.4.5",
 		"@types/react": "^18.2.16",
-		"parcel": "^2.9.3",
 		"react": "^18.2.0",
-		"swc": "^1.0.11",
 		"typescript": "^5.1.6"
 	},
 	"dependencies": {

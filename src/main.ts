@@ -1,11 +1,10 @@
-import videoHandler from './videoHandler';
-import localUploadHandler from './handlers/localUpload';
+import videoHandler from './video-handler';
+import localUploadHandler from './handlers/local-upload';
 import './webpack-loader';
 // Don't love this little race condition... we gotta figure that one out.
 // Basically we need to make sure all the handlers are registered before we start watching for files.
 videoHandler('local.video.added', localUploadHandler);
 
-import NextVideo from './NextVideo';
-import withNextVideo from './withNextVideo';
+import withNextVideo from './with-next-video';
 
-export { NextVideo, videoHandler, withNextVideo };
+export { videoHandler, withNextVideo };
