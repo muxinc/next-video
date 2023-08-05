@@ -59,7 +59,7 @@ While a video is being uploaded and processed, `next-video` will attempt to play
 
 ## Remote videos
 
-For videos that are already hosted remotely (for example on AWS S3), set the `src` attribute to the URL of the remove file.
+For videos that are already hosted remotely (for example on AWS S3), set the `src` attribute to the URL of the remote file.
 
 ```tsx
 import Video from 'next-video/video';
