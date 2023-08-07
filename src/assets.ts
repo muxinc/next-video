@@ -1,7 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import log from './logger';
 
-export type Asset = {
+export interface Asset {
   status?: 'pending' | 'uploading' | 'processing' | 'ready' | 'error';
   error?: string;
   originalFilePath?: string;
@@ -11,7 +11,7 @@ export type Asset = {
   };
   createdAt?: number;
   updatedAt?: number;
-};
+}
 
 function getAssetConfigPath(filePath: string) {
   return `${filePath}.json`;
