@@ -1,16 +1,22 @@
 'use client';
-// import the asset json db thing here
+
 import { Asset } from './assets';
 import MuxPlayer from '@mux/mux-player-react';
+import type { MuxPlayerProps } from '@mux/mux-player-react';
 
-interface NextVideoProps {
+interface NextVideoProps extends Omit<MuxPlayerProps, 'src'> {
   src: string | Asset;
 }
 
 export default function NextVideo(props: NextVideoProps) {
-  if (typeof props.src === 'string') {
-    return <video src={props.src} />;
+  const { src, ...rest } = props;
+  const playerProps: MuxPlayerProps = rest;
+
+  if (typeof src === 'string') {
+    playerProps.src = src;
+  } else {
+    playerProps.playbackId = src.externalIds?.playbackId;
   }
 
-  return <MuxPlayer playbackId={props.src.externalIds?.playbackId} />;
+  return <MuxPlayer {...playerProps} />;
 }
