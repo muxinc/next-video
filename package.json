@@ -19,7 +19,8 @@
   },
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "npm run clean && (npm run build:esm & npm run build:cjs)",
+    "watch": "npm run build:esm -- -w & npm run build:cjs -- -w",
+    "build": "npm run clean && (npm run build:esm && npm run build:cjs)",
     "build:esm": "tsc --module es2020",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs",
     "postbuild:cjs": "echo '{\"type\": \"commonjs\"}' > ./dist/cjs/package.json"
