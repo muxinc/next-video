@@ -3,3 +3,4 @@ node_modules/
 example-app/
 .parcel-cache/
 .vscode/
+.env

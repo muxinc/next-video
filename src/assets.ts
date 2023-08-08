@@ -1,9 +1,9 @@
 import { readFile, writeFile } from 'node:fs/promises';
-import log from './logger';
+import log from './logger.js';
 
 export interface Asset {
   status?: 'pending' | 'uploading' | 'processing' | 'ready' | 'error';
-  error?: string;
+  error?: any;
   originalFilePath?: string;
   size?: number;
   externalIds?: {
