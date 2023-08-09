@@ -2,12 +2,23 @@
 
 import MuxPlayer from '@mux/mux-player-react';
 import type { MuxPlayerProps } from '@mux/mux-player-react';
-
 import { Asset } from './assets.js';
+
+declare module 'react' {
+  interface CSSProperties {
+    [key: `--${string}`]: any;
+  }
+}
 
 interface NextVideoProps extends Omit<MuxPlayerProps, 'src'> {
   src: string | Asset;
   controls: boolean;
+}
+
+const FILES_FOLDER = 'video/files/';
+
+const toSymlinkPath = (path?: string) => {
+  return path?.replace(FILES_FOLDER, `_${FILES_FOLDER}`);
 }
 
 export default function NextVideo(props: NextVideoProps) {
@@ -16,7 +27,7 @@ export default function NextVideo(props: NextVideoProps) {
   let status;
 
   if (typeof src === 'string') {
-    playerProps.src = src;
+    playerProps.src = toSymlinkPath(src);
 
   } else if (typeof src === 'object') {
     status = src.status;
@@ -25,7 +36,7 @@ export default function NextVideo(props: NextVideoProps) {
       playerProps.playbackId = src.externalIds?.playbackId;
 
     } else {
-      playerProps.src = `_${src.originalFilePath}`;
+      playerProps.src = toSymlinkPath(src.originalFilePath);
     }
   }
 
@@ -46,7 +57,7 @@ export default function NextVideo(props: NextVideoProps) {
       <MuxPlayer
         data-next-video={status}
         style={{
-          '--controls': props.controls === false ? 'none' : 'revert'
+          '--controls': props.controls === false ? 'none' : undefined
         }}
         {...playerProps}
       />
