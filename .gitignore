@@ -4,3 +4,4 @@ example-app/
 .parcel-cache/
 .vscode/
 .env
+.DS_Store

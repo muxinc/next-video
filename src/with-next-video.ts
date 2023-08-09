@@ -1,15 +1,17 @@
+import symlinkDir from 'symlink-dir';
 import chokidar from 'chokidar';
 
 import path from 'node:path';
-
+import fs from 'node:fs/promises';
 import { createAsset } from './assets.js';
 import { callHandlers } from './video-handler.js';
 import log from './logger.js';
 
-import { FILES_PATH } from './constants.js';
+import { FILES_PATH, VIDEO_PATH } from './constants.js';
 
 async function init() {
   log('info', 'Watching for changes in the files directory:', FILES_PATH);
+
   const watcher = chokidar.watch(FILES_PATH, {
     ignored: /(^|[\/\\])\..*|\.json$/,
     persistent: true,
@@ -35,7 +37,17 @@ async function init() {
 export default async function withNextVideo(nextConfig: any) {
   if (process.argv[2] === 'dev') {
     log('info', 'Initializing NextVideo.');
+
     await init();
+
+    const TMP_PUBLIC_VIDEO_PATH = path.join(process.cwd(), 'public/_video');
+
+    await symlinkDir(VIDEO_PATH, TMP_PUBLIC_VIDEO_PATH);
+
+    process.on('exit', async () => {
+      await fs.unlink(TMP_PUBLIC_VIDEO_PATH);
+    });
+
     log('info', 'NextVideo ready.');
   }
 

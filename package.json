@@ -58,6 +58,7 @@
     "@mux/mux-node": "github:stainless-sdks/mux-node#8.0.0-beta.1",
     "@mux/mux-player-react": "^1.11.4",
     "chokidar": "^3.5.3",
+    "symlink-dir": "^5.1.1",
     "undici": "^5.22.1",
     "yargs": "^17.7.2"
   }
