@@ -1,13 +1,15 @@
+import chokidar from 'chokidar';
 import { Argv, Arguments } from 'yargs';
 
 import { stat, readdir } from 'node:fs/promises';
 import path from 'node:path';
 
 import { callHandlers } from '../main.js';
-import { Asset, createAsset } from '../assets.js';
+import { createAsset } from '../assets.js';
 
-export const command = 'upload';
-export const desc = 'Checks for new video files in the files directory and uploads them.';
+export const command = 'sync';
+export const desc =
+  'Checks for new video files in the files directory, uploads them, and checks any existing assets for updates.';
 
 export function builder(yargs: Argv) {
   return yargs.options({
@@ -17,6 +19,31 @@ export function builder(yargs: Argv) {
       type: 'string',
       default: 'video',
     },
+    watch: {
+      alias: 'w',
+      describe: 'Watch the files directory for changes.',
+      type: 'boolean',
+      default: false,
+    },
+  });
+}
+
+function watcher(dir: string) {
+  const watcher = chokidar.watch(dir, {
+    ignored: /(^|[\/\\])\..*|\.json$/,
+    persistent: true,
+  });
+
+  watcher.on('add', async (filePath, stats) => {
+    const relativePath = path.relative(process.cwd(), filePath);
+    const newAsset = await createAsset(relativePath, {
+      size: stats?.size,
+    });
+
+    if (newAsset) {
+      console.log(`New file found: ${filePath}`);
+      return callHandlers('local.video.added', newAsset);
+    }
   });
 }
 
@@ -41,7 +68,7 @@ export async function handler(argv: Arguments) {
       });
 
       if (newAsset) {
-        return callHandlers('local.video.added', newAsset);
+        return callHandlers('local.video.added', newAsset, { timeout: 10000 });
       }
     };
 
@@ -56,8 +83,22 @@ export async function handler(argv: Arguments) {
 
     const processing = await Promise.all(unprocessedVideos.map(processor));
 
-    console.log(processing.flat());
-  } catch (err) {
-    console.error(`Error reading directory: ${err}`);
+    if (processing.length > 0) {
+      console.log(processing.flat());
+    }
+
+    if (argv.watch) {
+      console.log('Watching for changes in the files directory:', directoryPath);
+      watcher(directoryPath);
+    }
+  } catch (err: any) {
+    if (err.code === 'ENOENT') {
+      console.error(`Directory does not exist: ${directoryPath}`);
+      console.log(
+        'Did you forget to run `next-video init`? You can also use the --dir flag to specify a different directory.'
+      );
+      return;
+    }
+    console.error(err);
   }
 }

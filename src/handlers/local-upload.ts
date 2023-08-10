@@ -1,3 +1,7 @@
+// Right now, this thing does nothing with timeouts. It should.
+// We probably want to migrate this from being a stateless function to a stateful function.
+// Also really need to do a ton of work to make this more resilient around retries, etc.
+
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import Mux from '@mux/mux-node';

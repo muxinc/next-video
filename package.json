@@ -54,6 +54,7 @@
     "typescript": "^5.1.6"
   },
   "dependencies": {
+    "@inquirer/prompts": "^3.0.2",
     "@mux/mux-node": "github:stainless-sdks/mux-node#8.0.0-beta.1",
     "@mux/mux-player-react": "^1.11.4",
     "chokidar": "^3.5.3",
