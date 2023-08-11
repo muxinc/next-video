@@ -1,8 +1,9 @@
 'use client';
 
-import { Asset } from './assets';
 import MuxPlayer from '@mux/mux-player-react';
 import type { MuxPlayerProps } from '@mux/mux-player-react';
+
+import { Asset } from './assets.js';
 
 interface NextVideoProps extends Omit<MuxPlayerProps, 'src'> {
   src: string | Asset;

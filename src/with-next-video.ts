@@ -1,5 +1,7 @@
 import chokidar from 'chokidar';
+
 import path from 'node:path';
+
 import { createAsset } from './assets.js';
 import { callHandlers } from './video-handler.js';
 import log from './logger.js';

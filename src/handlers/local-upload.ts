@@ -1,12 +1,23 @@
+// Right now, this thing does nothing with timeouts. It should.
+// We probably want to migrate this from being a stateless function to a stateful function.
+// Also really need to do a ton of work to make this more resilient around retries, etc.
+
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import Mux from '@mux/mux-node';
 import { fetch as uFetch } from 'undici';
 
-import { updateAsset, Asset } from '../assets';
-import log from '../logger';
+import { updateAsset, Asset } from '../assets.js';
+import log from '../logger.js';
 
-const mux = new Mux();
+let mux: Mux;
+
+// We don't want to blow things up immediately if Mux isn't configured, but we also don't want to
+// need to initialize it every time in situations like polling. So we'll initialize it lazily but cache
+// the instance.
+function initMux() {
+  mux = new Mux();
+}
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -17,6 +28,8 @@ async function pollForAssetReady(filePath: string, asset: Asset) {
     log('error', 'No assetId provided for asset.');
     return;
   }
+
+  initMux();
 
   const assetId = asset.externalIds?.assetId;
 
@@ -30,6 +43,15 @@ async function pollForAssetReady(filePath: string, asset: Asset) {
       externalIds: {
         playbackId,
       },
+    });
+  }
+
+  if (muxAsset.status === 'errored') {
+    log('error', `Asset errored: ${filePath} (Mux Asset ID: ${assetId}})`);
+
+    return updateAsset(filePath, {
+      status: 'error',
+      error: muxAsset.errors,
     });
   }
 
@@ -55,6 +77,8 @@ async function pollForUploadAsset(filePath: string, asset: Asset) {
     log('error', 'No uploadId provided for asset.');
     return;
   }
+
+  initMux();
 
   const uploadId = asset.externalIds?.uploadId;
 
@@ -82,6 +106,8 @@ export default async function createAndUploadToMux(asset: Asset) {
     log('error', 'No filePath provided for asset.');
     return;
   }
+
+  initMux();
 
   const src = asset.originalFilePath;
 

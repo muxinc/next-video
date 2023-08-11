@@ -23,11 +23,14 @@
     "build": "npm run clean && (npm run build:esm && npm run build:cjs)",
     "build:esm": "tsc --module es2020",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs",
-    "postbuild:cjs": "echo '{\"type\": \"commonjs\"}' > ./dist/cjs/package.json"
+    "postbuild:cjs": "echo '{\"type\": \"commonjs\"}' > ./dist/cjs/package.json",
+    "cli-stuff": "npm run build && npx link ."
   },
-  "bin": {
-    "foo": "./dist/cli.js"
-  },
+  "bin": "./dist/cli.js",
+  "files": [
+    "dist",
+    "video-types"
+  ],
   "author": "Mux Lab <lab@mux.com>",
   "license": "MIT",
   "peerDependencies": {
@@ -46,13 +49,16 @@
   "devDependencies": {
     "@types/node": "^20.4.5",
     "@types/react": "^18.2.16",
+    "@types/yargs": "^17.0.24",
     "react": "^18.2.0",
     "typescript": "^5.1.6"
   },
   "dependencies": {
+    "@inquirer/prompts": "^3.0.2",
     "@mux/mux-node": "github:stainless-sdks/mux-node#8.0.0-beta.1",
     "@mux/mux-player-react": "^1.11.4",
     "chokidar": "^3.5.3",
-    "undici": "^5.22.1"
+    "undici": "^5.22.1",
+    "yargs": "^17.7.2"
   }
 }
