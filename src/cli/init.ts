@@ -87,6 +87,8 @@ export async function handler(argv: Arguments) {
 
   if (ts) {
     await createTSFile();
-    console.log('next-video initialized for TypeScript.');
+    console.log(
+      'next-video TypeScript types initialized. Add the new `video.d.ts` file to the `include` array in your `tsconfig.json`'
+    );
   }
 }

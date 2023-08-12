@@ -4,7 +4,7 @@ import { Argv, Arguments } from 'yargs';
 import { stat, readdir } from 'node:fs/promises';
 import path from 'node:path';
 
-import { callHandlers } from '../main.js';
+import { callHandler } from '../main.js';
 import { createAsset } from '../assets.js';
 
 export const command = 'sync';
@@ -42,7 +42,7 @@ function watcher(dir: string) {
 
     if (newAsset) {
       console.log(`New file found: ${filePath}`);
-      return callHandlers('local.video.added', newAsset);
+      return callHandler('local.video.added', newAsset);
     }
   });
 }
@@ -68,7 +68,7 @@ export async function handler(argv: Arguments) {
       });
 
       if (newAsset) {
-        return callHandlers('local.video.added', newAsset, { timeout: 10000 });
+        return callHandler('local.video.added', newAsset);
       }
     };
 
