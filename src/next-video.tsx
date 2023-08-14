@@ -1,7 +1,11 @@
 'use client';
 
+// todo: fix mux-player to work with moduleResolution: 'nodenext'?
+// @ts-ignore
 import MuxPlayer from '@mux/mux-player-react';
+// @ts-ignore
 import type { MuxPlayerProps } from '@mux/mux-player-react';
+
 import { Asset } from './assets.js';
 
 declare module 'react' {
