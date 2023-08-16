@@ -20,7 +20,12 @@ const withTimeout = async (ms: number, promise: Promise<any>): Promise<any> => {
     return promise;
   }
 
-  const timeout = new Promise((_, reject) => setTimeout(() => reject({ error: `Timed out after ${ms} ms.` }), ms));
+  let timeoutId: NodeJS.Timeout;
+  const timeout = new Promise(
+    (_, reject) => (timeoutId = setTimeout(() => reject({ error: `Timed out after ${ms} ms.` }), ms))
+  );
+
+  promise.then(() => clearTimeout(timeoutId));
   const value = await Promise.race([promise, timeout]);
 
   return value;

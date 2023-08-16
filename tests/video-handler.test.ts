@@ -14,9 +14,7 @@ describe('videoHandler', () => {
     assert((await handler('test')) === 'test');
   });
 
-  it('adds the handler to be called via callHandler', async (ctx) => {
-    ctx.mock.timers.enable(['setTimeout']);
-
+  it('adds the handler to be called via callHandler', async () => {
     const randomNumber = Math.floor(Math.random() * 1000);
     videoHandler(`test_${randomNumber}`, (event) => {
       return event;
@@ -24,22 +22,18 @@ describe('videoHandler', () => {
 
     const result = await callHandler(`test_${randomNumber}`, 'oh hai');
 
-    ctx.mock.timers.tick(9999);
     assert(result === 'oh hai');
   });
 });
 
 describe('callHandler', () => {
-  it('should call the handler for the given event', async (ctx) => {
-    ctx.mock.timers.enable(['setTimeout']);
-
+  it('should call the handler for the given event', async () => {
     const randomNumber = Math.floor(Math.random() * 1000);
     videoHandler(`test_${randomNumber}`, (event) => {
       return event;
     });
 
     const result = await callHandler(`test_${randomNumber}`, 'oh hai');
-    ctx.mock.timers.tick(9999);
 
     assert(result === 'oh hai');
   });
@@ -49,16 +43,13 @@ describe('callHandler', () => {
     assert(result === undefined);
   });
 
-  it('should timeout if the handler takes too long', async (ctx) => {
-    ctx.mock.timers.enable(['setTimeout']);
-
+  it('should timeout if the handler takes too long', async () => {
     const randomNumber = Math.floor(Math.random() * 1000);
     videoHandler(`test_${randomNumber}`, async (event) => {
       await sleep(20);
       return event;
     });
 
-    ctx.mock.timers.tick(9999);
     assert.rejects(callHandler(`test_${randomNumber}`, 'oh hai', { timeout: 10 }));
   });
 });
