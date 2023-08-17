@@ -43,7 +43,17 @@ describe('callHandler', () => {
     assert(result === undefined);
   });
 
-  it('should timeout if the handler takes too long', async () => {
+  it('should always return a promise even if the handler is not', async () => {
+    const randomNumber = Math.floor(Math.random() * 1000);
+    videoHandler(`test_${randomNumber}`, (event) => {
+      return event;
+    });
+
+    const result = callHandler(`test_${randomNumber}`, 'oh hai');
+    assert(result instanceof Promise);
+  });
+
+  it.skip('should timeout if the handler takes too long', async () => {
     const randomNumber = Math.floor(Math.random() * 1000);
     videoHandler(`test_${randomNumber}`, async (event) => {
       await sleep(20);

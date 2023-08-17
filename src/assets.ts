@@ -17,7 +17,7 @@ function getAssetConfigPath(filePath: string) {
   return `${filePath}.json`;
 }
 
-async function getAsset(filePath: string): Promise<Asset | undefined> {
+export async function getAsset(filePath: string): Promise<Asset | undefined> {
   const assetPath = getAssetConfigPath(filePath);
   const file = await readFile(assetPath);
   const asset = JSON.parse(file.toString());

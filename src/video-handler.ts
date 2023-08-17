@@ -1,5 +1,3 @@
-export const DEFAULT_TIMEOUT = 10000;
-
 type VideoHandlerCallback = (event: any, ...args: any[]) => Promise<any>;
 
 interface Handlers {
@@ -31,9 +29,8 @@ const withTimeout = async (ms: number, promise: Promise<any>): Promise<any> => {
   return value;
 };
 
-const DEFAULT_HANDLER_CONFIG = {
-  timeout: DEFAULT_TIMEOUT,
-};
+// Not doing anything in the config right now.
+const DEFAULT_HANDLER_CONFIG = {};
 export async function callHandler(event: string, data: any, config: HandlerConfig = {}): Promise<any> {
   const mergedConfig = { ...DEFAULT_HANDLER_CONFIG, ...config };
   const handler = HANDLERS[event];
@@ -43,8 +40,7 @@ export async function callHandler(event: string, data: any, config: HandlerConfi
   }
 
   // Always wrap the handler result in a Promise.resolve so we're always dealing with a promise.
-  const handlerResult = handler(data, config);
-  return withTimeout(mergedConfig.timeout || DEFAULT_TIMEOUT, Promise.resolve(handlerResult));
+  return Promise.resolve(handler(data, mergedConfig));
 }
 
 export default function videoHandler(event: string, callback: VideoHandlerCallback) {
