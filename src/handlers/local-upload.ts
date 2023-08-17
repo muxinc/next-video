@@ -101,13 +101,24 @@ async function pollForUploadAsset(filePath: string, asset: Asset) {
   }
 }
 
-export default async function createAndUploadToMux(asset: Asset) {
+export default async function uploadLocalFile(asset: Asset) {
   if (!asset.originalFilePath) {
     log('error', 'No filePath provided for asset.');
     return;
   }
 
   initMux();
+
+  if (asset.status === 'ready') {
+    return;
+  } else if (asset.status === 'processing') {
+    console.log(`Asset is already processing. Polling for completion: ${asset.originalFilePath}`);
+    return pollForAssetReady(asset.originalFilePath, asset);
+  } else if (asset.status === 'uploading') {
+    // Right now this re-starts the upload from the beginning.
+    // We should probably do something smarter here.
+    console.log('Resuming upload...');
+  }
 
   const src = asset.originalFilePath;
 

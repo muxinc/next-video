@@ -4,7 +4,7 @@ import chokidar from 'chokidar';
 import path from 'node:path';
 import fs from 'node:fs/promises';
 import { createAsset } from './assets.js';
-import { callHandlers } from './video-handler.js';
+import { callHandler } from './video-handler.js';
 import log from './logger.js';
 
 import { FILES_PATH, VIDEO_PATH } from './constants.js';
@@ -25,7 +25,7 @@ async function init() {
 
     if (newAsset) {
       log('info', `New file found: ${filePath}`);
-      callHandlers('local.video.added', newAsset);
+      callHandler('local.video.added', newAsset);
     }
   });
 
@@ -51,20 +51,13 @@ export default async function withNextVideo(nextConfig: any) {
     log('info', 'NextVideo ready.');
   }
 
-  // return nextConfig;
-
   return Object.assign({}, nextConfig, {
     webpack(config: any, options: any) {
-      const { isServer } = options;
-
       if (!options.defaultLoaders) {
         throw new Error(
           'This plugin is not compatible with Next.js versions below 5.0.0 https://err.sh/next-plugins/upgrade'
         );
       }
-
-      // const prefix = nextConfig.assetPrefix || '';
-      // const basePath = nextConfig.basePath || '';
 
       config.module.rules.push({
         test: /\.(mp4|webm|mov|ogg|swf|ogv)$/,

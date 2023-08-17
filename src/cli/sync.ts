@@ -4,8 +4,8 @@ import { Argv, Arguments } from 'yargs';
 import { stat, readdir } from 'node:fs/promises';
 import path from 'node:path';
 
-import { callHandlers } from '../main.js';
-import { createAsset } from '../assets.js';
+import { callHandler } from '../main.js';
+import { createAsset, getAsset } from '../assets.js';
 
 export const command = 'sync';
 export const desc =
@@ -42,7 +42,7 @@ function watcher(dir: string) {
 
     if (newAsset) {
       console.log(`New file found: ${filePath}`);
-      return callHandlers('local.video.added', newAsset);
+      return callHandler('local.video.added', newAsset);
     }
   });
 }
@@ -56,7 +56,7 @@ export async function handler(argv: Arguments) {
     const jsonFiles = files.filter((file) => file.endsWith('.json'));
     const otherFiles = files.filter((file) => !file.endsWith('.json'));
 
-    const processor = async (file: string) => {
+    const newFileProcessor = async (file: string) => {
       console.log('Processing file:', file);
 
       const absolutePath = path.join(directoryPath, file);
@@ -68,8 +68,17 @@ export async function handler(argv: Arguments) {
       });
 
       if (newAsset) {
-        return callHandlers('local.video.added', newAsset, { timeout: 10000 });
+        return callHandler('local.video.added', newAsset);
       }
+    };
+
+    const existingFileProcessor = async (file: string) => {
+      const filePath = path.join(directoryPath, file);
+      const parsedPath = path.parse(filePath);
+      const assetPath = path.join(parsedPath.dir, parsedPath.name);
+      const existingAsset = await getAsset(assetPath);
+
+      return callHandler('local.video.added', existingAsset);
     };
 
     const unprocessedFilter = (file: string) => {
@@ -81,11 +90,13 @@ export async function handler(argv: Arguments) {
 
     console.log(`Found ${unprocessedVideos.length} unprocessed videos.`);
 
-    const processing = await Promise.all(unprocessedVideos.map(processor));
+    const processing = await Promise.all([
+      ...unprocessedVideos.map(newFileProcessor),
+      ...jsonFiles.map(existingFileProcessor),
+    ]);
 
-    if (processing.length > 0) {
-      console.log(processing.flat());
-    }
+    const processed = processing.flat().filter((asset) => asset);
+    console.log(`Processed (or resumed processing) ${processed.length} videos.`);
 
     if (argv.watch) {
       console.log('Watching for changes in the files directory:', directoryPath);

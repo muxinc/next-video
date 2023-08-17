@@ -1,4 +1,4 @@
-import videoHandler, { callHandlers } from './video-handler.js';
+import videoHandler, { callHandler } from './video-handler.js';
 import localUploadHandler from './handlers/local-upload.js';
 
 // Don't love this little race condition... we gotta figure that one out.
@@ -7,4 +7,4 @@ videoHandler('local.video.added', localUploadHandler);
 
 import withNextVideo from './with-next-video.js';
 
-export { videoHandler, withNextVideo, callHandlers };
+export { videoHandler, withNextVideo, callHandler };

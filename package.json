@@ -24,7 +24,8 @@
     "build:esm": "tsc --module es2020",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs",
     "postbuild:cjs": "echo '{\"type\": \"commonjs\"}' > ./dist/cjs/package.json",
-    "cli-stuff": "npm run build && npx link ."
+    "cli-stuff": "npm run build && npx link .",
+    "test": "tsx --test tests/*"
   },
   "bin": "./dist/cli.js",
   "files": [
@@ -51,6 +52,7 @@
     "@types/react": "^18.2.16",
     "@types/yargs": "^17.0.24",
     "react": "^18.2.0",
+    "tsx": "^3.12.7",
     "typescript": "^5.1.6"
   },
   "dependencies": {

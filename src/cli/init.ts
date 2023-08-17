@@ -63,6 +63,7 @@ export function builder(yargs: Argv) {
 export async function handler(argv: Arguments) {
   let baseDir = argv.dir as string;
   let ts = argv.typescript as boolean;
+  let changes: string[] = [];
 
   if (!baseDir) {
     baseDir = await input({ message: 'What directory should next-video use for video files?', default: DEFAULT_DIR });
@@ -83,10 +84,12 @@ export async function handler(argv: Arguments) {
 
   await createVideoDir(baseDir);
 
-  console.log('next-video initialized in', baseDir);
+  changes.push(`Created ${baseDir}/files directory.`);
 
   if (ts) {
     await createTSFile();
-    console.log('next-video initialized for TypeScript.');
+    changes.push(`Created video.d.ts. Add this to your tsconfig.json's include array.`);
   }
+
+  console.log(`next-video initialized! Changes made:\n - ${changes.join('\n - ')}`);
 }
