@@ -15,6 +15,7 @@ declare module 'react' {
 interface NextVideoProps extends Omit<MuxPlayerProps, 'src'> {
   src: string | Asset;
   controls: boolean;
+  blurDataURL?: string;
 }
 
 const DEV_MODE = process.env.NODE_ENV === 'development';
@@ -25,10 +26,9 @@ const toSymlinkPath = (path?: string) => {
 }
 
 export default function NextVideo(props: NextVideoProps) {
-  let { src, poster, ...rest } = props;
+  let { src, poster, blurDataURL, ...rest } = props;
   const playerProps: MuxPlayerProps = rest;
   let status: string | undefined;
-  let blurDataURL;
 
   if (typeof src === 'string') {
     playerProps.src = toSymlinkPath(src);
@@ -38,8 +38,8 @@ export default function NextVideo(props: NextVideoProps) {
 
     if (status === 'ready' && src.externalIds?.playbackId) {
       playerProps.playbackId = src.externalIds?.playbackId;
-      poster = poster ?? `https://image.mux.com/${playerProps.playbackId}/thumbnail.webp`;
-      blurDataURL = src.blurDataURL;
+      poster = poster ?? getPosterURLFromPlaybackId(playerProps.playbackId, playerProps);
+      blurDataURL = blurDataURL ?? src.blurDataURL;
 
     } else {
       playerProps.src = toSymlinkPath(src.originalFilePath);
@@ -84,7 +84,7 @@ export default function NextVideo(props: NextVideoProps) {
         <img
           slot="poster"
           src={poster}
-          style={{ backgroundImage: `url('${blurDataURL}')` }} />
+          style={{ backgroundImage: blurDataURL ? `url('${blurDataURL}')` : undefined }} />
       </MuxPlayer>
       {DEV_MODE && <Alert
         hidden={Boolean(playing || (status && status === 'ready'))}
@@ -164,4 +164,56 @@ function Alert({ status, hidden }: AlertProps) {
       </div>
     </>
   )
+}
+
+const MUX_VIDEO_DOMAIN = 'mux.com';
+
+export const getPosterURLFromPlaybackId = (
+  playbackId?: string,
+  { token, thumbnailTime, domain = MUX_VIDEO_DOMAIN }: { token?: string; domain?: string; thumbnailTime?: number } = {}
+) => {
+  // NOTE: thumbnailTime is not supported when using a signedURL/token. Remove under these cases. (CJP)
+  const time = token == null ? thumbnailTime : undefined;
+
+  const { aud } = parseJwt(token);
+
+  if (token && aud !== 't') {
+    return;
+  }
+
+  return `https://image.${domain}/${playbackId}/thumbnail.webp${toQuery({
+    token,
+    time,
+  })}`;
+};
+
+function toQuery(obj: Record<string, any>) {
+  const params = toParams(obj).toString();
+  return params ? '?' + params : '';
+}
+
+function toParams(obj: Record<string, any>) {
+  const params: Record<string, any> = {};
+  for (const key in obj) {
+    if (obj[key] != null) params[key] = obj[key];
+  }
+  return new URLSearchParams(params);
+}
+
+function parseJwt(token: string | undefined) {
+  const base64Url = (token ?? '').split('.')[1];
+
+  // exit early on invalid value
+  if (!base64Url) return {};
+
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const jsonPayload = decodeURIComponent(
+    atob(base64)
+      .split('')
+      .map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      })
+      .join('')
+  );
+  return JSON.parse(jsonPayload);
 }
