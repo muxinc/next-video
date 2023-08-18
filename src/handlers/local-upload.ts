@@ -61,7 +61,13 @@ async function pollForAssetReady(filePath: string, asset: Asset) {
   }
 
   if (muxAsset.status === 'ready') {
-    const blurDataURL = await createThumbHash(`https://image.mux.com/${playbackId}/thumbnail.png?width=100&height=100`);
+
+    let blurDataURL;
+    try {
+      blurDataURL = await createThumbHash(`https://image.mux.com/${playbackId}/thumbnail.png?width=100&height=100`);
+    } catch (e) {
+      log('error', e);
+    }
 
     log.success(log.label('Asset is ready:'), filePath);
     log.space(chalk.gray('>'), log.label('Playback ID:'), playbackId);
