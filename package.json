@@ -1,7 +1,7 @@
 {
-  "name": "next-video",
-  "version": "1.0.0",
-  "description": "The easiest way to get started with video in your Next.js application. This library will automatically upload your videos to Mux and serve them from their CDN.",
+  "name": "@mux/next-video",
+  "version": "0.1.0",
+  "description": "A React component for adding video to your Next.js application. It extends both the video element and your Next app with features for automatic video optimization.",
   "type": "module",
   "main": "./dist/cjs/next-video.js",
   "module": "./dist/next-video.js",
