@@ -57,7 +57,6 @@ export default function NextVideo(props: NextVideoProps) {
         }
 
         [data-next-video] {
-          background-color: var(--media-background-color, #000);
           width: 100%;
           aspect-ratio: 16 / 9;
           display: inline-block;
@@ -69,8 +68,8 @@ export default function NextVideo(props: NextVideoProps) {
           object-fit: var(--media-object-fit, contain);
           object-position: var(--media-object-position, center);
           background: center / cover no-repeat transparent;
-          max-width: 100%;
-          max-height: 100%;
+          width: 100%;
+          height: 100%;
         }
         `
       }</style>
