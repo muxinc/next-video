@@ -66,7 +66,7 @@ async function pollForAssetReady(filePath: string, asset: Asset) {
     try {
       blurDataURL = await createThumbHash(`https://image.mux.com/${playbackId}/thumbnail.png?width=100&height=100`);
     } catch (e) {
-      log('error', e);
+      log.error('Error creating a thumbnail hash.');
     }
 
     log.success(log.label('Asset is ready:'), filePath);
