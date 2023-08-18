@@ -4,11 +4,13 @@
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
+
+import chalk from 'chalk';
 import Mux from '@mux/mux-node';
 import { fetch as uFetch } from 'undici';
 
 import { updateAsset, Asset } from '../assets.js';
-import log from '../logger.js';
+import * as log from '../logger.js';
 
 let mux: Mux;
 
@@ -25,7 +27,8 @@ function sleep(ms: number) {
 
 async function pollForAssetReady(filePath: string, asset: Asset) {
   if (!asset.externalIds?.assetId) {
-    log('error', 'No assetId provided for asset.');
+    log.error('No assetId provided for asset.');
+    console.error(asset);
     return;
   }
 
@@ -47,7 +50,8 @@ async function pollForAssetReady(filePath: string, asset: Asset) {
   }
 
   if (muxAsset.status === 'errored') {
-    log('error', `Asset errored: ${filePath} (Mux Asset ID: ${assetId}})`);
+    log.error(log.label('Asset errored:'), filePath);
+    log.space(chalk.gray('>'), log.label('Mux Asset ID:'), assetId);
 
     return updateAsset(filePath, {
       status: 'error',
@@ -56,7 +60,9 @@ async function pollForAssetReady(filePath: string, asset: Asset) {
   }
 
   if (muxAsset.status === 'ready') {
-    log('info', `Asset is ready: ${filePath} (Mux Playback ID: ${playbackId}})`);
+    log.success(log.label('Asset is ready:'), filePath);
+    log.space(chalk.gray('>'), log.label('Playback ID:'), playbackId);
+
     return updateAsset(filePath, {
       status: 'ready',
       externalIds: {
@@ -74,7 +80,8 @@ async function pollForAssetReady(filePath: string, asset: Asset) {
 
 async function pollForUploadAsset(filePath: string, asset: Asset) {
   if (!asset.externalIds?.uploadId) {
-    log('error', 'No uploadId provided for asset.');
+    log.error('No uploadId provided for asset.');
+    console.error(asset);
     return;
   }
 
@@ -85,7 +92,9 @@ async function pollForUploadAsset(filePath: string, asset: Asset) {
   const muxUpload = await mux.video.uploads.retrieve(uploadId);
 
   if (muxUpload.asset_id) {
-    log('info', `Asset is processing: ${filePath} (Mux ID: ${muxUpload.asset_id})`);
+    log.info(log.label('Asset is processing:'), filePath);
+    log.space(chalk.gray('>'), log.label('Mux Asset ID:'), muxUpload.asset_id);
+
     const processingAsset = await updateAsset(filePath, {
       status: 'processing',
       externalIds: {
@@ -103,7 +112,8 @@ async function pollForUploadAsset(filePath: string, asset: Asset) {
 
 export default async function uploadLocalFile(asset: Asset) {
   if (!asset.originalFilePath) {
-    log('error', 'No filePath provided for asset.');
+    log.error('No filePath provided for asset.');
+    console.error(asset);
     return;
   }
 
@@ -112,12 +122,12 @@ export default async function uploadLocalFile(asset: Asset) {
   if (asset.status === 'ready') {
     return;
   } else if (asset.status === 'processing') {
-    console.log(`Asset is already processing. Polling for completion: ${asset.originalFilePath}`);
+    log.info(log.label('Asset is already processing. Polling for completion:'), asset.originalFilePath);
     return pollForAssetReady(asset.originalFilePath, asset);
   } else if (asset.status === 'uploading') {
     // Right now this re-starts the upload from the beginning.
     // We should probably do something smarter here.
-    console.log('Resuming upload...');
+    log.info(log.label('Resuming upload:'), asset.originalFilePath);
   }
 
   const src = asset.originalFilePath;
@@ -144,7 +154,7 @@ export default async function uploadLocalFile(asset: Asset) {
   const fileStats = await fileDescriptor.stat();
   const stream = fileDescriptor.createReadStream();
 
-  log('info', `Uploading file ${filePath} (${fileStats.size} bytes)`);
+  log.info(log.label('Uploading file:'), `${filePath} (${fileStats.size} bytes)`);
 
   try {
     // I'm having to do some annoying, defensive typecasting here becuase we need to fix some OAS spec stuff.
@@ -158,10 +168,10 @@ export default async function uploadLocalFile(asset: Asset) {
     stream.close();
     await fileDescriptor.close();
   } catch (e) {
-    log('error', e);
+    log.error('Error creating a Mux Direct Upload');
   }
 
-  log('info', `File uploaded: ${filePath} (${fileStats.size} bytes)`);
+  log.success(log.label('File uploaded:'), `${filePath} (${fileStats.size} bytes)`);
   const processingAsset = await updateAsset(src, {
     status: 'processing',
   });

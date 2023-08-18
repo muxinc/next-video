@@ -1,9 +1,11 @@
+import chalk from 'chalk';
 import chokidar from 'chokidar';
 import { Argv, Arguments } from 'yargs';
 
 import { stat, readdir } from 'node:fs/promises';
 import path from 'node:path';
 
+import * as log from '../logger.js';
 import { callHandler } from '../main.js';
 import { createAsset, getAsset } from '../assets.js';
 
@@ -41,7 +43,7 @@ function watcher(dir: string) {
     });
 
     if (newAsset) {
-      console.log(`New file found: ${filePath}`);
+      log.add(`New file found: ${filePath}`);
       return callHandler('local.video.added', newAsset);
     }
   });
@@ -57,7 +59,7 @@ export async function handler(argv: Arguments) {
     const otherFiles = files.filter((file) => !file.endsWith('.json'));
 
     const newFileProcessor = async (file: string) => {
-      console.log('Processing file:', file);
+      log.info(log.label('Processing file:'), file);
 
       const absolutePath = path.join(directoryPath, file);
       const relativePath = path.relative(process.cwd(), absolutePath);
@@ -88,7 +90,7 @@ export async function handler(argv: Arguments) {
 
     const unprocessedVideos = otherFiles.filter(unprocessedFilter);
 
-    console.log(`Found ${unprocessedVideos.length} unprocessed videos.`);
+    log.add(`Found ${unprocessedVideos.length} unprocessed video(s).`);
 
     const processing = await Promise.all([
       ...unprocessedVideos.map(newFileProcessor),
@@ -96,20 +98,23 @@ export async function handler(argv: Arguments) {
     ]);
 
     const processed = processing.flat().filter((asset) => asset);
-    console.log(`Processed (or resumed processing) ${processed.length} videos.`);
+    log.success(`Processed (or resumed processing) ${processed.length} videos.`);
 
     if (argv.watch) {
-      console.log('Watching for changes in the files directory:', directoryPath);
+      log.info('Watching for changes in the files directory:', directoryPath);
       watcher(directoryPath);
     }
   } catch (err: any) {
     if (err.code === 'ENOENT') {
-      console.error(`Directory does not exist: ${directoryPath}`);
-      console.log(
-        'Did you forget to run `next-video init`? You can also use the --dir flag to specify a different directory.'
+      log.warning(`Directory does not exist: ${directoryPath}`);
+      log.info(
+        `Did you forget to run ${chalk.bold.magenta('next-video init')}? You can also use the ${chalk.bold(
+          '--dir'
+        )} flag to specify a different directory.`
       );
       return;
     }
-    console.error(err);
+
+    log.error('An unknown error occurred', err);
   }
 }

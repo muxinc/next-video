@@ -1,8 +1,11 @@
 import { confirm, input } from '@inquirer/prompts';
+import chalk from 'chalk';
 import { Argv, Arguments } from 'yargs';
 
 import { mkdir, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+
+import * as log from '../logger.js';
 
 const GITIGNORE_CONTENTS = `files/*
 !files/*.json`;
@@ -71,8 +74,8 @@ export async function handler(argv: Arguments) {
 
   const shouldContinue = await preInitCheck(baseDir);
   if (!argv.force && !shouldContinue) {
-    console.log('Directory already exists:', baseDir);
-    console.log("If you'd like to proceed anyway, re-run with --force");
+    log.warning('Directory already exists:', baseDir);
+    log.info("If you'd like to proceed anyway, re-run with --force");
     return;
   }
 
@@ -91,5 +94,6 @@ export async function handler(argv: Arguments) {
     changes.push(`Created video.d.ts. Add this to your tsconfig.json's include array.`);
   }
 
-  console.log(`next-video initialized! Changes made:\n - ${changes.join('\n - ')}`);
+  log.success(`${chalk.magenta.bold('next-video')} initialized!`);
+  changes.forEach((change) => log.add(change));
 }
