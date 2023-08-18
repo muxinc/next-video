@@ -1,11 +1,9 @@
 'use client';
 
 // todo: fix mux-player to work with moduleResolution: 'nodenext'?
-// @ts-ignore
-import MuxPlayer from '@mux/mux-player-react';
-// @ts-ignore
-import type { MuxPlayerProps } from '@mux/mux-player-react';
 import { useState } from 'react';
+import MuxPlayer from '@mux/mux-player-react';
+import type { MuxPlayerProps } from '@mux/mux-player-react';
 import { Asset } from './assets.js';
 
 declare module 'react' {
@@ -30,6 +28,7 @@ export default function NextVideo(props: NextVideoProps) {
   const { src, ...rest } = props;
   const playerProps: MuxPlayerProps = rest;
   let status: string | undefined;
+  let imageSrc: string | undefined;
 
   if (typeof src === 'string') {
     playerProps.src = toSymlinkPath(src);
@@ -39,6 +38,7 @@ export default function NextVideo(props: NextVideoProps) {
 
     if (status === 'ready' && src.externalIds?.playbackId) {
       playerProps.playbackId = src.externalIds?.playbackId;
+      imageSrc = `https://image.mux.com/${playerProps.playbackId}/thumbnail.webp`;
 
     } else {
       playerProps.src = toSymlinkPath(src.originalFilePath);
@@ -63,6 +63,13 @@ export default function NextVideo(props: NextVideoProps) {
           line-height: 0;
           position: relative;
         }
+
+        [data-next-video] img {
+          max-width: 100%;
+          max-height: 100%;
+          object-fit: var(--media-object-fit, contain);
+          object-position: var(--media-object-position, center);
+        }
         `
       }</style>
       <MuxPlayer
@@ -73,7 +80,9 @@ export default function NextVideo(props: NextVideoProps) {
         onPlaying={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
         {...playerProps}
-      />
+      >
+        <img slot="poster" src={imageSrc} />
+      </MuxPlayer>
       {DEV_MODE && <Alert
         hidden={Boolean(playing || (status && status === 'ready'))}
         status={status}
