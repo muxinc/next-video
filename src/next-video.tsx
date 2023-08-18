@@ -25,10 +25,10 @@ const toSymlinkPath = (path?: string) => {
 }
 
 export default function NextVideo(props: NextVideoProps) {
-  const { src, ...rest } = props;
+  let { src, poster, ...rest } = props;
   const playerProps: MuxPlayerProps = rest;
   let status: string | undefined;
-  let imageSrc: string | undefined;
+  let blurDataURL;
 
   if (typeof src === 'string') {
     playerProps.src = toSymlinkPath(src);
@@ -38,7 +38,8 @@ export default function NextVideo(props: NextVideoProps) {
 
     if (status === 'ready' && src.externalIds?.playbackId) {
       playerProps.playbackId = src.externalIds?.playbackId;
-      imageSrc = `https://image.mux.com/${playerProps.playbackId}/thumbnail.webp`;
+      poster = poster ?? `https://image.mux.com/${playerProps.playbackId}/thumbnail.webp`;
+      blurDataURL = src.blurDataURL;
 
     } else {
       playerProps.src = toSymlinkPath(src.originalFilePath);
@@ -65,23 +66,25 @@ export default function NextVideo(props: NextVideoProps) {
         }
 
         [data-next-video] img {
-          max-width: 100%;
-          max-height: 100%;
           object-fit: var(--media-object-fit, contain);
           object-position: var(--media-object-position, center);
+          background: center / cover no-repeat transparent;
+          max-width: 100%;
+          max-height: 100%;
         }
         `
       }</style>
       <MuxPlayer
         data-next-video={status}
-        style={{
-          '--controls': props.controls === false ? 'none' : undefined
-        }}
+        style={{ '--controls': props.controls === false ? 'none' : undefined }}
         onPlaying={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
         {...playerProps}
       >
-        <img slot="poster" src={imageSrc} />
+        <img
+          slot="poster"
+          src={poster}
+          style={{ backgroundImage: `url('${blurDataURL}')` }} />
       </MuxPlayer>
       {DEV_MODE && <Alert
         hidden={Boolean(playing || (status && status === 'ready'))}
