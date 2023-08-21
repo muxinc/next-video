@@ -22,7 +22,7 @@ return <Video src={myVideo} />;
 ```bash
 cd your-next-app
 npm install @mux/next-video
-npx next-video init
+npx @mux/next-video init
 ```
 
 This will create a `/video/files` directory in your project which is where you will put all video source files.
@@ -58,18 +58,18 @@ module.exports = withNextVideo(nextConfig);
 
 ### Local videos
 
-Add videos locally to the `video/files` directory then run `npx next-video sync`. The videos will be automatically uploaded to remote storage and optimized. You'll notice `video/files/[file-name].json` files are also created. These are used to map your local video files to the new, remote-hosted video assets. These json files must be checked into git.
+Add videos locally to the `video/files` directory then run `npx @mux/next-video sync`. The videos will be automatically uploaded to remote storage and optimized. You'll notice `video/files/[file-name].json` files are also created. These are used to map your local video files to the new, remote-hosted video assets. These json files must be checked into git.
 
 ```
-npx next-video sync
+npx @mux/next-video sync
 ```
 
-You can also add `next-video sync -w` to the dev script to automatically sync videos as they're added to `/video/files` while the dev server is running.
+You can also add `@mux/next-video sync -w` to the dev script to automatically sync videos as they're added to `/video/files` while the dev server is running.
 
 ```js
 // package.json
   "scripts": {
-    "dev": "next dev & next-video sync -w",
+    "dev": "next dev & npx @mux/next-video sync -w",
   },
 ```
 
