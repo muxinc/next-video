@@ -22,7 +22,7 @@ return <Video src={myVideo} />;
 ```bash
 cd your-next-app
 npm install @mux/next-video
-npx @mux/next-video init
+npx next-video init
 ```
 
 This will create a `/video/files` directory in your project which is where you will put all video source files.
@@ -69,7 +69,7 @@ You can also add `@mux/next-video sync -w` to the dev script to automatically sy
 ```js
 // package.json
   "scripts": {
-    "dev": "next dev & npx @mux/next-video sync -w",
+    "dev": "next dev & next-video sync -w",
   },
 ```
 
