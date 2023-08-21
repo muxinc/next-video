@@ -1,5 +1,4 @@
 import symlinkDir from 'symlink-dir';
-import chokidar from 'chokidar';
 
 import path from 'node:path';
 import fs from 'node:fs/promises';

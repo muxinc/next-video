@@ -43,6 +43,17 @@ MUX_TOKEN_ID=[YOUR_TOKEN_ID]
 MUX_TOKEN_SECRET=[YOUR_TOKEN_SECRET]
 ```
 
+### Add Next Video to `next.config.js`
+
+```js
+/** @type {import('next').NextConfig} */
+const { withNextVideo } = require('next-video/process');
+
+const nextConfig = {}; // Your current Next Config object
+
+module.exports = withNextVideo(nextConfig);
+```
+
 ## Usage
 
 ### Local videos
