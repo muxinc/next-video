@@ -27,7 +27,9 @@
     "cli-stuff": "npm run build && npx link .",
     "test": "tsx --test tests/*"
   },
-  "bin": "./dist/cli.js",
+  "bin": {
+    "next-video": "./dist/cli.js"
+  },
   "files": [
     "dist",
     "video-types"
