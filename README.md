@@ -12,7 +12,7 @@ Next video is a react component for adding video to your [next.js](https://githu
 
 ```tsx
 import myVideo from '/video/files/myVideo.mp4';
-import Video from '@mux/next-video/video';
+import Video from '@mux/next-video';
 
 return <Video src={myVideo} />;
 ```
@@ -77,7 +77,7 @@ Now you can use the `<Video>` component in your application. Let's say you've ad
 
 ```tsx
 import awesomeVideo from '/video/files/awesome-video.mp4';
-import Video from '@mux/next-video/video';
+import Video from '@mux/next-video';
 
 return <Video src={awesomeVideo} />;
 ```
