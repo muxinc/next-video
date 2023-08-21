@@ -21,7 +21,7 @@ return <Video src={myVideo} />;
 
 ```bash
 cd your-next-app
-npm install next-video
+npm install @mux/next-video
 npx next-video init
 ```
 
