@@ -26,7 +26,7 @@ export default async function withNextVideo(nextConfig: any) {
       }
 
       config.module.rules.push({
-        test: /\.(mp4|webm|mov|ogg|swf|ogv)$/,
+        test: /\.(mp4|webm|mkv|ogg|ogv|wmv|avi|mov|flv|m4v|3gp)$/,
         use: [
           {
             loader: require.resolve('./webpack-loader'),
