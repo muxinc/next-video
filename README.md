@@ -12,7 +12,7 @@ Next video is a react component for adding video to your [next.js](https://githu
 
 ```tsx
 import myVideo from '/video/files/myVideo.mp4';
-import Video from 'next-video/video';
+import Video from '@mux/next-video/video';
 
 return <Video src={myVideo} />;
 ```
@@ -43,6 +43,17 @@ MUX_TOKEN_ID=[YOUR_TOKEN_ID]
 MUX_TOKEN_SECRET=[YOUR_TOKEN_SECRET]
 ```
 
+### Add Next Video to `next.config.js`
+
+```js
+/** @type {import('next').NextConfig} */
+const { withNextVideo } = require('@mux/next-video/process');
+
+const nextConfig = {}; // Your current Next Config object
+
+module.exports = withNextVideo(nextConfig);
+```
+
 ## Usage
 
 ### Local videos
@@ -66,7 +77,7 @@ Now you can use the `<Video>` component in your application. Let's say you've ad
 
 ```tsx
 import awesomeVideo from '/video/files/awesome-video.mp4';
-import Video from 'next-video/video';
+import Video from '@mux/next-video/video';
 
 return <Video src={awesomeVideo} />;
 ```
@@ -78,7 +89,7 @@ While a video is being uploaded and processed, `<Video>` will attempt to play th
 For videos that are already hosted remotely (for example on AWS S3), set the `src` attribute to the URL of the remote file.
 
 ```tsx
-import Video from 'next-video/video';
+import Video from '@mux/next-video/video';
 
 return <Video src="https://www.mydomain.com/remote-video.mp4" />;
 ```

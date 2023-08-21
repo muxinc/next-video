@@ -10,7 +10,7 @@ import * as log from '../logger.js';
 const GITIGNORE_CONTENTS = `files/*
 !files/*.json`;
 
-const TYPES_FILE_CONTENTS = `/// <reference types="next-video/video-types/global" />\n`;
+const TYPES_FILE_CONTENTS = `/// <reference types="@mux/next-video/video-types/global" />\n`;
 
 const DEFAULT_DIR = 'video';
 
