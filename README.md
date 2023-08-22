@@ -11,10 +11,14 @@ Next video is a react component for adding video to your [next.js](https://githu
 - **AI-powered:** Whisper captions coming soon...
 
 ```tsx
-import myVideo from '/video/files/myVideo.mp4';
 import Video from '@mux/next-video';
-
-return <Video src={myVideo} />;
+import myVideo from '/video/files/myVideo.mp4';
+ 
+export default function Page() {
+  return (
+    <Video src={myVideo} />
+  )
+}
 ```
 
 ## Setup
@@ -76,10 +80,14 @@ You can also add `@mux/next-video sync -w` to the dev script to automatically sy
 Now you can use the `<Video>` component in your application. Let's say you've added a file called `awesome-video.mp4` to `video/files`
 
 ```tsx
-import awesomeVideo from '/video/files/awesome-video.mp4';
 import Video from '@mux/next-video';
+import awesomeVideo from '/video/files/awesome-video.mp4';
 
-return <Video src={awesomeVideo} />;
+export default function Page() {
+  return (
+    <Video src={awesomeVideo} />
+  )
+}
 ```
 
 While a video is being uploaded and processed, `<Video>` will attempt to play the local file. This only happens during local development because the local file is never uploaded to your git repo.
@@ -89,9 +97,13 @@ While a video is being uploaded and processed, `<Video>` will attempt to play th
 For videos that are already hosted remotely (for example on AWS S3), set the `src` attribute to the URL of the remote file.
 
 ```tsx
-import Video from '@mux/next-video/video';
+import Video from '@mux/next-video';
 
-return <Video src="https://www.mydomain.com/remote-video.mp4" />;
+export default function Page() {
+  return (
+    <Video src="https://www.mydomain.com/remote-video.mp4" />
+  )
+}
 ```
 
 If the hosted video is a single file like an MP4, the file will be automatically optimized for better deliverability and compatibility.
