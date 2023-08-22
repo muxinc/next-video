@@ -11,7 +11,7 @@ import { createAsset, getAsset } from '../assets.js';
 
 export const command = 'sync';
 export const desc =
-  'Checks for new video files in the files directory, uploads them, and checks any existing assets for updates.';
+  'Checks for new video files in the videos directory, uploads them, and checks any existing assets for updates.';
 
 export function builder(yargs: Argv) {
   return yargs.options({
@@ -23,7 +23,7 @@ export function builder(yargs: Argv) {
     },
     watch: {
       alias: 'w',
-      describe: 'Watch the files directory for changes.',
+      describe: 'Watch the videos directory for changes.',
       type: 'boolean',
       default: false,
     },
@@ -50,7 +50,7 @@ function watcher(dir: string) {
 }
 
 export async function handler(argv: Arguments) {
-  const directoryPath = path.join(process.cwd(), argv.dir as string, 'files');
+  const directoryPath = path.join(process.cwd(), argv.dir as string);
 
   try {
     const files = await readdir(directoryPath);
@@ -106,7 +106,7 @@ export async function handler(argv: Arguments) {
     log.success(`Processed (or resumed processing) ${processed.length} videos.`);
 
     if (argv.watch) {
-      log.info('Watching for changes in the files directory:', directoryPath);
+      log.info('Watching for changes in the videos directory:', directoryPath);
       watcher(directoryPath);
     }
   } catch (err: any) {

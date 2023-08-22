@@ -3,16 +3,16 @@ import symlinkDir from 'symlink-dir';
 import path from 'node:path';
 import fs from 'node:fs/promises';
 
-import { VIDEO_PATH } from './constants.js';
+import { VIDEOS_PATH } from './constants.js';
 
 export default async function withNextVideo(nextConfig: any) {
   if (process.argv[2] === 'dev') {
-    const TMP_PUBLIC_VIDEO_PATH = path.join(process.cwd(), 'public/_video');
+    const TMP_PUBLIC_VIDEOS_PATH = path.join(process.cwd(), 'public/_videos');
 
-    await symlinkDir(VIDEO_PATH, TMP_PUBLIC_VIDEO_PATH);
+    await symlinkDir(VIDEOS_PATH, TMP_PUBLIC_VIDEOS_PATH);
 
     process.on('exit', async () => {
-      await fs.unlink(TMP_PUBLIC_VIDEO_PATH);
+      await fs.unlink(TMP_PUBLIC_VIDEOS_PATH);
     });
   }
 

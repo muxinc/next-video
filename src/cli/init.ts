@@ -7,12 +7,14 @@ import path from 'node:path';
 
 import * as log from '../logger.js';
 
-const GITIGNORE_CONTENTS = `files/*
-!files/*.json`;
+const GITIGNORE_CONTENTS = `*
+!*.json
+!*.js
+!*.ts`;
 
 const TYPES_FILE_CONTENTS = `/// <reference types="@mux/next-video/video-types/global" />\n`;
 
-const DEFAULT_DIR = 'video';
+const DEFAULT_DIR = 'videos';
 
 async function preInitCheck(dir: string) {
   try {
@@ -28,7 +30,7 @@ async function preInitCheck(dir: string) {
 }
 
 async function createVideoDir(dir: string) {
-  const fullPath = path.join(process.cwd(), dir, 'files');
+  const fullPath = path.join(process.cwd(), dir);
 
   await mkdir(fullPath, { recursive: true });
   await writeFile(path.join(dir, '.gitignore'), GITIGNORE_CONTENTS);
@@ -87,7 +89,7 @@ export async function handler(argv: Arguments) {
 
   await createVideoDir(baseDir);
 
-  changes.push(`Created ${baseDir}/files directory.`);
+  changes.push(`Created ${baseDir} directory.`);
 
   if (ts) {
     await createTSFile();
