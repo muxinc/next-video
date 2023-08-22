@@ -8,6 +8,7 @@ import path from 'node:path';
 import chalk from 'chalk';
 import Mux from '@mux/mux-node';
 import { fetch as uFetch } from 'undici';
+import sharp from 'sharp';
 
 import { updateAsset, Asset } from '../assets.js';
 import * as log from '../logger.js';
@@ -60,6 +61,14 @@ async function pollForAssetReady(filePath: string, asset: Asset) {
   }
 
   if (muxAsset.status === 'ready') {
+
+    let blurDataURL;
+    try {
+      blurDataURL = await createThumbHash(`https://image.mux.com/${playbackId}/thumbnail.png?width=100&height=100`);
+    } catch (e) {
+      log.error('Error creating a thumbnail hash.');
+    }
+
     log.success(log.label('Asset is ready:'), filePath);
     log.space(chalk.gray('>'), log.label('Playback ID:'), playbackId);
 
@@ -68,6 +77,7 @@ async function pollForAssetReady(filePath: string, asset: Asset) {
       externalIds: {
         playbackId,
       },
+      blurDataURL,
     });
 
     // TODO: do we want to do something like `callHandlers('video.asset.ready', asset)` here? It'd be faking the webhook.
@@ -177,4 +187,21 @@ export default async function uploadLocalFile(asset: Asset) {
   });
 
   return pollForUploadAsset(src, processingAsset);
+}
+
+async function createThumbHash(imgUrl: string) {
+  const response = await uFetch(imgUrl);
+  const buffer = await response.arrayBuffer();
+
+  const { data, info } = await sharp(buffer)
+    .raw()
+    .ensureAlpha()
+    .toBuffer({ resolveWithObject: true });
+
+  // thumbhash is ESM only so dynamically import it.
+  const { rgbaToThumbHash, thumbHashToDataURL } = await import('thumbhash');
+
+  const hash = rgbaToThumbHash(info.width, info.height, data);
+
+  return thumbHashToDataURL(hash);
 }

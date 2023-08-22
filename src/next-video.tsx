@@ -1,11 +1,9 @@
 'use client';
 
 // todo: fix mux-player to work with moduleResolution: 'nodenext'?
-// @ts-ignore
-import MuxPlayer from '@mux/mux-player-react';
-// @ts-ignore
-import type { MuxPlayerProps } from '@mux/mux-player-react';
 import { useState } from 'react';
+import MuxPlayer from '@mux/mux-player-react';
+import type { MuxPlayerProps } from '@mux/mux-player-react';
 import { Asset } from './assets.js';
 
 declare module 'react' {
@@ -17,6 +15,14 @@ declare module 'react' {
 interface NextVideoProps extends Omit<MuxPlayerProps, 'src'> {
   src: string | Asset;
   controls: boolean;
+  blurDataURL?: string;
+
+  /**
+   * For best image loading performance the user should provide the sizes attribute.
+   * The width of the image in the webpage. e.g. sizes="800px". Defaults to 100vw.
+   * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#sizes
+   */
+  sizes?: string;
 }
 
 const DEV_MODE = process.env.NODE_ENV === 'development';
@@ -27,9 +33,10 @@ const toSymlinkPath = (path?: string) => {
 }
 
 export default function NextVideo(props: NextVideoProps) {
-  const { src, ...rest } = props;
+  let { src, poster, blurDataURL, sizes = '100vw', ...rest } = props;
   const playerProps: MuxPlayerProps = rest;
   let status: string | undefined;
+  let srcset: string | undefined;
 
   if (typeof src === 'string') {
     playerProps.src = toSymlinkPath(src);
@@ -37,8 +44,23 @@ export default function NextVideo(props: NextVideoProps) {
   } else if (typeof src === 'object') {
     status = src.status;
 
-    if (status === 'ready' && src.externalIds?.playbackId) {
-      playerProps.playbackId = src.externalIds?.playbackId;
+    let playbackId = src.externalIds?.playbackId;
+
+    if (status === 'ready' && playbackId) {
+      playerProps.playbackId = playbackId;
+
+      if (!poster) {
+        poster = getPosterURLFromPlaybackId(playbackId, playerProps);
+        srcset =
+          `${getPosterURLFromPlaybackId(playbackId, { ...playerProps, width: 480 })} 480w,` +
+          `${getPosterURLFromPlaybackId(playbackId, { ...playerProps, width: 640 })} 640w,` +
+          `${getPosterURLFromPlaybackId(playbackId, { ...playerProps, width: 960 })} 960w,` +
+          `${getPosterURLFromPlaybackId(playbackId, { ...playerProps, width: 1280 })} 1280w,` +
+          `${getPosterURLFromPlaybackId(playbackId, { ...playerProps, width: 1600 })} 1600w,` +
+          `${poster} 1920w`;
+      }
+
+      blurDataURL = blurDataURL ?? src.blurDataURL;
 
     } else {
       playerProps.src = toSymlinkPath(src.originalFilePath);
@@ -56,24 +78,37 @@ export default function NextVideo(props: NextVideoProps) {
         }
 
         [data-next-video] {
-          background-color: var(--media-background-color, #000);
           width: 100%;
           aspect-ratio: 16 / 9;
           display: inline-block;
           line-height: 0;
           position: relative;
         }
+
+        [data-next-video] img {
+          object-fit: var(--media-object-fit, contain);
+          object-position: var(--media-object-position, center);
+          background: center / cover no-repeat transparent;
+          width: 100%;
+          height: 100%;
+        }
         `
       }</style>
       <MuxPlayer
         data-next-video={status}
-        style={{
-          '--controls': props.controls === false ? 'none' : undefined
-        }}
+        poster=""
+        style={{ '--controls': props.controls === false ? 'none' : undefined }}
         onPlaying={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
         {...playerProps}
-      />
+      >
+        <img
+          slot="poster"
+          src={poster}
+          srcSet={srcset}
+          sizes={sizes}
+          style={{ backgroundImage: blurDataURL ? `url('${blurDataURL}')` : undefined }} />
+      </MuxPlayer>
       {DEV_MODE && <Alert
         hidden={Boolean(playing || (status && status === 'ready'))}
         status={status}
@@ -152,4 +187,64 @@ function Alert({ status, hidden }: AlertProps) {
       </div>
     </>
   )
+}
+
+const MUX_VIDEO_DOMAIN = 'mux.com';
+
+interface PosterProps {
+  token?: string;
+  thumbnailTime?: number;
+  width?: number;
+  domain?: string;
+}
+
+export const getPosterURLFromPlaybackId = (
+  playbackId?: string,
+  { token, thumbnailTime, width, domain = MUX_VIDEO_DOMAIN }: PosterProps = {}
+) => {
+  // NOTE: thumbnailTime is not supported when using a signedURL/token. Remove under these cases. (CJP)
+  const time = token == null ? thumbnailTime : undefined;
+
+  const { aud } = parseJwt(token);
+
+  if (token && aud !== 't') {
+    return;
+  }
+
+  return `https://image.${domain}/${playbackId}/thumbnail.webp${toQuery({
+    token,
+    time,
+    width,
+  })}`;
+};
+
+function toQuery(obj: Record<string, any>) {
+  const params = toParams(obj).toString();
+  return params ? '?' + params : '';
+}
+
+function toParams(obj: Record<string, any>) {
+  const params: Record<string, any> = {};
+  for (const key in obj) {
+    if (obj[key] != null) params[key] = obj[key];
+  }
+  return new URLSearchParams(params);
+}
+
+function parseJwt(token: string | undefined) {
+  const base64Url = (token ?? '').split('.')[1];
+
+  // exit early on invalid value
+  if (!base64Url) return {};
+
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const jsonPayload = decodeURIComponent(
+    atob(base64)
+      .split('')
+      .map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      })
+      .join('')
+  );
+  return JSON.parse(jsonPayload);
 }

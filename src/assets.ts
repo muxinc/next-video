@@ -9,6 +9,7 @@ export interface Asset {
   externalIds?: {
     [key: string]: string; // { uploadId, playbackId, assetId }
   };
+  blurDataURL?: string;
   createdAt?: number;
   updatedAt?: number;
 }
