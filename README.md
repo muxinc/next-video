@@ -12,12 +12,10 @@ Next video is a react component for adding video to your [next.js](https://githu
 
 ```tsx
 import Video from '@mux/next-video';
-import myVideo from '/video/files/myVideo.mp4';
- 
+import myVideo from '/videos/myVideo.mp4';
+
 export default function Page() {
-  return (
-    <Video src={myVideo} />
-  )
+  return <Video src={myVideo} />;
 }
 ```
 
@@ -29,9 +27,9 @@ npm install @mux/next-video
 npx @mux/next-video init
 ```
 
-This will create a `/video/files` directory in your project which is where you will put all video source files.
+This will create a `/videos` directory in your project which is where you will put all video source files.
 
-It will also add a .gitignore file to the `/video` directory that ignores video files. Videos, particularly any of reasonable size, shouldn't be stored/tracked by git. Alternatively, if you'd like to store the original files you can remove the added gitignore lines and install [git-lfs](https://git-lfs.github.com/).
+It will also add a .gitignore file to the `/videos` directory that ignores video files. Videos, particularly any of reasonable size, shouldn't be stored/tracked by git. Alternatively, if you'd like to store the original files you can remove the added gitignore lines and install [git-lfs](https://git-lfs.github.com/).
 
 ### Remote storage and optimization
 
@@ -62,13 +60,13 @@ module.exports = withNextVideo(nextConfig);
 
 ### Local videos
 
-Add videos locally to the `video/files` directory then run `npx @mux/next-video sync`. The videos will be automatically uploaded to remote storage and optimized. You'll notice `video/files/[file-name].json` files are also created. These are used to map your local video files to the new, remote-hosted video assets. These json files must be checked into git.
+Add videos locally to the `/videos` directory then run `npx @mux/next-video sync`. The videos will be automatically uploaded to remote storage and optimized. You'll notice `/videos/[file-name].json` files are also created. These are used to map your local video files to the new, remote-hosted video assets. These json files must be checked into git.
 
 ```
 npx @mux/next-video sync
 ```
 
-You can also add `@mux/next-video sync -w` to the dev script to automatically sync videos as they're added to `/video/files` while the dev server is running.
+You can also add `@mux/next-video sync -w` to the dev script to automatically sync videos as they're added to `/videos` while the dev server is running.
 
 ```js
 // package.json
@@ -77,16 +75,14 @@ You can also add `@mux/next-video sync -w` to the dev script to automatically sy
   },
 ```
 
-Now you can use the `<Video>` component in your application. Let's say you've added a file called `awesome-video.mp4` to `video/files`
+Now you can use the `<Video>` component in your application. Let's say you've added a file called `awesome-video.mp4` to `/videos`
 
 ```tsx
 import Video from '@mux/next-video';
-import awesomeVideo from '/video/files/awesome-video.mp4';
+import awesomeVideo from '/videos/awesome-video.mp4';
 
 export default function Page() {
-  return (
-    <Video src={awesomeVideo} />
-  )
+  return <Video src={awesomeVideo} />;
 }
 ```
 
@@ -100,9 +96,7 @@ For videos that are already hosted remotely (for example on AWS S3), set the `sr
 import Video from '@mux/next-video';
 
 export default function Page() {
-  return (
-    <Video src="https://www.mydomain.com/remote-video.mp4" />
-  )
+  return <Video src="https://www.mydomain.com/remote-video.mp4" />;
 }
 ```
 
