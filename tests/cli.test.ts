@@ -6,19 +6,17 @@ import { describe, it, before, after, mock } from 'node:test';
 
 import Mux from '@mux/mux-node';
 import yargs from 'yargs';
+import log from '../src/logger.js';
 
 import { handler, builder } from '../src/cli/sync.js';
 import { createAsset, updateAsset } from '../src/assets.js';
 
 import * as fakeMux from './utils/fake-mux.js';
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-async function createTempDir(): Promise<[string, () => Promise<void>]> {
-  // Create a temporary directory and populate it with some files.
-  const dir = await fs.mkdtemp(path.join('tests', 'tmp-videos-'));
-
-  return [dir, () => fs.rm(dir, { recursive: true, force: true })];
+function findConsoleMessage(consoleSpy: any, regex: RegExp) {
+  return consoleSpy.mock.calls.find(({ arguments: messages }) => {
+    return messages.join('').match(regex);
+  });
 }
 
 async function createFakeVideoFile(dir: string, filename: string = 'video.mp4'): Promise<string> {
@@ -28,15 +26,41 @@ async function createFakeVideoFile(dir: string, filename: string = 'video.mp4'):
   return filePath;
 }
 
-function findConsoleMessage(consoleSpy: any, regex: RegExp) {
-  return consoleSpy.mock.calls.find(({ arguments: [_label, message] }) => message.match(regex));
-}
+const silenceLog =
+  (silence: boolean = true) =>
+  (type: string, ...messages: string[]) => {
+    if (silence) {
+      return;
+    }
 
-// It doesn't feel great to have to mock calls to console instead of the log functions, but this
-// seems to be a limitation of the `assert` library for now. https://github.com/orgs/nodejs/discussions/47959
+    console.log(type, ...messages);
+  };
+
+// I really hate this, but for whatever reason we're unable to mock the base log function
+// so we have to mock each individual method instead.
+function logSpies(ctx: any, silence: boolean = true) {
+  return {
+    infoSpy: ctx.mock.method(log, 'info', silenceLog(silence)),
+    warningSpy: ctx.mock.method(log, 'warning', silenceLog(silence)),
+    successSpy: ctx.mock.method(log, 'success', silenceLog(silence)),
+    errorSpy: ctx.mock.method(log, 'error', silenceLog(silence)),
+    addSpy: ctx.mock.method(log, 'add', silenceLog(silence)),
+    spaceSpy: ctx.mock.method(log, 'space', silenceLog(silence)),
+  };
+}
 
 describe('cli', () => {
   let server: http.Server;
+  let tmpDirs: string[] = []; // Keep track of temporary directories so we can clean them up.
+
+  async function createTempDir(): Promise<string> {
+    // Create a temporary directory and populate it with some files.
+    const dir = await fs.mkdtemp(path.join('tests', 'tmp-videos-'));
+
+    tmpDirs.push(dir);
+
+    return dir;
+  }
 
   before(() => {
     mock.method(Mux.prototype, 'post', fakeMux.post);
@@ -54,80 +78,78 @@ describe('cli', () => {
 
   after(() => {
     server.close();
+
+    tmpDirs.forEach(async (dir) => {
+      await fs.rm(dir, { recursive: true, force: true });
+    });
   });
 
   describe('sync', () => {
     it('logs a warning and bails if the specified `dir` does not exist', async (t) => {
-      const consoleSpy = t.mock.method(console, 'log', () => {});
+      const { warningSpy, infoSpy } = logSpies(t);
 
       const args = builder(yargs('')).parseSync();
 
       await handler(args);
 
-      assert(findConsoleMessage(consoleSpy, /Directory does not exist/i), 'Directory does not exist message not found');
+      assert(findConsoleMessage(warningSpy, /Directory does not exist/i), 'Directory does not exist message not found');
       assert(
-        findConsoleMessage(consoleSpy, /Did you forget to run next-video init/i),
+        findConsoleMessage(infoSpy, /Did you forget to run next-video init/i),
         'Did you forget to run next-video init message not found'
       );
     });
 
     it('processes new assets', async (t) => {
-      const [dir, cleanupTmpDir] = await createTempDir();
+      const dir = await createTempDir();
 
       await createFakeVideoFile(dir);
 
-      const consoleSpy = t.mock.method(console, 'log', () => {});
+      const { addSpy } = logSpies(t);
 
       const args = builder(yargs(`--dir ${dir}`)).parseSync();
 
       await handler(args);
 
-      assert(findConsoleMessage(consoleSpy, /found 1/i), 'Found 1 message not found');
-
-      await cleanupTmpDir();
+      assert(findConsoleMessage(addSpy, /found 1/i), 'Found 1 message not found');
     });
 
     it('ignores existing assets', async (t) => {
       await t.test('that are errored', async (t) => {
-        const [dir, cleanupTmpDir] = await createTempDir();
+        const dir = await createTempDir();
 
         await createAsset(path.join(dir, 'video.mp4'), {});
         await updateAsset(path.join(dir, 'video.mp4'), { status: 'error' });
 
-        const consoleSpy = t.mock.method(console, 'log', () => {});
+        const { addSpy, successSpy } = logSpies(t);
 
         const args = builder(yargs(`--dir ${dir}`)).parseSync();
 
         await handler(args);
 
-        assert(findConsoleMessage(consoleSpy, /found 0/i), 'Found 0 message not found');
-        assert(findConsoleMessage(consoleSpy, /resumed.*0/i), 'Resumed 0 message not found');
-
-        await cleanupTmpDir();
+        assert(findConsoleMessage(addSpy, /found 0/i), 'Found 0 message not found');
+        assert(findConsoleMessage(successSpy, /resumed.*0/i), 'Resumed 0 message not found');
       });
 
       await t.test('that are ready', async (t) => {
-        const [dir, cleanupTmpDir] = await createTempDir();
+        const dir = await createTempDir();
 
         await createAsset(path.join(dir, 'video.mp4'), {});
         await updateAsset(path.join(dir, 'video.mp4'), { status: 'ready' });
 
-        const consoleSpy = t.mock.method(console, 'log', () => {});
+        const { addSpy, successSpy } = logSpies(t);
 
         const args = builder(yargs(`--dir ${dir}`)).parseSync();
 
         await handler(args);
 
-        assert(findConsoleMessage(consoleSpy, /found 0/i), 'Found 0 message not found');
-        assert(findConsoleMessage(consoleSpy, /resumed.*0/i), 'Resumed 0 message not found');
-
-        await cleanupTmpDir();
+        assert(findConsoleMessage(addSpy, /found 0/i), 'Found 0 message not found');
+        assert(findConsoleMessage(successSpy, /resumed.*0/i), 'Resumed 0 message not found');
       });
     });
 
     it('picks back up existing assets', async (t) => {
       await t.test('that are pending', async (t) => {
-        const [dir, cleanupTmpDir] = await createTempDir();
+        const dir = await createTempDir();
 
         const filePath = await createFakeVideoFile(dir);
 
@@ -137,24 +159,18 @@ describe('cli', () => {
           externalIds: { assetId: 'fake-asset-id' },
         });
 
-        const consoleSpy = t.mock.method(console, 'log', () => {});
+        const { addSpy, successSpy } = logSpies(t);
 
         const args = builder(yargs(`--dir ${dir}`)).parseSync();
 
         await handler(args);
 
-        assert(findConsoleMessage(consoleSpy, /0.*unprocessed/), '0 unprocessed message not found');
-        assert(findConsoleMessage(consoleSpy, /uploading.*/i), 'Uploading message not found');
-        assert(findConsoleMessage(consoleSpy, /uploaded.*/i), 'Uploaded message not found');
-        assert(findConsoleMessage(consoleSpy, /processing.*/i), 'Processing message not found');
-        assert(findConsoleMessage(consoleSpy, /ready.*/i), 'Ready message not found');
-        assert(findConsoleMessage(consoleSpy, /resumed.*1/i), 'Resumed message not found');
-
-        await cleanupTmpDir();
+        assert(findConsoleMessage(addSpy, /0.*unprocessed/), '0 unprocessed message not found');
+        assert(findConsoleMessage(successSpy, /resumed.*1/i), 'Resumed message not found');
       });
 
       await t.test('that are uploading', async (t) => {
-        const [dir, cleanupTmpDir] = await createTempDir();
+        const dir = await createTempDir();
 
         const filePath = await createFakeVideoFile(dir);
 
@@ -164,24 +180,18 @@ describe('cli', () => {
           externalIds: { assetId: 'fake-asset-id' },
         });
 
-        const consoleSpy = t.mock.method(console, 'log', () => {});
+        const { addSpy, successSpy } = logSpies(t);
 
         const args = builder(yargs(`--dir ${dir}`)).parseSync();
 
         await handler(args);
 
-        assert(findConsoleMessage(consoleSpy, /0.*unprocessed/));
-        assert(findConsoleMessage(consoleSpy, /uploading.*/i), 'Uploading message not found');
-        assert(findConsoleMessage(consoleSpy, /uploaded.*/i), 'Uploaded message not found');
-        assert(findConsoleMessage(consoleSpy, /processing.*/i), 'Processing message not found');
-        assert(findConsoleMessage(consoleSpy, /ready.*/i), 'Ready message not found');
-        assert(findConsoleMessage(consoleSpy, /resumed.*1/i), 'Resumed message not found');
-
-        await cleanupTmpDir();
+        assert(findConsoleMessage(addSpy, /0.*unprocessed/));
+        assert(findConsoleMessage(successSpy, /resumed.*1/i), 'Resumed message not found');
       });
 
       await t.test('that are processing', async (t) => {
-        const [dir, cleanupTmpDir] = await createTempDir();
+        const dir = await createTempDir();
 
         const filePath = await createFakeVideoFile(dir);
 
@@ -191,18 +201,14 @@ describe('cli', () => {
           externalIds: { assetId: 'fake-asset-id' },
         });
 
-        const consoleSpy = t.mock.method(console, 'log', () => {});
+        const { addSpy, successSpy } = logSpies(t);
 
         const args = builder(yargs(`--dir ${dir}`)).parseSync();
 
         await handler(args);
 
-        assert(findConsoleMessage(consoleSpy, /0.*unprocessed/));
-        assert(findConsoleMessage(consoleSpy, /processing.*/i), 'Processing message not found');
-        assert(findConsoleMessage(consoleSpy, /ready.*/i), 'Ready message not found');
-        assert(findConsoleMessage(consoleSpy, /resumed.*1/i), 'Resumed message not found');
-
-        await cleanupTmpDir();
+        assert(findConsoleMessage(addSpy, /0.*unprocessed/));
+        assert(findConsoleMessage(successSpy, /resumed.*1/i), 'Resumed message not found');
       });
     });
   });

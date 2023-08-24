@@ -5,7 +5,7 @@ import { Argv, Arguments } from 'yargs';
 import { mkdir, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-import * as log from '../logger.js';
+import log from '../logger.js';
 
 const GITIGNORE_CONTENTS = `*
 !*.json

@@ -5,7 +5,7 @@ import { Argv, Arguments } from 'yargs';
 import { stat, readdir } from 'node:fs/promises';
 import path from 'node:path';
 
-import * as log from '../logger.js';
+import log from '../logger.js';
 import { callHandler } from '../main.js';
 import { createAsset, getAsset } from '../assets.js';
 

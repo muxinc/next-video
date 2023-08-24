@@ -1,30 +1,48 @@
 import chalk from 'chalk';
 
+type logType = 'log' | 'error';
+
+export function base(type: logType, ...messages: string[]) {
+  console[type](...messages);
+}
+
 export function info(...messages: any[]) {
-  console.log(chalk.blue.bold('-'), ...messages);
+  base('log', chalk.blue.bold('-'), ...messages);
 }
 
 export function success(...messages: any[]) {
-  console.log(chalk.green.bold('✓'), ...messages);
+  base('log', chalk.green.bold('✓'), ...messages);
 }
 
 export function add(...messages: any[]) {
-  console.log(chalk.blue.green('+'), ...messages);
+  base('log', chalk.blue.green('+'), ...messages);
 }
 
 export function warning(...messages: any[]) {
-  console.log(chalk.yellow.bold('!'), ...messages);
+  base('log', chalk.yellow.bold('!'), ...messages);
 }
 
 export function error(...messages: any[]) {
-  console.error(chalk.red.bold('✗'), ...messages);
-  console.log('');
+  base('error', chalk.red.bold('✗'), ...messages);
+  base('log', '');
 }
 
 export function space(...messages: any[]) {
-  console.log(' ', ...messages);
+  base('log', ' ', ...messages);
 }
 
 export function label(detail: string) {
   return chalk.magenta.bold(detail);
 }
+
+export default {
+  base,
+
+  info,
+  success,
+  add,
+  warning,
+  error,
+  space,
+  label,
+};

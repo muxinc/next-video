@@ -11,7 +11,7 @@ import { fetch as uFetch } from 'undici';
 import sharp from 'sharp';
 
 import { updateAsset, Asset } from '../assets.js';
-import * as log from '../logger.js';
+import log from '../logger.js';
 
 let mux: Mux;
 
