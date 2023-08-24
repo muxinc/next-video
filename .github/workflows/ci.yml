@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  MUX_TOKEN_ID: fake-token-id
+  MUX_TOKEN_SECRET: fake-token-secret
+
 jobs:
   build:
     runs-on: ubuntu-latest
