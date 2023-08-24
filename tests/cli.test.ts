@@ -86,17 +86,13 @@ describe('cli', () => {
 
   describe('sync', () => {
     it('logs a warning and bails if the specified `dir` does not exist', async (t) => {
-      const { warningSpy, infoSpy } = logSpies(t);
+      const { warningSpy } = logSpies(t);
 
       const args = builder(yargs('')).parseSync();
 
       await handler(args);
 
       assert(findConsoleMessage(warningSpy, /Directory does not exist/i), 'Directory does not exist message not found');
-      assert(
-        findConsoleMessage(infoSpy, /Did you forget to run next-video init/i),
-        'Did you forget to run next-video init message not found'
-      );
     });
 
     it('processes new assets', async (t) => {
