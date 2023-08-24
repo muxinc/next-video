@@ -110,13 +110,18 @@ export async function handler(argv: Arguments) {
       watcher(directoryPath);
     }
   } catch (err: any) {
-    if (err.code === 'ENOENT') {
+    if (err.code === 'ENOENT' && err.path === directoryPath) {
       log.warning(`Directory does not exist: ${directoryPath}`);
       log.info(
         `Did you forget to run ${chalk.bold.magenta('next-video init')}? You can also use the ${chalk.bold(
           '--dir'
         )} flag to specify a different directory.`
       );
+      return;
+    }
+
+    if (err.code === 'ENOENT') {
+      log.warning(`Source video file does not exist: ${err.path}`);
       return;
     }
 
