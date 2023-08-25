@@ -48,6 +48,8 @@
     }
   },
   "devDependencies": {
+    "@next/env": "^13.4.19",
+    "@types/dotenv-flow": "^3.2.0",
     "@types/node": "^20.4.5",
     "@types/react": "^18.2.16",
     "@types/yargs": "^17.0.24",

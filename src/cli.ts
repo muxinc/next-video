@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+import nextEnv from '@next/env';
+nextEnv.loadEnvConfig(process.cwd());
+
 import yargs from 'yargs/yargs';
 
 import * as init from './cli/init.js';
