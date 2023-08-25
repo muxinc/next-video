@@ -2,8 +2,6 @@
 import dotenv from 'dotenv-flow';
 dotenv.config();
 
-console.log(process.env.FOO);
-
 import yargs from 'yargs/yargs';
 
 import * as init from './cli/init.js';
