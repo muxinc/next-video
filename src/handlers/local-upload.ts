@@ -11,7 +11,7 @@ import { fetch as uFetch } from 'undici';
 import sharp from 'sharp';
 
 import { updateAsset, Asset } from '../assets.js';
-import * as log from '../logger.js';
+import log from '../logger.js';
 
 let mux: Mux;
 
@@ -61,7 +61,6 @@ async function pollForAssetReady(filePath: string, asset: Asset) {
   }
 
   if (muxAsset.status === 'ready') {
-
     let blurDataURL;
     try {
       blurDataURL = await createThumbHash(`https://image.mux.com/${playbackId}/thumbnail.png?width=100&height=100`);
@@ -142,14 +141,21 @@ export default async function uploadLocalFile(asset: Asset) {
 
   const src = asset.originalFilePath;
 
-  // Create a direct upload url
-  const upload = await mux.video.uploads.create({
-    cors_origin: '*',
-    // @ts-ignore
-    new_asset_settings: {
-      playback_policy: ['public'],
-    },
-  });
+  let upload: Mux.Video.Uploads.Upload;
+  try {
+    // Create a direct upload url
+    upload = await mux.video.uploads.create({
+      cors_origin: '*',
+      // @ts-ignore
+      new_asset_settings: {
+        playback_policy: ['public'],
+      },
+    });
+  } catch (e) {
+    log.error('Error creating a Mux Direct Upload');
+    console.error(e);
+    return;
+  }
 
   await updateAsset(src, {
     status: 'uploading',
@@ -178,7 +184,9 @@ export default async function uploadLocalFile(asset: Asset) {
     stream.close();
     await fileDescriptor.close();
   } catch (e) {
-    log.error('Error creating a Mux Direct Upload');
+    log.error('Error uploading to the Mux upload URL');
+    console.error(e);
+    return;
   }
 
   log.success(log.label('File uploaded:'), `${filePath} (${fileStats.size} bytes)`);
@@ -193,10 +201,7 @@ async function createThumbHash(imgUrl: string) {
   const response = await uFetch(imgUrl);
   const buffer = await response.arrayBuffer();
 
-  const { data, info } = await sharp(buffer)
-    .raw()
-    .ensureAlpha()
-    .toBuffer({ resolveWithObject: true });
+  const { data, info } = await sharp(buffer).raw().ensureAlpha().toBuffer({ resolveWithObject: true });
 
   // thumbhash is ESM only so dynamically import it.
   const { rgbaToThumbHash, thumbHashToDataURL } = await import('thumbhash');

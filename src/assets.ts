@@ -1,5 +1,5 @@
 import { readFile, writeFile } from 'node:fs/promises';
-import * as log from './logger.js';
+import log from './logger.js';
 
 export interface Asset {
   status?: 'pending' | 'uploading' | 'processing' | 'ready' | 'error';
