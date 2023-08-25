@@ -63,6 +63,9 @@ describe('cli', () => {
   }
 
   before(() => {
+    process.env.MUX_TOKEN_ID = 'fake-token-id';
+    process.env.MUX_TOKEN_SECRET = 'fake-token-secret';
+
     mock.method(Mux.prototype, 'post', fakeMux.post);
     mock.method(Mux.prototype, 'get', fakeMux.get);
 
