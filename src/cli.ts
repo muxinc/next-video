@@ -2,8 +2,6 @@
 import nextEnv from '@next/env';
 nextEnv.loadEnvConfig(process.cwd());
 
-console.log(process.env.BAR);
-
 import yargs from 'yargs/yargs';
 
 import * as init from './cli/init.js';
