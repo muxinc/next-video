@@ -64,7 +64,6 @@
     "@mux/mux-player-react": "1.12.1-canary.0-e90e096",
     "chalk": "^4.1.2",
     "chokidar": "^3.5.3",
-    "magicast": "^0.2.10",
     "sharp": "^0.32.5",
     "symlink-dir": "^5.1.1",
     "thumbhash": "^0.1.1",
