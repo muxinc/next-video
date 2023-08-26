@@ -1,6 +1,7 @@
 import chalk from 'chalk';
 
 type logType = 'log' | 'error';
+export type Logger = (...messages: any[]) => void;
 
 export function base(type: logType, ...messages: string[]) {
   console[type](...messages);

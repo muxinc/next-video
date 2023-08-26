@@ -2,10 +2,11 @@ import { confirm, input } from '@inquirer/prompts';
 import chalk from 'chalk';
 import { Argv, Arguments } from 'yargs';
 
-import { mkdir, stat, writeFile } from 'node:fs/promises';
+import { mkdir, stat, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-import log from '../logger.js';
+import log, { Logger } from '../logger.js';
+import { updateTSConfigFileContent } from './lib/json-configs.js';
 
 const GITIGNORE_CONTENTS = `*
 !*.json
@@ -37,9 +38,17 @@ async function createVideoDir(dir: string) {
   return;
 }
 
-async function createTSFile() {
-  await writeFile(path.join(process.cwd(), 'video.d.ts'), TYPES_FILE_CONTENTS);
+async function createTSFile(filePath: string) {
+  await writeFile(filePath, TYPES_FILE_CONTENTS);
   return;
+}
+
+async function updateTSConfigFile(tsConfigPath: string) {
+  const configContents = await readFile(tsConfigPath, 'utf-8');
+
+  const updatedContents = await updateTSConfigFileContent(configContents);
+
+  return writeFile(tsConfigPath, updatedContents);
 }
 
 export const command = 'init [dir]';
@@ -63,12 +72,18 @@ export function builder(yargs: Argv) {
       type: 'boolean',
       default: false,
     },
+    tsconfig: {
+      describe: 'Automatically update your tsconfig.json file to include the next-video types.',
+      type: 'boolean',
+      default: false,
+    },
   }); // We also need to add the typescript check and add the `next-video.d.ts` file.
 }
 export async function handler(argv: Arguments) {
   let baseDir = argv.dir as string;
-  let ts = argv.typescript as boolean;
-  let changes: string[] = [];
+  let ts = argv.typescript;
+  let updateTsConfig = argv.tsconfig;
+  let changes: [Logger, string][] = [];
 
   if (!baseDir) {
     baseDir = await input({ message: 'What directory should next-video use for video files?', default: DEFAULT_DIR });
@@ -81,21 +96,37 @@ export async function handler(argv: Arguments) {
     return;
   }
 
+  await createVideoDir(baseDir);
+  changes.push([log.add, `Created ${baseDir} directory.`]);
+
   // The TypeScript flag is there to short circuit this prompt, but if it's false
   // we should ask just in case.
   if (!ts) {
     ts = await confirm({ message: 'Is this a TypeScript project?', default: true });
-  }
 
-  await createVideoDir(baseDir);
+    if (ts) {
+      await createTSFile(path.join(process.cwd(), 'video.d.ts'));
+      changes.push([log.add, `Created video.d.ts.`]);
+    }
 
-  changes.push(`Created ${baseDir} directory.`);
+    if (ts && !updateTsConfig) {
+      updateTsConfig = await confirm({ message: 'Update tsconfig.json to include next-video types?', default: true });
+    }
 
-  if (ts) {
-    await createTSFile();
-    changes.push(`Created video.d.ts. Add this to your tsconfig.json's include array.`);
+    if (updateTsConfig) {
+      try {
+        await updateTSConfigFile(path.join(process.cwd(), 'tsconfig.json'));
+        changes.push([log.add, `Updated tsconfig.json to include next-video types.`]);
+      } catch (err: any) {
+        changes.push([log.error, 'Failed to update tsconfig.json, please add "video.d.ts" to the include array']);
+      }
+    } else if (ts) {
+      // If they didn't update the config but ts is still true then we should
+      // let them know they need to update their tsconfig.
+      changes.push([log.info, `Add ${chalk.underline('video.d.ts')} to the includes array in tsconfig.json.`]);
+    }
   }
 
   log.success(`${chalk.magenta.bold('next-video')} initialized!`);
-  changes.forEach((change) => log.add(change));
+  changes.forEach(([loggerFn, change]) => loggerFn(change));
 }
