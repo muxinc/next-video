@@ -2,11 +2,12 @@ import { confirm, input } from '@inquirer/prompts';
 import chalk from 'chalk';
 import { Argv, Arguments } from 'yargs';
 
+import { exec } from 'node:child_process';
 import { mkdir, stat, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 import log, { Logger } from '../logger.js';
-import { updateTSConfigFileContent } from './lib/json-configs.js';
+import { checkPackageJsonForNextVideo, updateTSConfigFileContent } from './lib/json-configs.js';
 
 const GITIGNORE_CONTENTS = `*
 !*.json
@@ -81,9 +82,48 @@ export function builder(yargs: Argv) {
 }
 export async function handler(argv: Arguments) {
   let baseDir = argv.dir as string;
+  let packageInstalled: boolean = false;
   let ts = argv.typescript;
   let updateTsConfig = argv.tsconfig;
   let changes: [Logger, string][] = [];
+
+  try {
+    packageInstalled = await checkPackageJsonForNextVideo('./package.json');
+  } catch (err: any) {
+    if (err.code === 'ENOENT') {
+      log.error(
+        `Failed to find/read a local package.json. Double check that you're running this from the root of your project.`
+      );
+      return;
+    }
+
+    console.log(err);
+  }
+
+  if (!packageInstalled) {
+    const install = await confirm({
+      message: `It doesn't look like ${chalk.magenta.bold(
+        'next-video'
+      )} is installed in this project. Would you like to install it now?`,
+      default: true,
+    });
+
+    if (install) {
+      log.info('Installing next-video...');
+      exec('npm install --save-dev @mux/next-video', (err: any, stdout: any, stderr: any) => {
+        if (err) {
+          log.error('Failed to install next-video:', err);
+          return;
+        }
+
+        log.success('Successfully installed next-video!');
+        handler(argv);
+      });
+      return;
+    } else {
+      log.info('Make sure to add next-video to your package.json manually');
+    }
+  }
 
   if (!baseDir) {
     baseDir = await input({ message: 'What directory should next-video use for video files?', default: DEFAULT_DIR });
