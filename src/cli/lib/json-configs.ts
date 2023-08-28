@@ -1,3 +1,7 @@
+import { readFile } from 'node:fs/promises';
+
+import { PACKAGE_NAME } from '../../constants.js';
+
 export function updateTSConfigFileContent(tsContents: string) {
   const newItem = 'video.d.ts';
 
@@ -29,4 +33,12 @@ export function updateTSConfigFileContent(tsContents: string) {
   JSON.parse(updatedContents);
 
   return updatedContents;
+}
+
+export async function checkPackageJsonForNextVideo(packagePath: string = './package.json') {
+  const pkg = await readFile(packagePath, 'utf-8');
+
+  const json = JSON.parse(pkg);
+
+  return !!(json.devDependencies?.[PACKAGE_NAME] || json.dependencies?.[PACKAGE_NAME]);
 }

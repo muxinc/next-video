@@ -1,0 +1,15 @@
+{
+  "name": "@mux/hypnodrones",
+  "version": "0.1.0",
+  "description": "A super awesome package.json for testing purposes",
+  "exports": {},
+  "scripts": {},
+  "author": "Mux Lab <lab@mux.com>",
+  "license": "MIT",
+  "peerDependencies": {},
+  "peerDependenciesMeta": {},
+  "devDependencies": {
+    "@mux/next-video": "*"
+  },
+  "dependencies": {}
+}
