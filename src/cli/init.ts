@@ -82,11 +82,23 @@ export function builder(yargs: Argv) {
 }
 export async function handler(argv: Arguments) {
   let baseDir = argv.dir as string;
+  let packageInstalled: boolean = false;
   let ts = argv.typescript;
   let updateTsConfig = argv.tsconfig;
   let changes: [Logger, string][] = [];
 
-  const packageInstalled = await checkPackageJsonForNextVideo('./package.json');
+  try {
+    packageInstalled = await checkPackageJsonForNextVideo('./package.json');
+  } catch (err: any) {
+    if (err.code === 'ENOENT') {
+      log.error(
+        `Failed to find/read a local package.json. Double check that you're running this from the root of your project.`
+      );
+      return;
+    }
+
+    console.log(err);
+  }
 
   if (!packageInstalled) {
     const install = await confirm({
