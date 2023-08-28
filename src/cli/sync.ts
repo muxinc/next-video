@@ -19,7 +19,7 @@ export function builder(yargs: Argv) {
       alias: 'd',
       describe: 'The directory you initialized next-video with.',
       type: 'string',
-      default: 'video',
+      default: 'videos',
     },
     watch: {
       alias: 'w',
