@@ -112,6 +112,20 @@ describe('cli', () => {
       assert(findConsoleMessage(addSpy, /found 1/i), 'Found 1 message not found');
     });
 
+    it('ignores dotfiles', async (t) => {
+      const dir = await createTempDir();
+
+      await fs.writeFile(path.join(dir, '.DS_Store'), 'whatever is in .DS_Store, this is it but fake.');
+
+      const { addSpy } = logSpies(t);
+
+      const args = builder(yargs(`--dir ${dir}`)).parseSync();
+
+      await handler(args);
+
+      assert(findConsoleMessage(addSpy, /found 0/i), 'Found 0 message not found');
+    });
+
     it('ignores existing assets', async (t) => {
       await t.test('that are errored', async (t) => {
         const dir = await createTempDir();

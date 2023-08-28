@@ -56,7 +56,7 @@ export async function handler(argv: Arguments) {
     const files = await readdir(directoryPath);
 
     const jsonFiles = files.filter((file) => file.endsWith('.json'));
-    const otherFiles = files.filter((file) => !file.endsWith('.json'));
+    const otherFiles = files.filter((file) => !file.match(/(^|[\/\\])\..*|\.json$/));
 
     const newFileProcessor = async (file: string) => {
       log.info(log.label('Processing file:'), file);
