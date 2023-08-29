@@ -33,7 +33,6 @@ export default async function updateNextConfigFile(parentDir: string = './') {
   const pathsToCheck = ['next.config.js', 'next.config.mjs'];
 
   for (let i = 0; i < pathsToCheck.length; i++) {
-    console.log('asdf');
     const filePath = path.join(parentDir, pathsToCheck[i]);
     let exists;
     try {

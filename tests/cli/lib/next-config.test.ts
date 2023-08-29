@@ -46,8 +46,6 @@ describe('updateNextConfig', () => {
     const dirPath = await createTempDirWithConfig('next.config.mjs');
     await updateNextConfigFile(dirPath);
 
-    console.log({ dirPath });
-
     const updatedContents = await fs.readFile(path.join(dirPath, 'next.config.mjs'), 'utf-8');
 
     assert(updatedContents.includes('next-video'));
