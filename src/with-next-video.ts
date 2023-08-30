@@ -6,6 +6,7 @@ import fs from 'node:fs/promises';
 import { VIDEOS_PATH } from './constants.js';
 
 export default async function withNextVideo(nextConfig: any) {
+  // We should probably switch to using `phase` here, just a bit concerned about backwards compatibility.
   if (process.argv[2] === 'dev') {
     const TMP_PUBLIC_VIDEOS_PATH = path.join(process.cwd(), 'public/_videos');
 
@@ -14,6 +15,13 @@ export default async function withNextVideo(nextConfig: any) {
     process.on('exit', async () => {
       await fs.unlink(TMP_PUBLIC_VIDEOS_PATH);
     });
+  }
+
+  if (typeof nextConfig === 'function') {
+    return async (...args: any[]) => {
+      const nextConfigResult = await Promise.resolve(nextConfig(...args));
+      return withNextVideo(nextConfigResult);
+    };
   }
 
   return Object.assign({}, nextConfig, {

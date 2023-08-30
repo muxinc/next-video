@@ -1,6 +1,6 @@
 {
   "name": "@mux/next-video",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A React component for adding video to your Next.js application. It extends both the video element and your Next app with features for automatic video optimization.",
   "type": "module",
   "main": "./dist/cjs/next-video.js",
@@ -24,6 +24,7 @@
     "build:esm": "tsc --module es2020",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs",
     "postbuild:cjs": "echo '{\"type\": \"commonjs\"}' > ./dist/cjs/package.json",
+    "prepublish": "npm run build",
     "cli": "node --loader tsx --no-warnings ./src/cli",
     "test": "glob -c \"node --loader tsx --no-warnings --test\" \"./tests/**/*.test.ts\""
   },
@@ -64,6 +65,7 @@
     "@mux/mux-player-react": "1.12.1-canary.0-e90e096",
     "chalk": "^4.1.2",
     "chokidar": "^3.5.3",
+    "magicast": "^0.2.10",
     "sharp": "^0.32.5",
     "symlink-dir": "^5.1.1",
     "thumbhash": "^0.1.1",

@@ -8,6 +8,7 @@ import path from 'node:path';
 
 import log, { Logger } from '../logger.js';
 import { checkPackageJsonForNextVideo, updateTSConfigFileContent } from './lib/json-configs.js';
+import updateNextConfigFile from './lib/next-config.js';
 
 const GITIGNORE_CONTENTS = `*
 !*.json
@@ -164,6 +165,25 @@ export async function handler(argv: Arguments) {
       // If they didn't update the config but ts is still true then we should
       // let them know they need to update their tsconfig.
       changes.push([log.info, `Add ${chalk.underline('video.d.ts')} to the includes array in tsconfig.json.`]);
+    }
+  }
+
+  try {
+    const update = await updateNextConfigFile();
+
+    if (update) {
+      changes.push([log.add, `Updated ${update.configPath} to include next-video.`]);
+    }
+  } catch (e: any) {
+    if (e.error === 'not_found') {
+      changes.push([
+        log.error,
+        'No next.config.js or next.config.mjs file found. Please add next-video to your config manually.',
+      ]);
+    } else if (e.error === 'already_added') {
+      changes.push([log.info, 'It seems like next-video is already added to your Next Config']);
+    } else {
+      changes.push([log.error, 'Failed to update next.config.js, please add next-video to your config manually.']);
     }
   }
 
