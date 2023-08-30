@@ -8,7 +8,7 @@ import { PACKAGE_NAME } from '../../constants.js';
 const COMMON_TEMPLATE = `
 
 // Everything below here added by the ${PACKAGE_NAME} CLI wizard.
-// You should probably clean this up.
+// Feel free to clean this up!
 
 const originalConfig = module.exports;
 
