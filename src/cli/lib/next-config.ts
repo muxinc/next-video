@@ -12,7 +12,7 @@ const COMMON_TEMPLATE = `
 
 const originalConfig = module.exports;
 
-const withNextVideo = require('${path.join(PACKAGE_NAME, 'process')}');
+const { withNextVideo } = require('${path.join(PACKAGE_NAME, 'process')}');
 
 module.exports = withNextVideo(originalConfig);
 `;
