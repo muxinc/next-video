@@ -24,7 +24,7 @@
     "build:esm": "tsc --module es2020",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs",
     "postbuild:cjs": "echo '{\"type\": \"commonjs\"}' > ./dist/cjs/package.json",
-    "prepublish": "npm run build",
+    "prepare": "npm run build",
     "cli": "node --loader tsx --no-warnings ./src/cli",
     "test": "glob -c \"node --loader tsx --no-warnings --test\" \"./tests/**/*.test.ts\""
   },
