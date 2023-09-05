@@ -23,11 +23,15 @@ export default function Page() {
 
 ```bash
 cd your-next-app
-npm install @mux/next-video
 npx @mux/next-video init
 ```
 
-This will create a `/videos` directory in your project which is where you will put all video source files.
+This will (with prompting):
+
+- install `@mux/next-video` as a dependency
+- update your `next.config.js` file
+- if you're using TypeScript, add types for your video file imports
+- create a `/videos` directory in your project which is where you will put all video source files.
 
 It will also add a .gitignore file to the `/videos` directory that ignores video files. Videos, particularly any of reasonable size, shouldn't be stored/tracked by git. Alternatively, if you'd like to store the original files you can remove the added gitignore lines and install [git-lfs](https://git-lfs.github.com/).
 
@@ -45,7 +49,9 @@ MUX_TOKEN_ID=[YOUR_TOKEN_ID]
 MUX_TOKEN_SECRET=[YOUR_TOKEN_SECRET]
 ```
 
-### Add Next Video to `next.config.js`
+### If you choose to do things manually
+
+#### Add Next Video to `next.config.js`
 
 ```js
 /** @type {import('next').NextConfig} */
@@ -54,6 +60,25 @@ const { withNextVideo } = require('@mux/next-video/process');
 const nextConfig = {}; // Your current Next Config object
 
 module.exports = withNextVideo(nextConfig);
+```
+
+#### Add video import types to `tsconfig.json`
+
+This is only required if you're using TypeScript, and makes sure your video file imports don't yell at you for missing types. `video.d.ts` should have been created in your project root when you ran `npx @mux/next-video init`, if not you can create it manually:
+
+```ts
+// video.d.ts
+/// <reference types="@mux/next-video/video-types/global" />
+```
+
+Then add that file to the `include` array in `tsconfig.json`.
+
+```js
+{
+  // ...
+  "include": ["video.d.ts", "next-env.d.ts", /* ... */ ]
+  // ...
+}
 ```
 
 ## Usage
