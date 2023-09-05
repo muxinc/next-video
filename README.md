@@ -64,12 +64,19 @@ module.exports = withNextVideo(nextConfig);
 
 #### Add video import types to `tsconfig.json`
 
-This is only required if you're using TypeScript, and makes sure your video file imports don't yell at you for missing types.
+This is only required if you're using TypeScript, and makes sure your video file imports don't yell at you for missing types. `video.d.ts` should have been created in your project root when you ran `npx @mux/next-video init`, if not you can create it manually:
 
-```json
+```ts
+// video.d.ts
+/// <reference types="@mux/next-video/video-types/global" />
+```
+
+Then add that file to the `include` array in `tsconfig.json`.
+
+```js
 {
   // ...
-  "include": ["video.d.ts", "next-env.d.ts", ...]
+  "include": ["video.d.ts", "next-env.d.ts", /* ... */ ]
   // ...
 }
 ```
