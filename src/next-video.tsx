@@ -14,7 +14,7 @@ declare module 'react' {
 
 interface NextVideoProps extends Omit<MuxPlayerProps, 'src'> {
   src: string | Asset;
-  controls: boolean;
+  controls?: boolean;
   blurDataURL?: string;
 
   /**
@@ -33,7 +33,7 @@ const toSymlinkPath = (path?: string) => {
 }
 
 export default function NextVideo(props: NextVideoProps) {
-  let { src, poster, blurDataURL, sizes = '100vw', ...rest } = props;
+  let { src, poster, blurDataURL, sizes = '100vw', controls = true, ...rest } = props;
   const playerProps: MuxPlayerProps = rest;
   let status: string | undefined;
   let srcset: string | undefined;
