@@ -29,7 +29,7 @@ describe('updateNextConfig', () => {
 
   after(() => {
     tmpDirs.forEach(async (dir) => {
-      // await fs.rm(dir, { recursive: true, force: true });
+      await fs.rm(dir, { recursive: true, force: true });
     });
   });
 
