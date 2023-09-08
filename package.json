@@ -28,7 +28,9 @@
     "cli": "node --loader tsx --no-warnings ./src/cli",
     "test": "glob -c \"node --loader tsx --no-warnings --test\" \"./tests/**/*.test.ts\""
   },
-  "bin": "./dist/cli.js",
+  "bin": {
+    "@mux/next-video": "./dist/cli.js"
+  },
   "files": [
     "dist",
     "video-types"
