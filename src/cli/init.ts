@@ -3,7 +3,7 @@ import chalk from 'chalk';
 import { Argv, Arguments } from 'yargs';
 
 import { exec } from 'node:child_process';
-import { mkdir, stat, readFile, writeFile } from 'node:fs/promises';
+import { access, mkdir, stat, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 import log, { Logger } from '../logger.js';
@@ -32,6 +32,43 @@ async function preInitCheck(dir: string) {
   }
 }
 
+async function checkVersionManager() {
+  try {
+    await access('package-lock.json');
+    return 'npm';
+  } catch {
+    // not NPM
+  }
+
+  try {
+    await access('yarn.lock');
+    return 'yarn';
+  } catch {
+    // not Yarn
+  }
+
+  try {
+    await access('pnpm-lock.yaml');
+    return 'pnpm';
+  } catch {
+    // not PNPM
+  }
+
+  return undefined;
+}
+
+function execPromise(command: string) {
+  return new Promise((resolve, reject) => {
+    exec('npm install --save-dev @mux/next-video', (err: any, stdout: any, stderr: any) => {
+      if (err) {
+        return reject(err);
+      }
+
+      return resolve(stdout);
+    });
+  });
+}
+
 async function createVideoDir(dir: string) {
   const fullPath = path.join(process.cwd(), dir);
 
@@ -48,7 +85,7 @@ async function createTSFile(filePath: string) {
 async function updateTSConfigFile(tsConfigPath: string) {
   const configContents = await readFile(tsConfigPath, 'utf-8');
 
-  const updatedContents = await updateTSConfigFileContent(configContents);
+  const updatedContents = updateTSConfigFileContent(configContents);
 
   return writeFile(tsConfigPath, updatedContents);
 }
@@ -110,17 +147,29 @@ export async function handler(argv: Arguments) {
     });
 
     if (install) {
-      log.info('Installing next-video...');
-      exec('npm install --save-dev @mux/next-video', (err: any, stdout: any, stderr: any) => {
-        if (err) {
-          log.error('Failed to install next-video:', err);
-          return;
-        }
+      const manager = await checkVersionManager();
 
-        log.success('Successfully installed next-video!');
-        handler(argv);
-      });
-      return;
+      if (!manager) {
+        log.error('Failed to detect a package manager. Please install next-video manually and re-run this command.');
+        log.info('For example, in NPM: npm install --save-dev @mux/next-video');
+        return;
+      }
+
+      log.info('Detected package manager:', manager);
+      log.info('Installing next-video...');
+
+      try {
+        if (manager === 'npm') {
+          await execPromise('npm install --save-dev @mux/next-video');
+        } else if (manager === 'yarn') {
+          await execPromise('yarn install --dev @mux/next-video');
+        } else if (manager === 'pnpm') {
+          await execPromise('pnpm add -D @mux/next-video');
+        }
+        log.info('Successfully installed next-video!');
+      } catch (err: any) {
+        log.error('Failed to install next-video:', err);
+      }
     } else {
       log.info('Make sure to add next-video to your package.json manually');
     }
