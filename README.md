@@ -21,8 +21,24 @@ export default function Page() {
 
 ## Setup
 
+### Install the package
+
 ```bash
 cd your-next-app
+
+# If your project is using NPM (the default for Next.js)
+npm install --save-dev @mux/next-video
+
+# If your project is using Yarn
+yarn add --dev @mux/next-video
+
+# If your project is using pnpm
+pnpm add --D @mux/next-video
+```
+
+### Run the init wizard
+
+```bash
 npx @mux/next-video init
 ```
 
