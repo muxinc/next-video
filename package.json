@@ -30,7 +30,7 @@
     "test": "glob -c \"node --loader tsx --no-warnings --test\" \"./tests/**/*.test.ts\""
   },
   "bin": {
-    "@mux/next-video": "./dist/cli.js"
+    "next-video": "./dist/cli.js"
   },
   "files": [
     "dist",
