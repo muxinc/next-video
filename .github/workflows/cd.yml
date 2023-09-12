@@ -1,0 +1,40 @@
+name: CD
+
+concurrency: production
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      version_type:
+        type: choice
+        required: true
+        description: Version
+        options:
+        - conventional
+        - patch
+        - minor
+        - major
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      CONVENTIONAL_GITHUB_RELEASER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Fetch all history for all tags and branches
+      - uses: actions/setup-node@v3
+        with:
+          # this line is required for the setup-node action to be able to run the npm publish below.
+          registry-url: 'https://registry.npmjs.org'
+      - uses: fregante/setup-git-user@v1
+      - run: npm ci
+      - run: npm run build --if-present
+      - run: npm test
+      - run: npx --yes wet-run@0.2.0 release ${{ inputs.version_type }} --changelog --github-release
