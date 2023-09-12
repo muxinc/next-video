@@ -1,3 +1,12 @@
+## [0.4.3](https://github.com/muxinc/next-video/compare/v0.4.2...v0.4.3) (2023-09-12)
+
+
+### Bug Fixes
+
+* bin name without scope ([#56](https://github.com/muxinc/next-video/issues/56)) ([2c2fd35](https://github.com/muxinc/next-video/commit/2c2fd3583f308e5a2fd4c91cd2ee6e0ab8a31554)), closes [/github.com/npm/cli/blob/d7265045730555c03b3142c004c7438e9577028c/workspaces/libnpmexec/test/get-bin-from-manifest.js#L5-L16](https://github.com//github.com/npm/cli/blob/d7265045730555c03b3142c004c7438e9577028c/workspaces/libnpmexec/test/get-bin-from-manifest.js/issues/L5-L16)
+
+
+
 ## [0.4.2](https://github.com/muxinc/next-video/compare/v0.4.1...v0.4.2) (2023-09-12)
 
 
