@@ -15,7 +15,8 @@
       "import": "./dist/main.js",
       "require": "./dist/cjs/main.js",
       "default": "./dist/main.js"
-    }
+    },
+    "./video-types/*": "./video-types/*.d.ts"
   },
   "scripts": {
     "clean": "rm -rf dist",
