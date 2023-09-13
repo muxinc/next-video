@@ -14,6 +14,8 @@ declare module 'react' {
 
 interface NextVideoProps extends Omit<MuxPlayerProps, 'src'> {
   src: string | Asset;
+  width?: number;
+  height?: number;
   controls?: boolean;
   blurDataURL?: string;
 
@@ -33,7 +35,16 @@ const toSymlinkPath = (path?: string) => {
 }
 
 export default function NextVideo(props: NextVideoProps) {
-  let { src, poster, blurDataURL, sizes = '100vw', controls = true, ...rest } = props;
+  let {
+    src,
+    width,
+    height,
+    poster,
+    blurDataURL,
+    sizes = '100vw',
+    controls = true,
+    ...rest
+  } = props;
   const playerProps: MuxPlayerProps = rest;
   let status: string | undefined;
   let srcset: string | undefined;
@@ -75,20 +86,21 @@ export default function NextVideo(props: NextVideoProps) {
         /* css */`
         .next-video-container {
           position: relative;
+          width: 100%;
         }
 
         [data-next-video] {
+          position: relative;
           width: 100%;
           aspect-ratio: 16 / 9;
           display: inline-block;
           line-height: 0;
-          position: relative;
         }
 
         [data-next-video] img {
           object-fit: var(--media-object-fit, contain);
           object-position: var(--media-object-position, center);
-          background: center / cover no-repeat transparent;
+          background: center / var(--media-object-fit, contain) no-repeat transparent;
           width: 100%;
           height: 100%;
         }
@@ -97,7 +109,11 @@ export default function NextVideo(props: NextVideoProps) {
       <MuxPlayer
         data-next-video={status}
         poster=""
-        style={{ '--controls': props.controls === false ? 'none' : undefined }}
+        style={{
+          '--controls': controls === false ? 'none' : undefined,
+          width,
+          height,
+        }}
         onPlaying={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
         {...playerProps}
