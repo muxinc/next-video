@@ -127,7 +127,7 @@ export default function NextVideo(props: NextVideoProps) {
         }
       </MuxPlayer>
       {DEV_MODE && <Alert
-        hidden={Boolean(playing || (status && status === 'ready'))}
+        hidden={Boolean(playing || !status || status === 'ready')}
         status={status}
       />}
     </div>
