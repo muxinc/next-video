@@ -1,3 +1,13 @@
+## [0.4.4](https://github.com/muxinc/next-video/compare/v0.4.3...v0.4.4) (2023-09-19)
+
+
+### Bug Fixes
+
+* better video sizing ([#60](https://github.com/muxinc/next-video/issues/60)) ([4018c93](https://github.com/muxinc/next-video/commit/4018c93f1a8e365f4063123277be7e50e4794394))
+* no json file, alert msg style ([#62](https://github.com/muxinc/next-video/issues/62)) ([47f45df](https://github.com/muxinc/next-video/commit/47f45df9d8adf8b40e8b6169a1675dab4b7db7bb)), closes [#54](https://github.com/muxinc/next-video/issues/54) [#51](https://github.com/muxinc/next-video/issues/51)
+
+
+
 ## [0.4.3](https://github.com/muxinc/next-video/compare/v0.4.2...v0.4.3) (2023-09-12)
 
 
