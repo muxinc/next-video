@@ -14,6 +14,7 @@ declare module 'react' {
 
 interface NextVideoProps extends Omit<MuxPlayerProps, 'src'> {
   src: string | Asset;
+  provider?: string;
   width?: number;
   height?: number;
   controls?: boolean;
@@ -28,7 +29,7 @@ interface NextVideoProps extends Omit<MuxPlayerProps, 'src'> {
 }
 
 const DEV_MODE = process.env.NODE_ENV === 'development';
-const FILES_FOLDER = 'videos/';
+const FILES_FOLDER = /^videos\//;
 
 const toSymlinkPath = (path?: string) => {
   return path?.replace(FILES_FOLDER, `_${FILES_FOLDER}`);
@@ -41,21 +42,39 @@ export default function NextVideo(props: NextVideoProps) {
     height,
     poster,
     blurDataURL,
+    provider = 'mux',
     sizes = '100vw',
     controls = true,
     ...rest
   } = props;
+
   const playerProps: MuxPlayerProps = rest;
   let status: string | undefined;
   let srcset: string | undefined;
 
-  if (typeof src === 'string') {
-    playerProps.src = toSymlinkPath(src);
+  let [asset, setAsset] = useState(src);
 
-  } else if (typeof src === 'object') {
-    status = src.status;
+  if (typeof asset === 'string') {
 
-    let playbackId = src.externalIds?.playbackId;
+    if (typeof window !== 'undefined') {
+
+      const requestUrl = new URL('/api/video', window.location.href);
+      requestUrl.searchParams.set('url', asset);
+      requestUrl.searchParams.set('provider', provider);
+
+      // try for 1 minute every second.
+      poll(async () => {
+        const response = await fetch(requestUrl);
+        const json = await response.json();
+        setAsset(json);
+        return json.status === 'ready';
+      }, 60000, 1000);
+    }
+
+  } else if (typeof asset === 'object') {
+    status = asset.status;
+
+    let playbackId = asset.externalIds?.playbackId;
 
     if (status === 'ready' && playbackId) {
       playerProps.playbackId = playbackId;
@@ -71,10 +90,10 @@ export default function NextVideo(props: NextVideoProps) {
           `${poster} 1920w`;
       }
 
-      blurDataURL = blurDataURL ?? src.blurDataURL;
+      blurDataURL = blurDataURL ?? asset.blurDataURL;
 
     } else {
-      playerProps.src = toSymlinkPath(src.originalFilePath);
+      playerProps.src = toSymlinkPath(asset.originalFilePath);
     }
   }
 
@@ -107,7 +126,7 @@ export default function NextVideo(props: NextVideoProps) {
         `
       }</style>
       <MuxPlayer
-        data-next-video={status}
+        data-next-video={status ?? ''}
         poster=""
         style={{
           '--controls': controls === false ? 'none' : undefined,
@@ -272,4 +291,27 @@ function parseJwt(token: string | undefined) {
       .join('')
   );
   return JSON.parse(jsonPayload);
+}
+
+function poll(fn: Function, timeout: number, interval: number) {
+  const endTime = Number(new Date()) + (timeout || 2000);
+  interval = interval || 100;
+
+  const checkCondition = async (resolve: (value: unknown) => void, reject: (reason: Error) => void) => {
+    // If the condition is met, we're done!
+    const result = await fn();
+    if (result) {
+      resolve(result);
+    }
+    // If the condition isn't met but the timeout hasn't elapsed, go again
+    else if (Number(new Date()) < endTime) {
+      setTimeout(checkCondition, interval, resolve, reject);
+    }
+    // Didn't match and too much time, reject!
+    else {
+      reject(new Error('timed out for ' + fn + ': ' + arguments));
+    }
+  };
+
+  return new Promise(checkCondition);
 }

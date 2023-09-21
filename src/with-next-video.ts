@@ -32,6 +32,16 @@ export default async function withNextVideo(nextConfig: any) {
         );
       }
 
+      if (Array.isArray(config.externals)) {
+        config.externals.unshift({
+          sharp: 'commonjs sharp'
+        });
+      } else {
+        config.externals = Object.assign({}, {
+          sharp: 'commonjs sharp'
+        }, config.externals);
+      }
+
       config.module.rules.push({
         test: /\.(mp4|webm|mkv|ogg|ogv|wmv|avi|mov|flv|m4v|3gp)$/,
         use: [

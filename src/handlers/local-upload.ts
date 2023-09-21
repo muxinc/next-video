@@ -26,7 +26,7 @@ function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function pollForAssetReady(filePath: string, asset: Asset) {
+export async function pollForAssetReady(filePath: string, asset: Asset) {
   if (!asset.externalIds?.assetId) {
     log.error('No assetId provided for asset.');
     console.error(asset);
@@ -197,7 +197,7 @@ export default async function uploadLocalFile(asset: Asset) {
   return pollForUploadAsset(src, processingAsset);
 }
 
-async function createThumbHash(imgUrl: string) {
+export async function createThumbHash(imgUrl: string) {
   const response = await uFetch(imgUrl);
   const buffer = await response.arrayBuffer();
 
