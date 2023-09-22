@@ -58,17 +58,25 @@ export default function NextVideo(props: NextVideoProps) {
 
     if (typeof window !== 'undefined') {
 
-      const requestUrl = new URL('/api/video', window.location.href);
+      const API_ROUTE = '/api/video';
+      const requestUrl = new URL(API_ROUTE, window.location.href);
       requestUrl.searchParams.set('url', asset);
       requestUrl.searchParams.set('provider', provider);
 
       // try for 1 minute every second.
-      poll(async () => {
-        const response = await fetch(requestUrl);
-        const json = await response.json();
+      poll(60000, 1000, async () => {
+        const res = await fetch(requestUrl);
+
+        if (res.status < 200 || res.status >= 300) {
+          let message = `[next-video] The request to ${res.url} failed. `;
+          message += `Did you configure the \`${API_ROUTE}\` route to handle video API requests?\n`;
+          throw new Error(message);
+        }
+
+        const json = await res.json();
         setAsset(json);
         return json.status === 'ready';
-      }, 60000, 1000);
+      });
     }
 
   } else if (typeof asset === 'object') {
@@ -293,9 +301,8 @@ function parseJwt(token: string | undefined) {
   return JSON.parse(jsonPayload);
 }
 
-function poll(fn: Function, timeout: number, interval: number) {
-  const endTime = Number(new Date()) + (timeout || 2000);
-  interval = interval || 100;
+function poll(timeout: number, interval: number, fn: Function) {
+  const endTime = Date.now() + timeout;
 
   const checkCondition = async (resolve: (value: unknown) => void, reject: (reason: Error) => void) => {
     // If the condition is met, we're done!
@@ -304,7 +311,7 @@ function poll(fn: Function, timeout: number, interval: number) {
       resolve(result);
     }
     // If the condition isn't met but the timeout hasn't elapsed, go again
-    else if (Number(new Date()) < endTime) {
+    else if (Date.now() < endTime) {
       setTimeout(checkCondition, interval, resolve, reject);
     }
     // Didn't match and too much time, reject!

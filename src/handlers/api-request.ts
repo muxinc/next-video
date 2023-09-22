@@ -1,6 +1,5 @@
 import chalk from 'chalk';
 import Mux from '@mux/mux-node';
-import { fetch as uFetch } from 'undici';
 import { updateAsset, Asset } from '../assets.js';
 import log from '../logger.js';
 import { pollForAssetReady } from './local-upload.js';
@@ -12,10 +11,6 @@ let mux: Mux;
 // the instance.
 function initMux() {
   mux = new Mux();
-}
-
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export default async function handleVideoAdded(asset: Asset) {
