@@ -42,6 +42,16 @@ export default async function withNextVideo(nextConfig: any) {
         }, config.externals);
       }
 
+      config.experiments.buildHttp = {
+        allowedUris: [
+          /https?:\/\/.*\.(mp4|webm|mkv|ogg|ogv|wmv|avi|mov|flv|m4v|3gp)$/,
+          ...(config.experiments.buildHttp?.allowedUris ?? [])
+        ],
+        ...(config.experiments.buildHttp || {}),
+        // Disable cache to prevent Webpack from downloading the remote sources.
+        cacheLocation: false,
+      }
+
       config.module.rules.push({
         test: /\.(mp4|webm|mkv|ogg|ogv|wmv|avi|mov|flv|m4v|3gp)$/,
         use: [

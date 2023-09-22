@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import MuxPlayer from '@mux/mux-player-react';
 import type { MuxPlayerProps } from '@mux/mux-player-react';
-import { Asset } from './assets.js';
+import type { Asset } from './assets.js';
 
 declare module 'react' {
   interface CSSProperties {
@@ -177,7 +177,7 @@ function Alert({ status, hidden }: AlertProps) {
       title = 'Error';
       message = 'An error occurred while uploading your video. Please check the CLI logs for more info.';
       break;
-    case 'source':
+    case 'sourced':
       title = 'Video is not processing';
       message = 'Make sure to run next-video sync. The currently loaded video is the source file.';
       break;
