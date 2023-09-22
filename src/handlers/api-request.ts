@@ -18,7 +18,7 @@ function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export default async function handleRemoteVideoAdded(asset: Asset) {
+export default async function handleVideoAdded(asset: Asset) {
   if (!asset.originalFilePath) {
     log.error('No URL provided for asset.');
     console.error(asset);
