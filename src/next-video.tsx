@@ -29,9 +29,10 @@ interface NextVideoProps extends Omit<MuxPlayerProps, 'src'> {
 }
 
 const DEV_MODE = process.env.NODE_ENV === 'development';
-const FILES_FOLDER = /^videos\//;
+const FILES_FOLDER = 'videos/';
 
 const toSymlinkPath = (path?: string) => {
+  if (!path?.startsWith(FILES_FOLDER)) return path;
   return path?.replace(FILES_FOLDER, `_${FILES_FOLDER}`);
 }
 
