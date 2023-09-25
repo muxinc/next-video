@@ -4,14 +4,20 @@
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import childProcess from 'node:child_process';
+import { promisify } from 'node:util';
 
 import chalk from 'chalk';
 import Mux from '@mux/mux-node';
 import { fetch as uFetch } from 'undici';
 import sharp from 'sharp';
+// @ts-ignore
+import ffprobe from 'ffprobe-static';
 
 import { updateAsset, Asset } from '../assets.js';
 import log from '../logger.js';
+
+const exec = promisify(childProcess.exec);
 
 let mux: Mux;
 
@@ -139,8 +145,6 @@ export default async function uploadLocalFile(asset: Asset) {
     log.info(log.label('Resuming upload:'), asset.originalFilePath);
   }
 
-  const src = asset.originalFilePath;
-
   let upload: Mux.Video.Uploads.Upload;
   try {
     // Create a direct upload url
@@ -157,15 +161,41 @@ export default async function uploadLocalFile(asset: Asset) {
     return;
   }
 
-  await updateAsset(src, {
+  const src = asset.originalFilePath;
+  const filePath = path.join(src);
+  const json: Asset = {
     status: 'uploading',
     externalIds: {
       uploadId: upload.id as string, // more typecasting while we use the beta mux sdk
     },
-  });
+  };
+
+  try {
+    const { stdout } = await exec([
+      `"${ffprobe.path}"`,
+      `-v quiet`,
+      `-select_streams v`,
+      `-show_entries stream=width,height,duration,display_aspect_ratio`,
+      `-of json`,
+      `${filePath}`
+    ].join(' '));
+
+    const mediaInfo = JSON.parse(stdout)?.streams[0];
+    if (mediaInfo) {
+      json.width = mediaInfo.width;
+      json.height = mediaInfo.height;
+      json.duration = mediaInfo.duration;
+      json.aspectRatio = mediaInfo.display_aspect_ratio.replace(':', '/');
+    }
+
+  } catch (e) {
+    log.error('Error getting source file metadata.');
+    console.error(e);
+  }
+
+  await updateAsset(src, json);
 
   // get the file locally and such
-  const filePath = path.join(src);
   const fileDescriptor = await fs.open(filePath);
   const fileStats = await fileDescriptor.stat();
   const stream = fileDescriptor.createReadStream();

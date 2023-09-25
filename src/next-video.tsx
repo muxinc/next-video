@@ -17,6 +17,7 @@ interface NextVideoProps extends Omit<MuxPlayerProps, 'src'> {
   width?: number;
   height?: number;
   controls?: boolean;
+  aspectRatio?: string;
   blurDataURL?: string;
 
   /**
@@ -40,6 +41,7 @@ export default function NextVideo(props: NextVideoProps) {
     width,
     height,
     poster,
+    aspectRatio,
     blurDataURL,
     sizes = '100vw',
     controls = true,
@@ -56,6 +58,7 @@ export default function NextVideo(props: NextVideoProps) {
     status = src.status;
 
     let playbackId = src.externalIds?.playbackId;
+    aspectRatio = aspectRatio ?? src.aspectRatio;
 
     if (status === 'ready' && playbackId) {
       playerProps.playbackId = playbackId;
@@ -111,6 +114,7 @@ export default function NextVideo(props: NextVideoProps) {
         poster=""
         style={{
           '--controls': controls === false ? 'none' : undefined,
+          aspectRatio: aspectRatio !== '16/9' ? aspectRatio : undefined,
           width,
           height,
         }}
