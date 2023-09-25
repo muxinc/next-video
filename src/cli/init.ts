@@ -59,7 +59,7 @@ async function checkVersionManager() {
 
 function execPromise(command: string) {
   return new Promise((resolve, reject) => {
-    exec('npm install --save-dev @mux/next-video', (err: any, stdout: any, stderr: any) => {
+    exec(command, (err: any, stdout: any, stderr: any) => {
       if (err) {
         return reject(err);
       }
@@ -160,11 +160,11 @@ export async function handler(argv: Arguments) {
 
       try {
         if (manager === 'npm') {
-          await execPromise('npm install --save-dev @mux/next-video');
+          await execPromise('npm install @mux/next-video');
         } else if (manager === 'yarn') {
-          await execPromise('yarn install --dev @mux/next-video');
+          await execPromise('yarn install @mux/next-video');
         } else if (manager === 'pnpm') {
-          await execPromise('pnpm add -D @mux/next-video');
+          await execPromise('pnpm add @mux/next-video');
         }
         log.info('Successfully installed next-video!');
       } catch (err: any) {
