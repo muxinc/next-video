@@ -1,7 +1,7 @@
 'use client';
 
 // todo: fix mux-player to work with moduleResolution: 'nodenext'?
-import { useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import MuxPlayer from '@mux/mux-player-react';
 import type { MuxPlayerProps } from '@mux/mux-player-react';
 import type { Asset } from './assets.js';
@@ -14,7 +14,6 @@ declare module 'react' {
 
 interface NextVideoProps extends Omit<MuxPlayerProps, 'src'> {
   src: string | Asset;
-  provider?: string;
   width?: number;
   height?: number;
   controls?: boolean;
@@ -30,6 +29,7 @@ interface NextVideoProps extends Omit<MuxPlayerProps, 'src'> {
 
 const DEV_MODE = process.env.NODE_ENV === 'development';
 const FILES_FOLDER = 'videos/';
+const API_ROUTE = '/api/video';
 
 const toSymlinkPath = (path?: string) => {
   if (!path?.startsWith(FILES_FOLDER)) return path;
@@ -43,7 +43,6 @@ export default function NextVideo(props: NextVideoProps) {
     height,
     poster,
     blurDataURL,
-    provider = 'mux',
     sizes = '100vw',
     controls = true,
     ...rest
@@ -52,35 +51,17 @@ export default function NextVideo(props: NextVideoProps) {
   const playerProps: MuxPlayerProps = rest;
   let status: string | undefined;
   let srcset: string | undefined;
+  let requestUrl: URL | undefined;
 
   let [asset, setAsset] = useState(src);
 
-  if (typeof asset === 'string') {
+  // Required to make Next.js fast refresh when the local JSON file changes.
+  // https://nextjs.org/docs/architecture/fast-refresh#fast-refresh-and-hooks
+  if (typeof src === 'object') {
+    asset = src;
+  }
 
-    if (typeof window !== 'undefined') {
-
-      const API_ROUTE = '/api/video';
-      const requestUrl = new URL(API_ROUTE, window.location.href);
-      requestUrl.searchParams.set('url', asset);
-      requestUrl.searchParams.set('provider', provider);
-
-      // try for 1 minute every second.
-      poll(60000, 1000, async () => {
-        const res = await fetch(requestUrl);
-
-        if (res.status < 200 || res.status >= 300) {
-          let message = `[next-video] The request to ${res.url} failed. `;
-          message += `Did you configure the \`${API_ROUTE}\` route to handle video API requests?\n`;
-          throw new Error(message);
-        }
-
-        const json = await res.json();
-        setAsset(json);
-        return json.status === 'ready';
-      });
-    }
-
-  } else if (typeof asset === 'object') {
+  if (typeof asset === 'object') {
     status = asset.status;
 
     let playbackId = asset.externalIds?.playbackId;
@@ -105,6 +86,29 @@ export default function NextVideo(props: NextVideoProps) {
       playerProps.src = toSymlinkPath(asset.originalFilePath);
     }
   }
+
+  async function fetchItems(abortSignal: AbortSignal) {
+    try {
+      const requestUrl = new URL(API_ROUTE, window.location.href);
+      requestUrl.searchParams.set('url', asset as string);
+      const res = await fetch(requestUrl, { signal: abortSignal });
+      const json = await res.json();
+      if (res.ok) {
+        setAsset(json);
+      } else {
+        let message = `[next-video] The request to ${res.url} failed. `;
+        message += `Did you configure the \`${API_ROUTE}\` route to handle video API requests?\n`;
+        throw new Error(message);
+      }
+    } catch (err) {
+      if (!abortSignal.aborted) {
+        console.error(err)
+      }
+    }
+  }
+
+  const needsPolling = typeof asset === 'string' || status != 'ready';
+  usePolling(fetchItems, needsPolling ? 1000 : null);
 
   const [playing, setPlaying] = useState(false);
 
@@ -302,24 +306,56 @@ function parseJwt(token: string | undefined) {
   return JSON.parse(jsonPayload);
 }
 
-function poll(timeout: number, interval: number, fn: Function) {
-  const endTime = Date.now() + timeout;
+const DEFAULT_POLLING_INTERVAL = 5000;
 
-  const checkCondition = async (resolve: (value: unknown) => void, reject: (reason: Error) => void) => {
-    // If the condition is met, we're done!
-    const result = await fn();
-    if (result) {
-      resolve(result);
-    }
-    // If the condition isn't met but the timeout hasn't elapsed, go again
-    else if (Date.now() < endTime) {
-      setTimeout(checkCondition, interval, resolve, reject);
-    }
-    // Didn't match and too much time, reject!
-    else {
-      reject(new Error('timed out for ' + fn + ': ' + arguments));
-    }
-  };
+// Note: doesn't get updated when the callback function changes
+export function usePolling(
+  callback: (abortSignal: AbortSignal) => any,
+  interval: number | null = DEFAULT_POLLING_INTERVAL,
+) {
+  const abortControllerRef = useRef(new AbortController());
 
-  return new Promise(checkCondition);
+  useEffect(() => {
+    abortControllerRef.current = new AbortController();
+    callback(abortControllerRef.current.signal);
+
+    return () => {
+      // Effects run twice in dev mode so this will run once.
+      abortControllerRef.current.abort();
+    }
+  }, []);
+
+  const intervalFn = useCallback(() => {
+    return callback(abortControllerRef.current.signal);
+  }, []);
+
+  useInterval(intervalFn, interval);
+}
+
+export function useInterval(callback: () => any, delay: number | null) {
+  const savedCallback = useRef<() => any | undefined>();
+
+  // Remember the latest callback.
+  useEffect(() => {
+    savedCallback.current = callback;
+  }, [callback])
+
+  // Set up the interval.
+  useEffect(() => {
+    let id: any;
+
+    const tick = async () => {
+      // Wait to kick off another async callback until the current one is finished.
+      await savedCallback.current?.();
+
+      if (delay != null) {
+        id = setTimeout(tick, delay);
+      }
+    }
+
+    if (delay != null) {
+      id = setTimeout(tick, delay);
+      return () => clearTimeout(id);
+    }
+  }, [delay]);
 }
