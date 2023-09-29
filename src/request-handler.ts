@@ -26,7 +26,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   } catch {
     // todo: does this require auth?
     asset = await createAsset(url);
-    await callHandler('request.video.added', asset);
+
+    if (asset) {
+      await callHandler('request.video.added', asset);
+    }
 
     res.status(200).json(asset);
     return;

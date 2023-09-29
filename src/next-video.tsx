@@ -88,6 +88,8 @@ export default function NextVideo(props: NextVideoProps) {
   }
 
   async function fetchItems(abortSignal: AbortSignal) {
+    if (typeof asset === 'object') return;
+
     try {
       const requestUrl = new URL(API_ROUTE, window.location.href);
       requestUrl.searchParams.set('url', asset as string);
@@ -107,7 +109,7 @@ export default function NextVideo(props: NextVideoProps) {
     }
   }
 
-  const needsPolling = typeof asset === 'string' || status != 'ready';
+  const needsPolling = DEV_MODE && (typeof asset === 'string' || status != 'ready');
   usePolling(fetchItems, needsPolling ? 1000 : null);
 
   const [playing, setPlaying] = useState(false);

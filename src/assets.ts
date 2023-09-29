@@ -3,7 +3,7 @@ import log from './logger.js';
 import { VIDEOS_DIR } from './constants.js';
 
 export interface Asset {
-  status?: 'pending' | 'uploading' | 'processing' | 'ready' | 'error';
+  status?: 'sourced' | 'pending' | 'uploading' | 'processing' | 'ready' | 'error';
   error?: any;
   originalFilePath?: string;
   size?: number;

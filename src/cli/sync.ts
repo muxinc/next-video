@@ -80,10 +80,6 @@ export async function handler(argv: Arguments) {
       const assetPath = path.join(parsedPath.dir, parsedPath.name);
       const existingAsset = await getAsset(assetPath);
 
-      // Ignore remote videos.
-      const originalFilePath = existingAsset?.originalFilePath;
-      if (originalFilePath && /^https?:\/\//.test(originalFilePath)) return;
-
       // If the existing asset is 'pending', 'uploading', or 'processing', run
       // it back through the local video handler.
       const assetStatus = existingAsset?.status;
