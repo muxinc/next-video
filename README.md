@@ -151,8 +151,17 @@ In some cases you might not have the remote video URL's available at the time of
 
 That can be solved by creating a new API endpoint in your Next.js app for `/api/video` with the following code.
 
+**App router (Next.js >=13)**
+
 ```js
-// Pages router: pages/api/video/[[...handler]].js
+// app/api/video/route.js
+export { GET } from '@mux/next-video/request-handler'
+```
+
+**Pages router (Next.js)**
+
+```js
+// pages/api/video/[[...handler]].js
 export { default } from '@mux/next-video/request-handler'
 ```
 
