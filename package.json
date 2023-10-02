@@ -1,5 +1,5 @@
 {
-  "name": "@mux/next-video",
+  "name": "next-video",
   "version": "0.4.4",
   "description": "A React component for adding video to your Next.js application. It extends both the video element and your Next app with features for automatic video optimization.",
   "type": "module",

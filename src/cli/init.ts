@@ -15,7 +15,7 @@ const GITIGNORE_CONTENTS = `*
 !*.js
 !*.ts`;
 
-const TYPES_FILE_CONTENTS = `/// <reference types="@mux/next-video/video-types/global" />\n`;
+const TYPES_FILE_CONTENTS = `/// <reference types="next-video/video-types/global" />\n`;
 
 const DEFAULT_DIR = 'videos';
 
@@ -151,7 +151,7 @@ export async function handler(argv: Arguments) {
 
       if (!manager) {
         log.error('Failed to detect a package manager. Please install next-video manually and re-run this command.');
-        log.info('For example, in NPM: npm install --save-dev @mux/next-video');
+        log.info('For example, in NPM: npm install --save-dev next-video');
         return;
       }
 
@@ -160,11 +160,11 @@ export async function handler(argv: Arguments) {
 
       try {
         if (manager === 'npm') {
-          await execPromise('npm install @mux/next-video');
+          await execPromise('npm install next-video');
         } else if (manager === 'yarn') {
-          await execPromise('yarn install @mux/next-video');
+          await execPromise('yarn install next-video');
         } else if (manager === 'pnpm') {
-          await execPromise('pnpm add @mux/next-video');
+          await execPromise('pnpm add next-video');
         }
         log.info('Successfully installed next-video!');
       } catch (err: any) {
