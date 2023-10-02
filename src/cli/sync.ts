@@ -83,7 +83,7 @@ export async function handler(argv: Arguments) {
       // If the existing asset is 'pending', 'uploading', or 'processing', run
       // it back through the local video handler.
       const assetStatus = existingAsset?.status;
-      if (assetStatus && ['pending', 'uploading', 'processing'].includes(assetStatus)) {
+      if (assetStatus && ['sourced', 'pending', 'uploading', 'processing'].includes(assetStatus)) {
         return callHandler('local.video.added', existingAsset);
       }
     };

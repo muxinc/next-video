@@ -26,7 +26,7 @@ function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function pollForAssetReady(filePath: string, asset: Asset) {
+export async function pollForAssetReady(filePath: string, asset: Asset) {
   if (!asset.externalIds?.assetId) {
     log.error('No assetId provided for asset.');
     console.error(asset);
@@ -141,6 +141,28 @@ export default async function uploadLocalFile(asset: Asset) {
 
   const src = asset.originalFilePath;
 
+  // Imported remote videos can take an easy path.
+  if (src && /^https?:\/\//.test(src)) {
+
+    const assetObj = await mux.video.assets.create({
+      // @ts-ignore
+      input: [{ url: src }],
+      playback_policy: ['public']
+    });
+
+    log.info(log.label('Asset is processing:'), src);
+    log.space(chalk.gray('>'), log.label('Mux Asset ID:'), assetObj.id);
+
+    const processingAsset = await updateAsset(src, {
+      status: 'processing',
+      externalIds: {
+        assetId: assetObj.id,
+      },
+    });
+
+    return pollForAssetReady(src, processingAsset);
+  }
+
   let upload: Mux.Video.Uploads.Upload;
   try {
     // Create a direct upload url
@@ -197,7 +219,7 @@ export default async function uploadLocalFile(asset: Asset) {
   return pollForUploadAsset(src, processingAsset);
 }
 
-async function createThumbHash(imgUrl: string) {
+export async function createThumbHash(imgUrl: string) {
   const response = await uFetch(imgUrl);
   const buffer = await response.arrayBuffer();
 

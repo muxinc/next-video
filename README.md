@@ -131,7 +131,41 @@ While a video is being uploaded and processed, `<Video>` will attempt to play th
 
 ### Remote videos
 
-For videos that are already hosted remotely (for example on AWS S3), set the `src` attribute to the URL of the remote file.
+For videos that are already hosted remotely (for example on AWS S3), import the remote URL and refresh the page.
+This creates a local JSON file in the `/videos` folder and the sync script will start uploading the video.
+
+```tsx
+import Video from '@mux/next-video';
+import awesomeVideo from 'https://www.mydomain.com/remote-video.mp4';
+
+export default function Page() {
+  return <Video src={awesomeVideo} />;
+}
+```
+
+If the hosted video is a single file like an MP4, the file will be automatically optimized for better deliverability and compatibility.
+
+#### Alternative
+
+In some cases you might not have the remote video URL's available at the time of import.
+
+That can be solved by creating a new API endpoint in your Next.js app for `/api/video` with the following code.
+
+**App router (Next.js >=13)**
+
+```js
+// app/api/video/route.js
+export { GET } from '@mux/next-video/request-handler'
+```
+
+**Pages router (Next.js)**
+
+```js
+// pages/api/video/[[...handler]].js
+export { default } from '@mux/next-video/request-handler'
+```
+
+Then set the `src` attribute to the URL of the remote video, refresh the page and the video will start processing.
 
 ```tsx
 import Video from '@mux/next-video';
@@ -141,10 +175,6 @@ export default function Page() {
 }
 ```
 
-If the hosted video is a single file like an MP4, the file will be automatically optimized for better deliverability and compatibility.
-
-If the hosted file is an adaptive manifest, like HLS or DASH, NextVideo will treat the video as if it has already been optimized.
-
 ## Roadmap
 
 ### v0
@@ -152,7 +182,7 @@ If the hosted file is an adaptive manifest, like HLS or DASH, NextVideo will tre
 - [x] Automatic video optimzation
 - [x] Delivery via a CDN
 - [x] Automatically upload and process local source files
-- [ ] Automatically process remote hosted source files
+- [x] Automatically process remote hosted source files
 
 ### v1
 

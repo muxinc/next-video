@@ -1,8 +1,9 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import log from './logger.js';
+import { VIDEOS_DIR } from './constants.js';
 
 export interface Asset {
-  status?: 'pending' | 'uploading' | 'processing' | 'ready' | 'error';
+  status?: 'sourced' | 'pending' | 'uploading' | 'processing' | 'ready' | 'error';
   error?: any;
   originalFilePath?: string;
   size?: number;
@@ -14,10 +15,6 @@ export interface Asset {
   updatedAt?: number;
 }
 
-function getAssetConfigPath(filePath: string) {
-  return `${filePath}.json`;
-}
-
 export async function getAsset(filePath: string): Promise<Asset | undefined> {
   const assetPath = getAssetConfigPath(filePath);
   const file = await readFile(assetPath);
@@ -26,7 +23,7 @@ export async function getAsset(filePath: string): Promise<Asset | undefined> {
   return asset;
 }
 
-export async function createAsset(filePath: string, assetDetails: Asset): Promise<Asset | undefined> {
+export async function createAsset(filePath: string, assetDetails?: Asset): Promise<Asset | undefined> {
   const assetPath = getAssetConfigPath(filePath);
 
   const newAssetDetails: Asset = {
@@ -70,4 +67,22 @@ export async function updateAsset(filePath: string, assetDetails: Asset): Promis
   await writeFile(assetPath, JSON.stringify(newAssetDetails));
 
   return newAssetDetails;
+}
+
+function getAssetConfigPath(filePath: string) {
+  if (isRemote(filePath)) {
+    // Add the asset directory and make remote url a safe file path.
+    return `${VIDEOS_DIR}/${toSafePath(filePath)}.json`;
+  }
+  return `${filePath}.json`
+}
+
+function isRemote(filePath: string) {
+  return /^https?:\/\//.test(filePath);
+}
+
+function toSafePath(str: string) {
+  return str
+    .replace(/^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$/g, '')
+    .replace(/[^a-zA-Z0-9._-]+/g, '_');
 }

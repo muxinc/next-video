@@ -1,10 +1,10 @@
 'use client';
 
 // todo: fix mux-player to work with moduleResolution: 'nodenext'?
-import { useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import MuxPlayer from '@mux/mux-player-react';
 import type { MuxPlayerProps } from '@mux/mux-player-react';
-import { Asset } from './assets.js';
+import type { Asset } from './assets.js';
 
 declare module 'react' {
   interface CSSProperties {
@@ -29,8 +29,10 @@ interface NextVideoProps extends Omit<MuxPlayerProps, 'src'> {
 
 const DEV_MODE = process.env.NODE_ENV === 'development';
 const FILES_FOLDER = 'videos/';
+const API_ROUTE = '/api/video';
 
 const toSymlinkPath = (path?: string) => {
+  if (!path?.startsWith(FILES_FOLDER)) return path;
   return path?.replace(FILES_FOLDER, `_${FILES_FOLDER}`);
 }
 
@@ -45,17 +47,24 @@ export default function NextVideo(props: NextVideoProps) {
     controls = true,
     ...rest
   } = props;
+
   const playerProps: MuxPlayerProps = rest;
   let status: string | undefined;
   let srcset: string | undefined;
+  let requestUrl: URL | undefined;
 
-  if (typeof src === 'string') {
-    playerProps.src = toSymlinkPath(src);
+  let [asset, setAsset] = useState(src);
 
-  } else if (typeof src === 'object') {
-    status = src.status;
+  // Required to make Next.js fast refresh when the local JSON file changes.
+  // https://nextjs.org/docs/architecture/fast-refresh#fast-refresh-and-hooks
+  if (typeof src === 'object') {
+    asset = src;
+  }
 
-    let playbackId = src.externalIds?.playbackId;
+  if (typeof asset === 'object') {
+    status = asset.status;
+
+    let playbackId = asset.externalIds?.playbackId;
 
     if (status === 'ready' && playbackId) {
       playerProps.playbackId = playbackId;
@@ -71,12 +80,37 @@ export default function NextVideo(props: NextVideoProps) {
           `${poster} 1920w`;
       }
 
-      blurDataURL = blurDataURL ?? src.blurDataURL;
+      blurDataURL = blurDataURL ?? asset.blurDataURL;
 
     } else {
-      playerProps.src = toSymlinkPath(src.originalFilePath);
+      playerProps.src = toSymlinkPath(asset.originalFilePath);
     }
   }
+
+  async function fetchItems(abortSignal: AbortSignal) {
+    if (typeof asset === 'object') return;
+
+    try {
+      const requestUrl = new URL(API_ROUTE, window.location.href);
+      requestUrl.searchParams.set('url', asset as string);
+      const res = await fetch(requestUrl, { signal: abortSignal });
+      const json = await res.json();
+      if (res.ok) {
+        setAsset(json);
+      } else {
+        let message = `[next-video] The request to ${res.url} failed. `;
+        message += `Did you configure the \`${API_ROUTE}\` route to handle video API requests?\n`;
+        throw new Error(message);
+      }
+    } catch (err) {
+      if (!abortSignal.aborted) {
+        console.error(err)
+      }
+    }
+  }
+
+  const needsPolling = DEV_MODE && (typeof asset === 'string' || status != 'ready');
+  usePolling(fetchItems, needsPolling ? 1000 : null);
 
   const [playing, setPlaying] = useState(false);
 
@@ -107,7 +141,7 @@ export default function NextVideo(props: NextVideoProps) {
         `
       }</style>
       <MuxPlayer
-        data-next-video={status}
+        data-next-video={status ?? ''}
         poster=""
         style={{
           '--controls': controls === false ? 'none' : undefined,
@@ -127,7 +161,7 @@ export default function NextVideo(props: NextVideoProps) {
         }
       </MuxPlayer>
       {DEV_MODE && <Alert
-        hidden={Boolean(playing || (status && status === 'ready'))}
+        hidden={Boolean(playing || !status || status === 'ready')}
         status={status}
       />}
     </div>
@@ -149,7 +183,7 @@ function Alert({ status, hidden }: AlertProps) {
       title = 'Error';
       message = 'An error occurred while uploading your video. Please check the CLI logs for more info.';
       break;
-    case 'source':
+    case 'sourced':
       title = 'Video is not processing';
       message = 'Make sure to run next-video sync. The currently loaded video is the source file.';
       break;
@@ -272,4 +306,58 @@ function parseJwt(token: string | undefined) {
       .join('')
   );
   return JSON.parse(jsonPayload);
+}
+
+const DEFAULT_POLLING_INTERVAL = 5000;
+
+// Note: doesn't get updated when the callback function changes
+export function usePolling(
+  callback: (abortSignal: AbortSignal) => any,
+  interval: number | null = DEFAULT_POLLING_INTERVAL,
+) {
+  const abortControllerRef = useRef(new AbortController());
+
+  useEffect(() => {
+    abortControllerRef.current = new AbortController();
+    callback(abortControllerRef.current.signal);
+
+    return () => {
+      // Effects run twice in dev mode so this will run once.
+      abortControllerRef.current.abort();
+    }
+  }, []);
+
+  const intervalFn = useCallback(() => {
+    return callback(abortControllerRef.current.signal);
+  }, []);
+
+  useInterval(intervalFn, interval);
+}
+
+export function useInterval(callback: () => any, delay: number | null) {
+  const savedCallback = useRef<() => any | undefined>();
+
+  // Remember the latest callback.
+  useEffect(() => {
+    savedCallback.current = callback;
+  }, [callback])
+
+  // Set up the interval.
+  useEffect(() => {
+    let id: any;
+
+    const tick = async () => {
+      // Wait to kick off another async callback until the current one is finished.
+      await savedCallback.current?.();
+
+      if (delay != null) {
+        id = setTimeout(tick, delay);
+      }
+    }
+
+    if (delay != null) {
+      id = setTimeout(tick, delay);
+      return () => clearTimeout(id);
+    }
+  }, [delay]);
 }
