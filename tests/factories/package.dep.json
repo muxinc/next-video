@@ -9,7 +9,7 @@
   "peerDependencies": {},
   "peerDependenciesMeta": {},
   "devDependencies": {
-    "@mux/next-video": "*"
+    "next-video": "*"
   },
   "dependencies": {}
 }

@@ -11,7 +11,7 @@ Next video is a react component for adding video to your [next.js](https://githu
 - **AI-powered:** Whisper captions coming soon...
 
 ```tsx
-import Video from '@mux/next-video';
+import Video from 'next-video';
 import myVideo from '/videos/myVideo.mp4';
 
 export default function Page() {
@@ -27,24 +27,24 @@ export default function Page() {
 cd your-next-app
 
 # If your project is using NPM (the default for Next.js)
-npm install @mux/next-video
+npm install next-video
 
 # If your project is using Yarn
-yarn add @mux/next-video
+yarn add next-video
 
 # If your project is using pnpm
-pnpm add @mux/next-video
+pnpm add next-video
 ```
 
 ### Run the init wizard
 
 ```bash
-npx @mux/next-video init
+npx next-video init
 ```
 
 This will (with prompting):
 
-- install `@mux/next-video` as a dependency
+- install `next-video` as a dependency
 - update your `next.config.js` file
 - if you're using TypeScript, add types for your video file imports
 - create a `/videos` directory in your project which is where you will put all video source files.
@@ -71,7 +71,7 @@ MUX_TOKEN_SECRET=[YOUR_TOKEN_SECRET]
 
 ```js
 /** @type {import('next').NextConfig} */
-const { withNextVideo } = require('@mux/next-video/process');
+const { withNextVideo } = require('next-video/process');
 
 const nextConfig = {}; // Your current Next Config object
 
@@ -80,11 +80,11 @@ module.exports = withNextVideo(nextConfig);
 
 #### Add video import types to `tsconfig.json`
 
-This is only required if you're using TypeScript, and makes sure your video file imports don't yell at you for missing types. `video.d.ts` should have been created in your project root when you ran `npx @mux/next-video init`, if not you can create it manually:
+This is only required if you're using TypeScript, and makes sure your video file imports don't yell at you for missing types. `video.d.ts` should have been created in your project root when you ran `npx next-video init`, if not you can create it manually:
 
 ```ts
 // video.d.ts
-/// <reference types="@mux/next-video/video-types/global" />
+/// <reference types="next-video/video-types/global" />
 ```
 
 Then add that file to the `include` array in `tsconfig.json`.
@@ -101,25 +101,25 @@ Then add that file to the `include` array in `tsconfig.json`.
 
 ### Local videos
 
-Add videos locally to the `/videos` directory then run `npx @mux/next-video sync`. The videos will be automatically uploaded to remote storage and optimized. You'll notice `/videos/[file-name].json` files are also created. These are used to map your local video files to the new, remote-hosted video assets. These json files must be checked into git.
+Add videos locally to the `/videos` directory then run `npx next-video sync`. The videos will be automatically uploaded to remote storage and optimized. You'll notice `/videos/[file-name].json` files are also created. These are used to map your local video files to the new, remote-hosted video assets. These json files must be checked into git.
 
 ```
-npx @mux/next-video sync
+npx next-video sync
 ```
 
-You can also add `@mux/next-video sync -w` to the dev script to automatically sync videos as they're added to `/videos` while the dev server is running.
+You can also add `next-video sync -w` to the dev script to automatically sync videos as they're added to `/videos` while the dev server is running.
 
 ```js
 // package.json
   "scripts": {
-    "dev": "next dev & npx @mux/next-video sync -w",
+    "dev": "next dev & npx next-video sync -w",
   },
 ```
 
 Now you can use the `<Video>` component in your application. Let's say you've added a file called `awesome-video.mp4` to `/videos`
 
 ```tsx
-import Video from '@mux/next-video';
+import Video from 'next-video';
 import awesomeVideo from '/videos/awesome-video.mp4';
 
 export default function Page() {
@@ -135,7 +135,7 @@ For videos that are already hosted remotely (for example on AWS S3), import the 
 This creates a local JSON file in the `/videos` folder and the sync script will start uploading the video.
 
 ```tsx
-import Video from '@mux/next-video';
+import Video from 'next-video';
 import awesomeVideo from 'https://www.mydomain.com/remote-video.mp4';
 
 export default function Page() {
@@ -155,20 +155,20 @@ That can be solved by creating a new API endpoint in your Next.js app for `/api/
 
 ```js
 // app/api/video/route.js
-export { GET } from '@mux/next-video/request-handler'
+export { GET } from 'next-video/request-handler'
 ```
 
 **Pages router (Next.js)**
 
 ```js
 // pages/api/video/[[...handler]].js
-export { default } from '@mux/next-video/request-handler'
+export { default } from 'next-video/request-handler'
 ```
 
 Then set the `src` attribute to the URL of the remote video, refresh the page and the video will start processing.
 
 ```tsx
-import Video from '@mux/next-video';
+import Video from 'next-video';
 
 export default function Page() {
   return <Video src="https://www.mydomain.com/remote-video.mp4" />;
