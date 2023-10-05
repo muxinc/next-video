@@ -1,3 +1,17 @@
+# [0.5.0](https://github.com/muxinc/next-video/compare/v0.4.4...v0.5.0) (2023-10-05)
+
+
+### Bug Fixes
+
+* update package name to next-video ([#65](https://github.com/muxinc/next-video/issues/65)) ([fec79e1](https://github.com/muxinc/next-video/commit/fec79e15703f5933537c69cf1add9097816873f3))
+
+
+### Features
+
+* add (string & import) remote src support  ([#63](https://github.com/muxinc/next-video/issues/63)) ([316365d](https://github.com/muxinc/next-video/commit/316365db8e3dc66cc3222693dd2fe0e3cc9f7a2a))
+
+
+
 ## [0.4.4](https://github.com/muxinc/next-video/compare/v0.4.3...v0.4.4) (2023-09-19)
 
 
