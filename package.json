@@ -3,13 +3,13 @@
   "version": "0.5.0",
   "description": "A React component for adding video to your Next.js application. It extends both the video element and your Next app with features for automatic video optimization.",
   "type": "module",
-  "main": "./dist/cjs/next-video.js",
-  "module": "./dist/next-video.js",
+  "main": "./dist/cjs/components/video.js",
+  "module": "./dist/components/video.js",
   "exports": {
     ".": {
-      "import": "./dist/next-video.js",
-      "require": "./dist/cjs/next-video.js",
-      "default": "./dist/next-video.js"
+      "import": "./dist/components/video.js",
+      "require": "./dist/cjs/components/video.js",
+      "default": "./dist/components/video.js"
     },
     "./process": {
       "import": "./dist/main.js",
