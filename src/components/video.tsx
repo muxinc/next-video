@@ -15,21 +15,6 @@ declare module 'react' {
   }
 }
 
-interface NextVideoProps extends Omit<MuxPlayerProps, 'src'> {
-  src: string | Asset;
-  width?: number;
-  height?: number;
-  controls?: boolean;
-  blurDataURL?: string;
-
-  /**
-   * For best image loading performance the user should provide the sizes attribute.
-   * The width of the image in the webpage. e.g. sizes="800px". Defaults to 100vw.
-   * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#sizes
-   */
-  sizes?: string;
-}
-
 const DEV_MODE = process.env.NODE_ENV === 'development';
 const FILES_FOLDER = 'videos/';
 const API_ROUTE = '/api/video';
@@ -39,55 +24,17 @@ const toSymlinkPath = (path?: string) => {
   return path?.replace(FILES_FOLDER, `_${FILES_FOLDER}`);
 }
 
-export default function NextVideo(props: NextVideoProps) {
-  let {
-    src,
-    width,
-    height,
-    poster,
-    blurDataURL,
-    sizes = '100vw',
-    controls = true,
-    ...rest
-  } = props;
-
-  const playerProps: MuxPlayerProps = rest;
-  let status: string | undefined;
-  let srcset: string | undefined;
-
+export default function NextVideo(props: VideoProps) {
+  let { src, width, height, controls = true } = props;
   let [asset, setAsset] = useState(src);
 
   // Required to make Next.js fast refresh when the local JSON file changes.
   // https://nextjs.org/docs/architecture/fast-refresh#fast-refresh-and-hooks
-  if (typeof src === 'object') {
-    asset = src;
-  }
+  if (typeof src === 'object') asset = src;
 
-  if (typeof asset === 'object') {
-    status = asset.status;
-
-    let playbackId = asset.externalIds?.playbackId;
-
-    if (status === 'ready' && playbackId) {
-      playerProps.playbackId = playbackId;
-
-      if (!poster) {
-        poster = getPosterURLFromPlaybackId(playbackId, playerProps);
-        srcset =
-          `${getPosterURLFromPlaybackId(playbackId, { ...playerProps, width: 480 })} 480w,` +
-          `${getPosterURLFromPlaybackId(playbackId, { ...playerProps, width: 640 })} 640w,` +
-          `${getPosterURLFromPlaybackId(playbackId, { ...playerProps, width: 960 })} 960w,` +
-          `${getPosterURLFromPlaybackId(playbackId, { ...playerProps, width: 1280 })} 1280w,` +
-          `${getPosterURLFromPlaybackId(playbackId, { ...playerProps, width: 1600 })} 1600w,` +
-          `${poster} 1920w`;
-      }
-
-      blurDataURL = blurDataURL ?? asset.blurDataURL;
-
-    } else {
-      playerProps.src = toSymlinkPath(asset.originalFilePath);
-    }
-  }
+  const status = typeof asset === 'object' ? asset.status : undefined;
+  let { blurDataURL, ...posterProps } = getPosterProps(props, { asset });
+  let videoProps = getVideoProps(props, { asset });
 
   async function fetchItems(abortSignal: AbortSignal) {
     if (typeof asset === 'object') return;
@@ -152,13 +99,11 @@ export default function NextVideo(props: NextVideoProps) {
         }}
         onPlaying={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
-        {...playerProps}
+        {...videoProps}
       >
-        {poster && <img
+        {posterProps.poster && <img
           slot="poster"
-          src={poster}
-          srcSet={srcset}
-          sizes={sizes}
+          {...posterProps}
           style={{ backgroundImage: blurDataURL ? `url('${blurDataURL}')` : undefined }} />
         }
       </MuxPlayer>
@@ -168,4 +113,78 @@ export default function NextVideo(props: NextVideoProps) {
       />}
     </div>
   );
+}
+
+interface VideoProps extends Omit<MuxPlayerProps, 'src'> {
+  src: string | Asset;
+  width?: number;
+  height?: number;
+  controls?: boolean;
+  blurDataURL?: string;
+
+  /**
+   * For best image loading performance the user should provide the sizes attribute.
+   * The width of the image in the webpage. e.g. sizes="800px". Defaults to 100vw.
+   * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#sizes
+   */
+  sizes?: string;
+}
+
+function getVideoProps(allProps: VideoProps, state: { asset: Asset | string }) {
+  const { asset } = state;
+  const {
+    src,
+    width,
+    height,
+    poster,
+    blurDataURL,
+    sizes,
+    controls,
+    ...rest
+  } = allProps;
+  const props: MuxPlayerProps = { ...rest };
+
+  if (typeof asset === 'object') {
+    let playbackId = asset.externalIds?.playbackId;
+
+    if (asset.status === 'ready' && playbackId) {
+      props.playbackId = playbackId;
+    } else {
+      props.src = toSymlinkPath(asset.originalFilePath);
+    }
+  }
+
+  return props;
+}
+
+function getPosterProps(allProps: VideoProps, state: { asset: Asset | string }) {
+  const { asset } = state;
+  let { poster, blurDataURL } = allProps;
+  let srcSet;
+
+  if (typeof asset === 'object') {
+    let playbackId = asset.externalIds?.playbackId;
+
+    if (asset.status === 'ready' && playbackId) {
+
+      if (!poster) {
+        poster = getPosterURLFromPlaybackId(playbackId, allProps);
+        srcSet =
+          `${getPosterURLFromPlaybackId(playbackId, { ...allProps, width: 480 })} 480w,` +
+          `${getPosterURLFromPlaybackId(playbackId, { ...allProps, width: 640 })} 640w,` +
+          `${getPosterURLFromPlaybackId(playbackId, { ...allProps, width: 960 })} 960w,` +
+          `${getPosterURLFromPlaybackId(playbackId, { ...allProps, width: 1280 })} 1280w,` +
+          `${getPosterURLFromPlaybackId(playbackId, { ...allProps, width: 1600 })} 1600w,` +
+          `${poster} 1920w`;
+      }
+
+      blurDataURL = blurDataURL ?? asset.blurDataURL;
+    }
+  }
+
+  return {
+    poster,
+    srcSet,
+    blurDataURL,
+  };
 }
