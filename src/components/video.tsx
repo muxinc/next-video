@@ -1,12 +1,12 @@
 'use client';
 
 // todo: fix mux-player to work with moduleResolution: 'nodenext'?
-import { useState } from 'react';
+import { forwardRef, useState } from 'react';
 import MuxPlayer from '@mux/mux-player-react';
 import { Alert } from './alert.js';
 import { getPosterURLFromPlaybackId, usePolling } from './utils.js';
 
-import type { MuxPlayerProps } from '@mux/mux-player-react';
+import type { MuxPlayerRefAttributes, MuxPlayerProps } from '@mux/mux-player-react';
 import type { Asset } from '../assets.js';
 
 declare module 'react' {
@@ -15,7 +15,7 @@ declare module 'react' {
   }
 }
 
-interface VideoProps extends Omit<MuxPlayerProps, 'src'> {
+export interface VideoProps extends Omit<MuxPlayerProps, 'src'> {
   /**
    * An imported video source object or a string video source URL.
    * Can be a local or remote video file.
@@ -50,6 +50,19 @@ interface VideoProps extends Omit<MuxPlayerProps, 'src'> {
    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#sizes
    */
   sizes?: string;
+
+  /**
+   * A custom function used to resolve video URLs.
+   */
+  loader?: VideoLoader;
+}
+
+export type VideoLoader = (p: VideoLoaderProps) => Promise<string>;
+
+export interface VideoLoaderProps {
+  src: string;
+  width?: number;
+  height?: number;
 }
 
 const DEV_MODE = process.env.NODE_ENV === 'development';
@@ -61,8 +74,14 @@ const toSymlinkPath = (path?: string) => {
   return path?.replace(FILES_FOLDER, `_${FILES_FOLDER}`);
 }
 
-export default function NextVideo(props: VideoProps) {
-  let { src, width, height, controls = true } = props;
+const NextVideo = forwardRef<MuxPlayerRefAttributes | null, VideoProps>((props: VideoProps, forwardedRef) => {
+  let {
+    src,
+    width,
+    height,
+    controls = true,
+    loader = defaultLoader
+  } = props;
   let [asset, setAsset] = useState(src);
 
   // Required to make Next.js fast refresh when the local JSON file changes.
@@ -78,8 +97,7 @@ export default function NextVideo(props: VideoProps) {
     if (typeof asset === 'object') return;
 
     try {
-      const requestUrl = new URL(API_ROUTE, window.location.href);
-      requestUrl.searchParams.set('url', asset as string);
+      const requestUrl = await loader({ src: asset, width, height });
       const res = await fetch(requestUrl, { signal: abortSignal });
       const json = await res.json();
       if (res.ok) {
@@ -128,6 +146,7 @@ export default function NextVideo(props: VideoProps) {
         `
       }</style>
       <MuxPlayer
+        ref={forwardedRef}
         data-next-video={status ?? ''}
         poster=""
         style={{
@@ -151,10 +170,18 @@ export default function NextVideo(props: VideoProps) {
       />}
     </div>
   );
+});
+
+function defaultLoader({ src, width, height }: VideoLoaderProps) {
+  let requestUrl = `${API_ROUTE}?url=${encodeURIComponent(src)}`;
+  if (width) requestUrl += `&w=${width}`;
+  if (height) requestUrl += `&h=${height}`;
+  return `${requestUrl}`;
 }
 
 function getVideoProps(allProps: VideoProps, state: { asset: Asset | string }) {
   const { asset } = state;
+  // Remove props that are not needed for MuxPlayer.
   const {
     src,
     width,
@@ -163,6 +190,7 @@ function getVideoProps(allProps: VideoProps, state: { asset: Asset | string }) {
     blurDataURL,
     sizes,
     controls,
+    loader,
     ...rest
   } = allProps;
   const props: MuxPlayerProps = { ...rest };
@@ -211,3 +239,5 @@ function getPosterProps(allProps: VideoProps, state: { asset: Asset | string }) 
     blurDataURL,
   };
 }
+
+export default NextVideo;
