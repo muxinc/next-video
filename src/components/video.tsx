@@ -15,6 +15,43 @@ declare module 'react' {
   }
 }
 
+interface VideoProps extends Omit<MuxPlayerProps, 'src'> {
+  /**
+   * An imported video source object or a string video source URL.
+   * Can be a local or remote video file.
+   * If it's a string be sure to create an API endpoint to handle the request.
+   */
+  src: Asset | string;
+
+  /**
+   * Give a fixed width to the video.
+   */
+  width?: number;
+
+  /**
+   * Give a fixed height to the video.
+   */
+  height?: number;
+
+  /**
+   * Set to false to hide the video controls.
+   */
+  controls?: boolean;
+
+  /**
+   * Set a manual data URL to be used as a placeholder image before the poster image successfully loads.
+   * For imported videos this will be automatically generated.
+   */
+  blurDataURL?: string;
+
+  /**
+   * For best image loading performance the user should provide the sizes attribute.
+   * The width of the image in the webpage. e.g. sizes="800px". Defaults to 100vw.
+   * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#sizes
+   */
+  sizes?: string;
+}
+
 const DEV_MODE = process.env.NODE_ENV === 'development';
 const FILES_FOLDER = 'videos/';
 const API_ROUTE = '/api/video';
@@ -33,6 +70,7 @@ export default function NextVideo(props: VideoProps) {
   if (typeof src === 'object') asset = src;
 
   const status = typeof asset === 'object' ? asset.status : undefined;
+
   let { blurDataURL, ...posterProps } = getPosterProps(props, { asset });
   let videoProps = getVideoProps(props, { asset });
 
@@ -113,21 +151,6 @@ export default function NextVideo(props: VideoProps) {
       />}
     </div>
   );
-}
-
-interface VideoProps extends Omit<MuxPlayerProps, 'src'> {
-  src: string | Asset;
-  width?: number;
-  height?: number;
-  controls?: boolean;
-  blurDataURL?: string;
-
-  /**
-   * For best image loading performance the user should provide the sizes attribute.
-   * The width of the image in the webpage. e.g. sizes="800px". Defaults to 100vw.
-   * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#sizes
-   */
-  sizes?: string;
 }
 
 function getVideoProps(allProps: VideoProps, state: { asset: Asset | string }) {
