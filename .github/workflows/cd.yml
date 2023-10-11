@@ -6,7 +6,7 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
     inputs:
-      version_type:
+      version:
         type: choice
         required: true
         description: Version
@@ -15,11 +15,23 @@ on:
         - patch
         - minor
         - major
+        - prerelease
+      prerelease:
+        type: choice
+        required: false
+        description: Pre-release
+        options:
+        -
+        - canary
+        - beta
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: production
+    permissions:
+      contents: write
+      id-token: write
 
     env:
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -37,4 +49,4 @@ jobs:
       - run: npm ci
       - run: npm run build --if-present
       - run: npm test
-      - run: npx --yes wet-run@0.2.0 release ${{ inputs.version_type }} --changelog --github-release
+      - run: npx --yes wet-run@0.5.1 release ${{ inputs.version }} --prerelease "${{ inputs.prerelease }}" --provenance --changelog --github-release
