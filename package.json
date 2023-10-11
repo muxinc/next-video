@@ -3,13 +3,13 @@
   "version": "0.5.0",
   "description": "A React component for adding video to your Next.js application. It extends both the video element and your Next app with features for automatic video optimization.",
   "type": "module",
-  "main": "./dist/cjs/next-video.js",
-  "module": "./dist/next-video.js",
+  "main": "./dist/cjs/components/video.js",
+  "module": "./dist/components/video.js",
   "exports": {
     ".": {
-      "import": "./dist/next-video.js",
-      "require": "./dist/cjs/next-video.js",
-      "default": "./dist/next-video.js"
+      "import": "./dist/components/video.js",
+      "require": "./dist/cjs/components/video.js",
+      "default": "./dist/components/video.js"
     },
     "./process": {
       "import": "./dist/main.js",
@@ -58,28 +58,28 @@
     }
   },
   "devDependencies": {
-    "@types/dotenv-flow": "^3.2.0",
-    "@types/node": "^20.4.5",
-    "@types/react": "^18.2.16",
-    "@types/yargs": "^17.0.24",
-    "glob": "^10.3.3",
-    "next": "^13.5.2",
+    "@types/dotenv-flow": "^3.3.1",
+    "@types/node": "^20.8.4",
+    "@types/react": "^18.2.27",
+    "@types/yargs": "^17.0.28",
+    "glob": "^10.3.10",
+    "next": "^13.5.4",
     "react": "^18.2.0",
-    "tsx": "^3.12.7",
-    "typescript": "^5.1.6"
+    "tsx": "^3.13.0",
+    "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@inquirer/prompts": "^3.0.2",
+    "@inquirer/prompts": "^3.2.0",
     "@mux/mux-node": "github:stainless-sdks/mux-node#8.0.0-beta.1",
-    "@mux/mux-player-react": "1.14.2",
-    "@next/env": "^13.4.19",
+    "@mux/mux-player-react": "2.0.1",
+    "@next/env": "^13.5.4",
     "chalk": "^4.1.2",
     "chokidar": "^3.5.3",
-    "magicast": "^0.2.10",
-    "sharp": "^0.32.5",
-    "symlink-dir": "^5.1.1",
+    "magicast": "^0.3.0",
+    "sharp": "^0.32.6",
+    "symlink-dir": "^5.2.0",
     "thumbhash": "^0.1.1",
-    "undici": "^5.22.1",
+    "undici": "^5.25.4",
     "yargs": "^17.7.2"
   }
 }
