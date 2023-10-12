@@ -1,3 +1,12 @@
+# [0.6.0](https://github.com/muxinc/next-video/compare/v0.5.0...v0.6.0) (2023-10-12)
+
+
+### Features
+
+* add loader prop ([#67](https://github.com/muxinc/next-video/issues/67)) ([c91d923](https://github.com/muxinc/next-video/commit/c91d9233b6ec543572ae097977cdd3a14d639d8b))
+
+
+
 # [0.5.0](https://github.com/muxinc/next-video/compare/v0.4.4...v0.5.0) (2023-10-05)
 
 
