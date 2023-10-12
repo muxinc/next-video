@@ -2,7 +2,24 @@
   "name": "next-video",
   "version": "0.5.0",
   "description": "A React component for adding video to your Next.js application. It extends both the video element and your Next app with features for automatic video optimization.",
+  "author": "Mux Lab <lab@mux.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/muxinc/next-video#readme",
+  "bugs": {
+    "url": "https://github.com/muxinc/next-video/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/muxinc/next-video.git"
+  },
   "type": "module",
+  "files": [
+    "dist",
+    "video-types"
+  ],
+  "bin": {
+    "next-video": "./dist/cli.js"
+  },
   "main": "./dist/cjs/components/video.js",
   "module": "./dist/components/video.js",
   "exports": {
@@ -35,15 +52,6 @@
     "cli": "node --loader tsx --no-warnings ./src/cli",
     "test": "glob -c \"node --loader tsx --no-warnings --test\" \"./tests/**/*.test.ts\""
   },
-  "bin": {
-    "next-video": "./dist/cli.js"
-  },
-  "files": [
-    "dist",
-    "video-types"
-  ],
-  "author": "Mux Lab <lab@mux.com>",
-  "license": "MIT",
   "peerDependencies": {
     "@types/react": "^17.0.0 || ^18",
     "react": "^17.0.2 || ^18",
@@ -81,5 +89,16 @@
     "thumbhash": "^0.1.1",
     "undici": "^5.25.4",
     "yargs": "^17.7.2"
-  }
+  },
+  "keywords": [
+    "next",
+    "nextjs",
+    "react",
+    "video",
+    "video-streaming",
+    "video-processing",
+    "audio",
+    "media",
+    "player"
+  ]
 }
