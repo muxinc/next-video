@@ -1,6 +1,6 @@
+import { env } from 'node:process';
 import { readFile, writeFile } from 'node:fs/promises';
 import log from './logger.js';
-import { VIDEOS_DIR } from './constants.js';
 
 export interface Asset {
   status?: 'sourced' | 'pending' | 'uploading' | 'processing' | 'ready' | 'error';
@@ -71,6 +71,9 @@ export async function updateAsset(filePath: string, assetDetails: Asset): Promis
 
 function getAssetConfigPath(filePath: string) {
   if (isRemote(filePath)) {
+    const VIDEOS_DIR = JSON.parse(env['__NEXT_VIDEO_OPTS'] ?? '{}').folder;
+    if (!VIDEOS_DIR) throw new Error('Missing video `folder` config.');
+
     // Add the asset directory and make remote url a safe file path.
     return `${VIDEOS_DIR}/${toSafePath(filePath)}.json`;
   }
