@@ -1,3 +1,17 @@
+# [0.7.0](https://github.com/muxinc/next-video/compare/v0.6.0...v0.7.0) (2023-10-16)
+
+
+### Bug Fixes
+
+* use https:// NPM Mux node dependency ([#72](https://github.com/muxinc/next-video/issues/72)) ([953109d](https://github.com/muxinc/next-video/commit/953109d127d09714e6259acf15a65b08000496bd))
+
+
+### Features
+
+* add video config ([#71](https://github.com/muxinc/next-video/issues/71)) ([253015f](https://github.com/muxinc/next-video/commit/253015f1b4ce39620a680948e983d3edc1e994ed))
+
+
+
 # [0.6.0](https://github.com/muxinc/next-video/compare/v0.5.0...v0.6.0) (2023-10-12)
 
 
