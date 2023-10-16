@@ -1,10 +1,8 @@
 import path from 'node:path';
 import { readFile, writeFile } from 'node:fs/promises';
-
-import { VIDEOS_DIR } from './constants.js';
+import { env } from 'node:process';
 
 export default async function loader(this: any, source: any) {
-
   const assetPath = path.resolve(getAssetConfigPath(this.resourcePath));
 
   this.addDependency(assetPath);
@@ -32,6 +30,9 @@ export default async function loader(this: any, source: any) {
 
 function getAssetConfigPath(filePath: string) {
   if (isRemote(filePath)) {
+    const VIDEOS_DIR = JSON.parse(env['__NEXT_VIDEO_OPTS'] ?? '{}').folder;
+    if (!VIDEOS_DIR) throw new Error('Missing video `folder` config.');
+
     // Add the asset directory and make remote url a safe file path.
     return `${VIDEOS_DIR}/${toSafePath(filePath)}.json`;
   }

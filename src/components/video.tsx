@@ -8,6 +8,7 @@ import { getPosterURLFromPlaybackId, usePolling } from './utils.js';
 
 import type { MuxPlayerRefAttributes, MuxPlayerProps } from '@mux/mux-player-react';
 import type { Asset } from '../assets.js';
+import type { VideoConfig } from '../config.js';
 
 declare module 'react' {
   interface CSSProperties {
@@ -65,9 +66,19 @@ export interface VideoLoaderProps {
   height?: number;
 }
 
+type VideoLoaderPropsWithConfig = VideoLoaderProps & {
+  config: Readonly<VideoConfig>
+}
+
 const DEV_MODE = process.env.NODE_ENV === 'development';
-const FILES_FOLDER = 'videos/';
-const API_ROUTE = '/api/video';
+
+const config = JSON.parse(
+  process.env.NEXT_PUBLIC_DEV_VIDEO_OPTS
+  ?? process.env.NEXT_PUBLIC_VIDEO_OPTS
+  ?? '{}'
+);
+
+const FILES_FOLDER = `${config.folder ?? 'videos'}/`;
 
 const toSymlinkPath = (path?: string) => {
   if (!path?.startsWith(FILES_FOLDER)) return path;
@@ -97,14 +108,19 @@ const NextVideo = forwardRef<MuxPlayerRefAttributes | null, VideoProps>((props: 
     if (typeof asset === 'object') return;
 
     try {
-      const requestUrl = await loader({ src: asset, width, height });
+      const requestUrl = await loader({
+        src: asset,
+        config,
+        width,
+        height
+      });
       const res = await fetch(requestUrl, { signal: abortSignal });
       const json = await res.json();
       if (res.ok) {
         setAsset(json);
       } else {
         let message = `[next-video] The request to ${res.url} failed. `;
-        message += `Did you configure the \`${API_ROUTE}\` route to handle video API requests?\n`;
+        message += `Did you configure the \`${config.path}\` route to handle video API requests?\n`;
         throw new Error(message);
       }
     } catch (err) {
@@ -172,8 +188,8 @@ const NextVideo = forwardRef<MuxPlayerRefAttributes | null, VideoProps>((props: 
   );
 });
 
-function defaultLoader({ src, width, height }: VideoLoaderProps) {
-  let requestUrl = `${API_ROUTE}?url=${encodeURIComponent(src)}`;
+function defaultLoader({ config, src, width, height }: VideoLoaderPropsWithConfig) {
+  let requestUrl = `${config.path}?url=${encodeURIComponent(src)}`;
   if (width) requestUrl += `&w=${width}`;
   if (height) requestUrl += `&h=${height}`;
   return `${requestUrl}`;

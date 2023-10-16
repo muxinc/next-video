@@ -1,27 +1,39 @@
 import symlinkDir from 'symlink-dir';
-
-import path from 'node:path';
+import { join } from 'node:path';
 import fs from 'node:fs/promises';
+import { env } from 'node:process';
+import { videoConfigDefault } from './config.js';
+import type { VideoConfigComplete } from './config.js';
 
-import { VIDEOS_PATH } from './constants.js';
+export default async function withNextVideo(nextConfig: any, videoConfig: VideoConfigComplete) {
 
-export default async function withNextVideo(nextConfig: any) {
+  if (typeof nextConfig === 'function') {
+    return async (...args: any[]) => {
+      const nextConfigResult = await Promise.resolve(nextConfig(...args));
+      return withNextVideo(nextConfigResult, videoConfig);
+    };
+  }
+
+  videoConfig = Object.assign({}, videoConfigDefault, videoConfig);
+
+  const { path, folder } = videoConfig;
+
+  env['NEXT_PUBLIC_VIDEO_OPTS'] = JSON.stringify({ path });
+  env['__NEXT_VIDEO_OPTS'] = JSON.stringify(videoConfig);
+
   // We should probably switch to using `phase` here, just a bit concerned about backwards compatibility.
   if (process.argv[2] === 'dev') {
-    const TMP_PUBLIC_VIDEOS_PATH = path.join(process.cwd(), 'public/_videos');
+
+    env['NEXT_PUBLIC_DEV_VIDEO_OPTS'] = JSON.stringify({ path, folder });
+
+    const VIDEOS_PATH = join(process.cwd(), folder)
+    const TMP_PUBLIC_VIDEOS_PATH = join(process.cwd(), 'public', `_${folder}`);
 
     await symlinkDir(VIDEOS_PATH, TMP_PUBLIC_VIDEOS_PATH);
 
     process.on('exit', async () => {
       await fs.unlink(TMP_PUBLIC_VIDEOS_PATH);
     });
-  }
-
-  if (typeof nextConfig === 'function') {
-    return async (...args: any[]) => {
-      const nextConfigResult = await Promise.resolve(nextConfig(...args));
-      return withNextVideo(nextConfigResult);
-    };
   }
 
   return Object.assign({}, nextConfig, {

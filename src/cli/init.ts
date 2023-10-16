@@ -218,7 +218,7 @@ export async function handler(argv: Arguments) {
   }
 
   try {
-    const update = await updateNextConfigFile();
+    const update = await updateNextConfigFile('./', { folder: baseDir });
 
     if (update) {
       changes.push([log.add, `Updated ${update.configPath} to include next-video.`]);
