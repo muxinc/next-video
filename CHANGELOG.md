@@ -1,3 +1,12 @@
+## [0.7.1](https://github.com/muxinc/next-video/compare/v0.7.0...v0.7.1) (2023-10-17)
+
+
+### Bug Fixes
+
+* Mux node SDK upgrade ([#73](https://github.com/muxinc/next-video/issues/73)) ([fdb10c1](https://github.com/muxinc/next-video/commit/fdb10c105fd172f79984fc3d029c8c4666f851ef))
+
+
+
 # [0.7.0](https://github.com/muxinc/next-video/compare/v0.6.0...v0.7.0) (2023-10-16)
 
 
