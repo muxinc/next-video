@@ -1,6 +1,6 @@
 {
   "name": "next-video",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "A React component for adding video to your Next.js application. It extends both the video element and your Next app with features for automatic video optimization.",
   "author": "Mux Lab <lab@mux.com>",
   "license": "MIT",
