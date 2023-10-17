@@ -7,6 +7,9 @@ export const get = (url: string, options: any = {}) => {
 
   if (objectType === 'uploads') {
     return {
+      _thenUnwrap(transform) {
+        return transform(this);
+      },
       data: {
         id: id,
         asset_id: `fake-asset-id-${generateRandomString()}`,
@@ -16,6 +19,9 @@ export const get = (url: string, options: any = {}) => {
 
   if (objectType === 'assets') {
     return {
+      _thenUnwrap(transform) {
+        return transform(this);
+      },
       data: {
         id: id,
         status: 'ready',
@@ -32,6 +38,9 @@ export const post = (url: string, options: any = {}) => {
 
   if (objectType === 'uploads') {
     return {
+      _thenUnwrap(transform) {
+        return transform(this);
+      },
       data: {
         id: `fake-upload-${fakeId}`,
         url: `http://localhost:3123/fake-upload-url-${fakeId}`,
