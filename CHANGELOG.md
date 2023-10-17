@@ -1,3 +1,12 @@
+## [0.7.2](https://github.com/muxinc/next-video/compare/v0.7.1...v0.7.2) (2023-10-17)
+
+
+### Bug Fixes
+
+* yarn add typo ([#74](https://github.com/muxinc/next-video/issues/74)) ([f043cc6](https://github.com/muxinc/next-video/commit/f043cc605ee90738348500abf5a08ab4c9e83aa0))
+
+
+
 ## [0.7.1](https://github.com/muxinc/next-video/compare/v0.7.0...v0.7.1) (2023-10-17)
 
 
