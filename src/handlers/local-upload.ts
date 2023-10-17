@@ -38,7 +38,7 @@ export async function pollForAssetReady(filePath: string, asset: Asset) {
   const assetId = asset.externalIds?.assetId;
 
   const muxAsset = await mux.video.assets.retrieve(assetId);
-  const playbackId = muxAsset.playback_ids?.[0].id;
+  const playbackId = muxAsset.playback_ids?.[0].id!;
 
   let updatedAsset: Asset = asset;
   if (asset.externalIds?.playbackId !== playbackId) {
@@ -156,7 +156,7 @@ export default async function uploadLocalFile(asset: Asset) {
     const processingAsset = await updateAsset(src, {
       status: 'processing',
       externalIds: {
-        assetId: assetObj.id,
+        assetId: assetObj.id!,
       },
     });
 

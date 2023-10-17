@@ -45,7 +45,7 @@ export default async function handleVideoAdded(asset: Asset) {
   const processingAsset = await updateAsset(src, {
     status: 'processing',
     externalIds: {
-      assetId: assetObj.id,
+      assetId: assetObj.id!,
     },
   });
 
