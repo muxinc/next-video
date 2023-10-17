@@ -162,7 +162,7 @@ export async function handler(argv: Arguments) {
         if (manager === 'npm') {
           await execPromise('npm install next-video');
         } else if (manager === 'yarn') {
-          await execPromise('yarn install next-video');
+          await execPromise('yarn add next-video');
         } else if (manager === 'pnpm') {
           await execPromise('pnpm add next-video');
         }
