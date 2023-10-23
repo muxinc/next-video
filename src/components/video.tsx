@@ -1,10 +1,10 @@
 'use client';
 
 import { forwardRef, useState } from 'react';
-import DefaultPlayer from './default-player.js';
+import { DefaultPlayer } from './default-player.js';
 import { Alert } from './alert.js';
 import { createVideoRequest, defaultLoader } from './video-loader.js';
-import {  getPosterURLFromPlaybackId, toSymlinkPath, usePolling } from './utils.js';
+import { toSymlinkPath, usePolling } from './utils.js';
 
 import type { DefaultPlayerRefAttributes, DefaultPlayerProps } from './default-player.js';
 import type { Asset } from '../assets.js';
@@ -15,12 +15,10 @@ const DEV_MODE = process.env.NODE_ENV === 'development';
 const NextVideo = forwardRef<DefaultPlayerRefAttributes | null, VideoProps>((props: VideoProps, forwardedRef) => {
   let {
     as: VideoPlayer = DefaultPlayer,
-    children,
+    loader = defaultLoader,
     src,
     width,
     height,
-    controls = true,
-    loader = defaultLoader
   } = props;
 
   let [asset, setAsset] = useState(src);
@@ -38,21 +36,8 @@ const NextVideo = forwardRef<DefaultPlayerRefAttributes | null, VideoProps>((pro
   const needsPolling = DEV_MODE && (typeof asset === 'string' || status != 'ready');
   usePolling(request, needsPolling ? 1000 : null);
 
-  let { blurDataURL, poster, ...posterProps } = getPosterProps(props, { asset });
+  let posterProps = getPosterProps(props, { asset });
   let videoProps = getVideoProps(props, { asset });
-
-  // The default player supports a poster image slot which improves the loading speed.
-  if (VideoPlayer === DefaultPlayer && poster) {
-    poster = '';
-    children = <>
-      {children}
-      <img
-        slot="poster"
-        {...posterProps}
-        style={{ backgroundImage: blurDataURL ? `url('${blurDataURL}')` : undefined }}
-      />
-    </>
-  }
 
   return (
     <div className="next-video-container">
@@ -84,18 +69,13 @@ const NextVideo = forwardRef<DefaultPlayerRefAttributes | null, VideoProps>((pro
       <VideoPlayer
         ref={forwardedRef}
         data-next-video={status ?? ''}
-        poster={poster}
-        style={{
-          '--controls': controls === false ? 'none' : undefined,
-          width,
-          height,
-        }}
+        style={{ width, height }}
+        status={status}
         onPlaying={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
+        {...posterProps}
         {...videoProps}
-      >
-        {children}
-      </VideoPlayer>
+      ></VideoPlayer>
 
       {DEV_MODE && <Alert
         hidden={Boolean(playing || !status || status === 'ready')}
@@ -109,26 +89,23 @@ export function getVideoProps(allProps: VideoProps, state: { asset: Asset | stri
   const { asset } = state;
   // Remove props that are not needed for VideoPlayer.
   const {
+    controls = true,
     as,
-    children,
     src,
-    width,
-    height,
     poster,
     blurDataURL,
-    sizes,
-    controls,
     loader,
     ...rest
   } = allProps;
-  const props: DefaultPlayerProps = { ...rest };
+
+  const props: DefaultPlayerProps = {
+    controls,
+    src: asset,
+    ...rest
+  };
 
   if (typeof asset === 'object') {
-    let playbackId = asset.externalIds?.playbackId;
-
-    if (asset.status === 'ready' && playbackId) {
-      props.playbackId = playbackId;
-    } else {
+    if (asset.status !== 'ready') {
       props.src = toSymlinkPath(asset.originalFilePath);
     }
   }
@@ -139,31 +116,15 @@ export function getVideoProps(allProps: VideoProps, state: { asset: Asset | stri
 export function getPosterProps(allProps: VideoProps, state: { asset: Asset | string }) {
   const { asset } = state;
   let { poster, blurDataURL } = allProps;
-  let srcSet;
 
   if (typeof asset === 'object') {
-    let playbackId = asset.externalIds?.playbackId;
-
-    if (asset.status === 'ready' && playbackId) {
-
-      if (!poster) {
-        poster = getPosterURLFromPlaybackId(playbackId, allProps);
-        srcSet =
-          `${getPosterURLFromPlaybackId(playbackId, { ...allProps, width: 480 })} 480w,` +
-          `${getPosterURLFromPlaybackId(playbackId, { ...allProps, width: 640 })} 640w,` +
-          `${getPosterURLFromPlaybackId(playbackId, { ...allProps, width: 960 })} 960w,` +
-          `${getPosterURLFromPlaybackId(playbackId, { ...allProps, width: 1280 })} 1280w,` +
-          `${getPosterURLFromPlaybackId(playbackId, { ...allProps, width: 1600 })} 1600w,` +
-          `${poster} 1920w`;
-      }
-
+    if (asset.status === 'ready') {
       blurDataURL = blurDataURL ?? asset.blurDataURL;
     }
   }
 
   return {
     poster,
-    srcSet,
     blurDataURL,
   };
 }
