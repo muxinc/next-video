@@ -155,14 +155,14 @@ That can be solved by creating a new API endpoint in your Next.js app for `/api/
 
 ```js
 // app/api/video/route.js
-export { GET } from 'next-video/request-handler'
+export { GET } from 'next-video/request-handler';
 ```
 
 **Pages router (Next.js)**
 
 ```js
 // pages/api/video/[[...handler]].js
-export { default } from 'next-video/request-handler'
+export { default } from 'next-video/request-handler';
 ```
 
 Then set the `src` attribute to the URL of the remote video, refresh the page and the video will start processing.
@@ -172,6 +172,39 @@ import Video from 'next-video';
 
 export default function Page() {
   return <Video src="https://www.mydomain.com/remote-video.mp4" />;
+}
+```
+
+### Custom Player
+
+You can customize the player by passing a custom player component to the `as` prop.  
+The custom player component accepts the following props:
+
+- `asset`: The asset that is processed, contains useful asset metadata and upload status.
+- `src`: A string video source URL if the asset is ready.
+- `poster`: A string image source URL if the asset is ready.
+- `blurDataURL`: A string base64 image source URL that can be used as a placeholder.
+
+
+```tsx
+import Video from 'next-video';
+import { ReactPlayerAsVideo } from './player';
+import awesomeVideo from '/videos/awesome-video.mp4';
+
+export default function Page() {
+  return <Video as={ReactPlayerAsVideo} src={awesomeVideo} />;
+}
+```
+
+```tsx
+// player.js
+import ReactPlayer from 'react-player';
+
+export function ReactPlayerAsVideo(props) {
+  let { asset, src, poster, blurDataURL, ...rest } = props;
+  let config = { file: { attributes: { poster } } };
+
+  return <ReactPlayer url={src} config={config} {...rest} />;
 }
 ```
 
