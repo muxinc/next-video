@@ -15,6 +15,20 @@ const GITIGNORE_CONTENTS = `*
 !*.js
 !*.ts`;
 
+const GET_STARTED_CONTENTS = `{
+  "status": "ready",
+  "originalFilePath": "videos/get-started.mp4",
+  "externalIds": {
+    "uploadId": "gh4iwXCjWtFJ9ttRPerr5VrnHv00mE00or1nL6vNiLb2w",
+    "assetId": "KosQ6BK5t0169tsioA00dJx7uq9b3RQADGUt8kEiXO9BU",
+    "playbackId": "FTLlwEPNjT2FztXbLwwWHKzE1IFRGE301soZqhv7H2EM"
+  },
+  "createdAt": 1697642264605,
+  "updatedAt": 1697642295355,
+  "blurDataURL": "data:image/png;base64,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"
+}
+`;
+
 const TYPES_FILE_CONTENTS = `/// <reference types="next-video/video-types/global" />\n`;
 
 const DEFAULT_DIR = 'videos';
@@ -74,6 +88,7 @@ async function createVideoDir(dir: string) {
 
   await mkdir(fullPath, { recursive: true });
   await writeFile(path.join(dir, '.gitignore'), GITIGNORE_CONTENTS);
+  await writeFile(path.join(dir, 'getStarted.mp4.json'), GET_STARTED_CONTENTS);
   return;
 }
 
@@ -237,5 +252,16 @@ export async function handler(argv: Arguments) {
   }
 
   log.success(`${chalk.magenta.bold('next-video')} initialized!`);
+
   changes.forEach(([loggerFn, change]) => loggerFn(change));
+
+  log.info(`Why don't you try adding the component to a page?`);
+  log.info(`
+    ${chalk.magenta('import')} Video ${chalk.magenta('from')} ${chalk.cyan("'next-video'")};
+    ${chalk.magenta('import')} getStarted ${chalk.magenta('from')} ${chalk.cyan("'/videos/getStarted.mp4'")};
+    
+    ${chalk.magenta('export default function')} Page() {
+      ${chalk.magenta('return')} ${chalk.cyan('<')}Video ${chalk.cyan('src=')}{getStarted} ${chalk.cyan('/>')};
+    }
+  `);
 }
