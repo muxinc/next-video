@@ -1,3 +1,17 @@
+# [0.8.0](https://github.com/muxinc/next-video/compare/v0.7.2...v0.8.0) (2023-10-24)
+
+
+### Bug Fixes
+
+* env issue importing remote video source ([#80](https://github.com/muxinc/next-video/issues/80)) ([dd2bd03](https://github.com/muxinc/next-video/commit/dd2bd038aa9a0c4386128e343ba9bf2d895e3273))
+
+
+### Features
+
+* support custom player & tidy up ([#81](https://github.com/muxinc/next-video/issues/81)) ([fbbe166](https://github.com/muxinc/next-video/commit/fbbe16693ae7af332be9caa661bd473bee5bdb31))
+
+
+
 ## [0.7.2](https://github.com/muxinc/next-video/compare/v0.7.1...v0.7.2) (2023-10-17)
 
 
