@@ -2,6 +2,7 @@ import { confirm, input } from '@inquirer/prompts';
 import chalk from 'chalk';
 import { Argv, Arguments } from 'yargs';
 
+import os from 'node:os';
 import { exec } from 'node:child_process';
 import { access, mkdir, stat, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -18,6 +19,7 @@ const GITIGNORE_CONTENTS = `*
 const TYPES_FILE_CONTENTS = `/// <reference types="next-video/video-types/global" />\n`;
 
 const DEFAULT_DIR = 'videos';
+const DEV_SCRIPT = '& npx next-video sync -w';
 
 async function preInitCheck(dir: string) {
   try {
@@ -116,6 +118,11 @@ export function builder(yargs: Argv) {
       type: 'boolean',
       default: false,
     },
+    devscript: {
+      describe: `Automatically update your package.json to add the watch command to your dev script.`,
+      type: 'boolean',
+      default: false,
+    },
   }); // We also need to add the typescript check and add the `next-video.d.ts` file.
 }
 export async function handler(argv: Arguments) {
@@ -123,6 +130,7 @@ export async function handler(argv: Arguments) {
   let packageInstalled: boolean = false;
   let ts = argv.typescript;
   let updateTsConfig = argv.tsconfig;
+  let updateDevScript = argv.devscript;
   let changes: [Logger, string][] = [];
 
   try {
@@ -193,27 +201,53 @@ export async function handler(argv: Arguments) {
   // we should ask just in case.
   if (!ts) {
     ts = await confirm({ message: 'Is this a TypeScript project?', default: true });
+  }
 
-    if (ts) {
-      await createTSFile(path.join(process.cwd(), 'video.d.ts'));
-      changes.push([log.add, `Created video.d.ts.`]);
+  if (ts) {
+    await createTSFile(path.join(process.cwd(), 'video.d.ts'));
+    changes.push([log.add, `Created video.d.ts.`]);
+  }
+
+  if (ts && !updateTsConfig) {
+    updateTsConfig = await confirm({ message: 'Update tsconfig.json to include next-video types?', default: true });
+  }
+
+  if (updateTsConfig) {
+    try {
+      await updateTSConfigFile(path.join(process.cwd(), 'tsconfig.json'));
+      changes.push([log.add, `Updated tsconfig.json to include next-video types.`]);
+    } catch (err: any) {
+      changes.push([log.error, 'Failed to update tsconfig.json, please add "video.d.ts" to the include array']);
     }
+  } else if (ts) {
+    // If they didn't update the config but ts is still true then we should
+    // let them know they need to update their tsconfig.
+    changes.push([log.info, `Add ${chalk.underline('video.d.ts')} to the includes array in tsconfig.json.`]);
+  }
 
-    if (ts && !updateTsConfig) {
-      updateTsConfig = await confirm({ message: 'Update tsconfig.json to include next-video types?', default: true });
-    }
+  // If we're on Windows don't try to update the dev script.
+  // Command shell and PowerShell requires more complex additions for parallel scripts.
+  const cmd = await isCmd();
 
-    if (updateTsConfig) {
-      try {
-        await updateTSConfigFile(path.join(process.cwd(), 'tsconfig.json'));
-        changes.push([log.add, `Updated tsconfig.json to include next-video types.`]);
-      } catch (err: any) {
-        changes.push([log.error, 'Failed to update tsconfig.json, please add "video.d.ts" to the include array']);
+  if (!cmd && !updateDevScript) {
+    updateDevScript = await confirm({
+      message: `Update package.json to add the watch command to your dev script?`,
+      default: true,
+    });
+  }
+
+  if (!cmd && updateDevScript) {
+    try {
+      const devScript = (await execPromise(`npm pkg get scripts.dev`) as string)?.trim().slice(1, -1);
+
+      if (devScript && !devScript.includes(DEV_SCRIPT)) {
+        // Use npm pkg set instead of writeFile to maintain indentation.
+        await execPromise(`npm pkg set scripts.dev='${devScript} ${DEV_SCRIPT}'`);
       }
-    } else if (ts) {
-      // If they didn't update the config but ts is still true then we should
-      // let them know they need to update their tsconfig.
-      changes.push([log.info, `Add ${chalk.underline('video.d.ts')} to the includes array in tsconfig.json.`]);
+
+      changes.push([log.add, `Updated package.json to add the watch command to your dev script.`]);
+    } catch (err: any) {
+      changes.push([log.error, `Failed to update package.json, please add "${DEV_SCRIPT}" to your dev script.`]);
     }
   }
 
@@ -238,4 +272,15 @@ export async function handler(argv: Arguments) {
 
   log.success(`${chalk.magenta.bold('next-video')} initialized!`);
   changes.forEach(([loggerFn, change]) => loggerFn(change));
+}
+
+async function isCmd() {
+  if (os.platform() === 'win32') {
+    try {
+      await execPromise(`ls`);
+    } catch (err) {
+      return true
+    }
+  }
+  return false;
 }
