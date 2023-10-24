@@ -15,38 +15,29 @@ export const DefaultPlayer = forwardRef<DefaultPlayerRefAttributes | null, Defau
   let {
     style,
     children,
-    status,
+    asset,
     controls,
     poster,
     blurDataURL,
-    src,
     ...rest
   } = allProps;
 
   let props: MuxPlayerProps = rest;
   let srcSet: string | undefined;
+  const playbackId = asset?.externalIds?.playbackId;
 
-  if (typeof src === 'string') {
-    props.src = src;
-  }
-  else if (typeof src === 'object') {
+  if (playbackId && asset?.status === 'ready') {
+    props.src = null;
+    props.playbackId = playbackId;
 
-    const playbackId = src.externalIds?.playbackId;
-
-    if (src.status === 'ready' && playbackId) {
-
-      props.playbackId = playbackId;
-
-      if (!poster) {
-        poster = getPosterURLFromPlaybackId(playbackId, props);
-        srcSet =
-          `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 480 })} 480w,` +
-          `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 640 })} 640w,` +
-          `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 960 })} 960w,` +
-          `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 1280 })} 1280w,` +
-          `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 1600 })} 1600w,` +
-          `${poster} 1920w`;
-      }
+    if (poster) {
+      srcSet =
+        `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 480 })} 480w,` +
+        `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 640 })} 640w,` +
+        `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 960 })} 960w,` +
+        `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 1280 })} 1280w,` +
+        `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 1600 })} 1600w,` +
+        `${poster} 1920w`;
     }
   }
 

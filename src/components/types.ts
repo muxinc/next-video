@@ -40,7 +40,7 @@ export interface VideoProps extends Omit<DefaultPlayerProps, 'src'> {
    * Can be a local or remote video file.
    * If it's a string be sure to create an API endpoint to handle the request.
    */
-  src: Asset | string;
+  src?: Asset | string;
 
   /**
    * Give a fixed width to the video.
@@ -78,16 +78,14 @@ export interface VideoProps extends Omit<DefaultPlayerProps, 'src'> {
 
 export interface PlayerProps {
   /**
-   * The status of the asset that is processed.
+   * The asset object for the video.
    */
-  status?: Asset['status'];
+  asset?: Asset;
 
   /**
-   * An imported video source object or a string video source URL.
-   * Can be a local or remote video file.
-   * If it's a string be sure to create an API endpoint to handle the request.
+   * A string video source URL.
    */
-  src?: Asset | string;
+  src?: string | undefined;
 
   /**
    * Set to false to hide the video controls.

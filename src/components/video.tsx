@@ -4,7 +4,7 @@ import { forwardRef, useState } from 'react';
 import { DefaultPlayer } from './default-player.js';
 import { Alert } from './alert.js';
 import { createVideoRequest, defaultLoader } from './video-loader.js';
-import { toSymlinkPath, usePolling } from './utils.js';
+import { getPosterURLFromPlaybackId, toSymlinkPath, usePolling } from './utils.js';
 
 import type { DefaultPlayerRefAttributes, DefaultPlayerProps } from './default-player.js';
 import type { Asset } from '../assets.js';
@@ -21,22 +21,24 @@ const NextVideo = forwardRef<DefaultPlayerRefAttributes | null, VideoProps>((pro
     height,
   } = props;
 
-  let [asset, setAsset] = useState(src);
+  let [asset, setAsset] = useState(typeof src === 'object' ? src : undefined);
   const [playing, setPlaying] = useState(false);
 
   // Required to make Next.js fast refresh when the local JSON file changes.
   // https://nextjs.org/docs/architecture/fast-refresh#fast-refresh-and-hooks
-  if (typeof src === 'object') asset = src;
+  if (typeof src === 'object') {
+    asset = src;
+    src = undefined;
+  }
 
   // If the source is a string, poll the server for the JSON file.
   const loaderProps: VideoLoaderProps = { src: asset as string, width, height };
   const request = createVideoRequest(loader, loaderProps, (json) => setAsset(json));
 
-  const status = typeof asset === 'object' ? asset.status : undefined;
-  const needsPolling = DEV_MODE && (typeof asset === 'string' || status != 'ready');
+  const status = asset?.status;
+  const needsPolling = DEV_MODE && (typeof src === 'string' || status != 'ready');
   usePolling(request, needsPolling ? 1000 : null);
 
-  let posterProps = getPosterProps(props, { asset });
   let videoProps = getVideoProps(props, { asset });
 
   return (
@@ -70,10 +72,9 @@ const NextVideo = forwardRef<DefaultPlayerRefAttributes | null, VideoProps>((pro
         ref={forwardedRef}
         data-next-video={status ?? ''}
         style={{ width, height }}
-        status={status}
+        asset={asset}
         onPlaying={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
-        {...posterProps}
         {...videoProps}
       ></VideoPlayer>
 
@@ -85,7 +86,7 @@ const NextVideo = forwardRef<DefaultPlayerRefAttributes | null, VideoProps>((pro
   );
 });
 
-export function getVideoProps(allProps: VideoProps, state: { asset: Asset | string }) {
+export function getVideoProps(allProps: VideoProps, state: { asset?: Asset }) {
   const { asset } = state;
   // Remove props that are not needed for VideoPlayer.
   const {
@@ -100,33 +101,33 @@ export function getVideoProps(allProps: VideoProps, state: { asset: Asset | stri
 
   const props: DefaultPlayerProps = {
     controls,
-    src: asset,
     ...rest
   };
 
-  if (typeof asset === 'object') {
-    if (asset.status !== 'ready') {
+  if (typeof src === 'string') {
+    props.src = src;
+  }
+
+  if (asset) {
+    if (asset.status === 'ready') {
+      props.blurDataURL = blurDataURL ?? asset.blurDataURL;
+
+      // Mux provider logic
+      const playbackId = asset.externalIds?.playbackId;
+
+      if (playbackId) {
+        props.src = `https://stream.mux.com/${playbackId}.m3u8`;
+
+        if (!poster) {
+          props.poster = getPosterURLFromPlaybackId(playbackId, props);
+        }
+      }
+    } else {
       props.src = toSymlinkPath(asset.originalFilePath);
     }
   }
 
   return props;
-}
-
-export function getPosterProps(allProps: VideoProps, state: { asset: Asset | string }) {
-  const { asset } = state;
-  let { poster, blurDataURL } = allProps;
-
-  if (typeof asset === 'object') {
-    if (asset.status === 'ready') {
-      blurDataURL = blurDataURL ?? asset.blurDataURL;
-    }
-  }
-
-  return {
-    poster,
-    blurDataURL,
-  };
 }
 
 export default NextVideo;
