@@ -88,7 +88,7 @@ async function createVideoDir(dir: string) {
 
   await mkdir(fullPath, { recursive: true });
   await writeFile(path.join(dir, '.gitignore'), GITIGNORE_CONTENTS);
-  await writeFile(path.join(dir, 'getStarted.mp4.json'), GET_STARTED_CONTENTS);
+  await writeFile(path.join(dir, 'get-started.mp4.json'), GET_STARTED_CONTENTS);
   return;
 }
 
@@ -259,7 +259,7 @@ export async function handler(argv: Arguments) {
   log.info(`Why don't you try adding the component to a page?`);
   log.space();
   log.space(`${chalk.magenta('import')} Video ${chalk.magenta('from')} ${chalk.cyan("'next-video'")};
-  ${chalk.magenta('import')} getStarted ${chalk.magenta('from')} ${chalk.cyan("'/videos/getStarted.mp4'")};
+  ${chalk.magenta('import')} getStarted ${chalk.magenta('from')} ${chalk.cyan("'/videos/get-started.mp4'")};
   
   ${chalk.magenta('export default function')} Page() {
     ${chalk.magenta('return')} ${chalk.cyan('<')}Video ${chalk.cyan('src=')}{getStarted} ${chalk.cyan('/>')};
