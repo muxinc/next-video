@@ -33,7 +33,7 @@ export interface VideoProps extends Omit<DefaultPlayerProps, 'src'> {
   /**
    * The component type to render the video as.
    */
-  as: FunctionComponent<DefaultPlayerProps>;
+  as?: FunctionComponent<DefaultPlayerProps>;
 
   /**
    * An imported video source object or a string video source URL.
