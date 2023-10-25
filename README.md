@@ -7,12 +7,12 @@ Next video is a react component for adding video to your [next.js](https://githu
 - **Customizable UI:** Choose from themes or build your own player controls
 - **Posters & Previews:** Zero-config placeholder images and timeline hover thumbnails
 - **Wider compatibility:** Use videos that aren’t supported natively by all browsers
-- **Analytics built-in (optional):** See how often videos get watched and track video peformance
+- **Analytics built-in (optional):** See how often videos get watched and track video performance
 - **AI-powered:** Whisper captions coming soon...
 
 ```tsx
 import Video from 'next-video';
-import myVideo from '/videos/myVideo.mp4';
+import myVideo from '/videos/my-video.mp4';
 
 export default function Page() {
   return <Video src={myVideo} />;
@@ -212,7 +212,7 @@ export function ReactPlayerAsVideo(props) {
 
 ### v0
 
-- [x] Automatic video optimzation
+- [x] Automatic video optimization
 - [x] Delivery via a CDN
 - [x] Automatically upload and process local source files
 - [x] Automatically process remote hosted source files
