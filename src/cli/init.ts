@@ -255,13 +255,14 @@ export async function handler(argv: Arguments) {
 
   changes.forEach(([loggerFn, change]) => loggerFn(change));
 
+  log.space();
   log.info(`Why don't you try adding the component to a page?`);
-  log.info(`
-    ${chalk.magenta('import')} Video ${chalk.magenta('from')} ${chalk.cyan("'next-video'")};
-    ${chalk.magenta('import')} getStarted ${chalk.magenta('from')} ${chalk.cyan("'/videos/getStarted.mp4'")};
-    
-    ${chalk.magenta('export default function')} Page() {
-      ${chalk.magenta('return')} ${chalk.cyan('<')}Video ${chalk.cyan('src=')}{getStarted} ${chalk.cyan('/>')};
-    }
+  log.space();
+  log.space(`${chalk.magenta('import')} Video ${chalk.magenta('from')} ${chalk.cyan("'next-video'")};
+  ${chalk.magenta('import')} getStarted ${chalk.magenta('from')} ${chalk.cyan("'/videos/getStarted.mp4'")};
+  
+  ${chalk.magenta('export default function')} Page() {
+    ${chalk.magenta('return')} ${chalk.cyan('<')}Video ${chalk.cyan('src=')}{getStarted} ${chalk.cyan('/>')};
+  }
   `);
 }
