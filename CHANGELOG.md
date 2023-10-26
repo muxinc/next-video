@@ -1,3 +1,13 @@
+## [0.8.1](https://github.com/muxinc/next-video/compare/v0.8.0...v0.8.1) (2023-10-26)
+
+
+### Bug Fixes
+
+* add CLI devscript flag ([#82](https://github.com/muxinc/next-video/issues/82)) ([073ca6b](https://github.com/muxinc/next-video/commit/073ca6ba2385dae29514d2d056b5dc2f37066c5b))
+* override poster & blurDataURL prop ([#87](https://github.com/muxinc/next-video/issues/87)) ([258ace0](https://github.com/muxinc/next-video/commit/258ace0b934cac3c6bedffcf9891b70e34f1cfc2))
+
+
+
 # [0.8.0](https://github.com/muxinc/next-video/compare/v0.7.2...v0.8.0) (2023-10-24)
 
 
