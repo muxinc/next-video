@@ -23,21 +23,13 @@
   "main": "./dist/cjs/components/video.js",
   "module": "./dist/components/video.js",
   "exports": {
-    ".": {
-      "import": "./dist/components/video.js",
-      "require": "./dist/cjs/components/video.js",
-      "default": "./dist/components/video.js"
-    },
+    ".": "./dist/components/video.js",
     "./process": {
       "import": "./dist/main.js",
       "require": "./dist/cjs/main.js",
       "default": "./dist/main.js"
     },
-    "./request-handler": {
-      "import": "./dist/request-handler.js",
-      "require": "./dist/cjs/request-handler.js",
-      "default": "./dist/request-handler.js"
-    },
+    "./request-handler": "./dist/request-handler.js",
     "./video-types/*": "./video-types/*.d.ts",
     "./dist/*": "./dist/*"
   },
@@ -46,7 +38,7 @@
     "watch": "npm run build:esm -- -w & npm run build:cjs -- -w",
     "build": "npm run clean && (npm run build:esm && npm run build:cjs)",
     "build:esm": "tsc --module es2020",
-    "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+    "build:cjs": "tsc src/main.ts src/webpack-loader.ts --module commonjs --outDir dist/cjs --strict  --target es2019 --esModuleInterop --declaration",
     "postbuild:cjs": "echo '{\"type\": \"commonjs\"}' > ./dist/cjs/package.json",
     "prepare": "npm run build",
     "cli": "node --loader tsx --no-warnings ./src/cli",

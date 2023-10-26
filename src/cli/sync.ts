@@ -2,12 +2,14 @@ import chalk from 'chalk';
 import chokidar from 'chokidar';
 import { Argv, Arguments } from 'yargs';
 
+import process from 'node:process';
 import { stat, readdir } from 'node:fs/promises';
 import path from 'node:path';
 
 import log from '../logger.js';
 import { callHandler } from '../main.js';
 import { createAsset, getAsset } from '../assets.js';
+import { getNextVideoVersion } from './lib/json-configs.js';
 
 export const command = 'sync';
 export const desc =
@@ -58,6 +60,15 @@ export async function handler(argv: Arguments) {
     const jsonFiles = files.filter((file) => file.endsWith('.json'));
     const otherFiles = files.filter((file) => !file.match(/(^|[\/\\])\..*|\.json$/));
 
+    if (argv.watch) {
+      const version = await getNextVideoVersion();
+      const relativePath = path.relative(process.cwd(), directoryPath);
+      log.space(log.label(`▶︎ next-video ${version}`));
+      log.base('log', ' ', `- Watching for file changes in ./${relativePath}`);
+      log.space();
+      watcher(directoryPath);
+    }
+
     const newFileProcessor = async (file: string) => {
       log.info(log.label('Processing file:'), file);
 
@@ -95,7 +106,10 @@ export async function handler(argv: Arguments) {
 
     const unprocessedVideos = otherFiles.filter(unprocessedFilter);
 
-    log.add(`Found ${unprocessedVideos.length} unprocessed video(s).`);
+    if (unprocessedVideos.length > 0) {
+      const s = unprocessedVideos.length === 1 ? '' : 's';
+      log.add(`Found ${unprocessedVideos.length} unprocessed video${s}`);
+    }
 
     const processing = await Promise.all([
       ...unprocessedVideos.map(newFileProcessor),
@@ -103,11 +117,10 @@ export async function handler(argv: Arguments) {
     ]);
 
     const processed = processing.flat().filter((asset) => asset);
-    log.success(`Processed (or resumed processing) ${processed.length} videos.`);
 
-    if (argv.watch) {
-      log.info('Watching for changes in the videos directory:', directoryPath);
-      watcher(directoryPath);
+    if (processed.length > 0) {
+      const s = processed.length === 1 ? '' : 's';
+      log.success(`Processed (or resumed processing) ${processed.length} video${s}`);
     }
   } catch (err: any) {
     if (err.code === 'ENOENT' && err.path === directoryPath) {
