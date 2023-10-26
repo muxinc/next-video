@@ -32,11 +32,11 @@ const NextVideo = forwardRef<DefaultPlayerRefAttributes | null, VideoProps>((pro
   }
 
   // If the source is a string, poll the server for the JSON file.
-  const loaderProps: VideoLoaderProps = { src: asset as string, width, height };
+  const loaderProps: VideoLoaderProps = { src, width, height };
   const request = createVideoRequest(loader, loaderProps, (json) => setAsset(json));
 
   const status = asset?.status;
-  const needsPolling = DEV_MODE && (typeof src === 'string' || status != 'ready');
+  const needsPolling = DEV_MODE && (typeof src === 'string' && status != 'ready');
   usePolling(request, needsPolling ? 1000 : null);
 
   const videoProps = getVideoProps({ ...props, src }, { asset });
