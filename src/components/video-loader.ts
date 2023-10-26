@@ -3,7 +3,7 @@ import type { Asset } from '../assets.js';
 import type { VideoLoaderProps, VideoLoaderPropsWithConfig, VideoLoaderWithConfig } from './types';
 
 export async function defaultLoader({ config, src, width, height }: VideoLoaderPropsWithConfig) {
-  let requestUrl = `${config.path}?url=${encodeURIComponent(src)}`;
+  let requestUrl = `${config.path}?url=${encodeURIComponent(`${src}`)}`;
   if (width) requestUrl += `&w=${width}`;
   if (height) requestUrl += `&h=${height}`;
   return `${requestUrl}`;
@@ -15,7 +15,7 @@ export function createVideoRequest(
   callback: (json: Asset) => void
 ) {
   return async (abortSignal: AbortSignal) => {
-    if (typeof props.src === 'object') return;
+    if (typeof props.src !== 'string') return;
 
     try {
       const requestUrl = await loader({

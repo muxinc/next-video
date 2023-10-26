@@ -13,7 +13,7 @@ export type VideoLoader = (p: VideoLoaderProps) => Promise<string>;
 export type VideoLoaderWithConfig = (p: VideoLoaderPropsWithConfig) => Promise<string>;
 
 export interface VideoLoaderProps {
-  src: string;
+  src?: string;
   width?: number;
   height?: number;
 }

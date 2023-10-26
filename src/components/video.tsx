@@ -32,14 +32,14 @@ const NextVideo = forwardRef<DefaultPlayerRefAttributes | null, VideoProps>((pro
   }
 
   // If the source is a string, poll the server for the JSON file.
-  const loaderProps: VideoLoaderProps = { src: asset as string, width, height };
+  const loaderProps: VideoLoaderProps = { src, width, height };
   const request = createVideoRequest(loader, loaderProps, (json) => setAsset(json));
 
   const status = asset?.status;
-  const needsPolling = DEV_MODE && (typeof src === 'string' || status != 'ready');
+  const needsPolling = DEV_MODE && (typeof src === 'string' && status != 'ready');
   usePolling(request, needsPolling ? 1000 : null);
 
-  let videoProps = getVideoProps(props, { asset });
+  const videoProps = getVideoProps({ ...props, src }, { asset });
 
   return (
     <div className="next-video-container">
@@ -100,13 +100,12 @@ export function getVideoProps(allProps: VideoProps, state: { asset?: Asset }) {
   } = allProps;
 
   const props: DefaultPlayerProps = {
+    src: src as string | undefined,
     controls,
+    poster,
+    blurDataURL,
     ...rest
   };
-
-  if (typeof src === 'string') {
-    props.src = src;
-  }
 
   if (asset) {
     if (asset.status === 'ready') {
@@ -116,11 +115,8 @@ export function getVideoProps(allProps: VideoProps, state: { asset?: Asset }) {
       const playbackId = asset.externalIds?.playbackId;
 
       if (playbackId) {
-        props.src = `https://stream.mux.com/${playbackId}.m3u8`;
-
-        if (!poster) {
-          props.poster = getPosterURLFromPlaybackId(playbackId, props);
-        }
+        props.src ??= `https://stream.mux.com/${playbackId}.m3u8`;
+        props.poster ??= getPosterURLFromPlaybackId(playbackId, props);
       }
     } else {
       props.src = toSymlinkPath(asset.originalFilePath);
