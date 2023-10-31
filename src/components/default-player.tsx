@@ -67,6 +67,7 @@ export const DefaultPlayer = forwardRef<DefaultPlayerRefAttributes | null, Defau
         src={isCustomPoster ? poster : undefined}
         srcSet={srcSet}
         style={imgStyleProps}
+        aria-hidden="true"
       />
     </>
     poster = '';
