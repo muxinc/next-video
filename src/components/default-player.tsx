@@ -50,6 +50,7 @@ export const DefaultPlayer = forwardRef<DefaultPlayerRefAttributes | null, Defau
         slot="poster"
         srcSet={srcSet}
         style={{ backgroundImage: blurDataURL ? `url('${blurDataURL}')` : undefined }}
+        aria-hidden="true"
       />
     </>
   }
