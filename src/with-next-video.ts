@@ -27,7 +27,7 @@ export default async function withNextVideo(nextConfig: any, videoConfig: VideoC
     env['NEXT_PUBLIC_DEV_VIDEO_OPTS'] = JSON.stringify({ path, folder });
 
     const VIDEOS_PATH = join(process.cwd(), folder)
-    const TMP_PUBLIC_VIDEOS_PATH = join(process.cwd(), 'public', `_${folder}`);
+    const TMP_PUBLIC_VIDEOS_PATH = join(process.cwd(), 'public', `_next-video`);
 
     await symlinkDir(VIDEOS_PATH, TMP_PUBLIC_VIDEOS_PATH);
 

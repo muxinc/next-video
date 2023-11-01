@@ -20,7 +20,7 @@ ${videosDir}/*
 ${videosDir}/!*.json
 ${videosDir}/!*.js
 ${videosDir}/!*.ts
-public/_${videosDir}`;
+public/_next-video`;
 
 async function preInitCheck(dir: string) {
   try {
