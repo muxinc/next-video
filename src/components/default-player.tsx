@@ -22,37 +22,55 @@ export const DefaultPlayer = forwardRef<DefaultPlayerRefAttributes | null, Defau
     ...rest
   } = allProps;
 
-  let props: MuxPlayerProps = rest;
-  let srcSet: string | undefined;
+  const props: MuxPlayerProps = rest;
+  const imgStyleProps: React.CSSProperties = {};
   const playbackId = asset?.externalIds?.playbackId;
+
+  let isCustomPoster = true;
+  let srcSet: string | undefined;
 
   if (playbackId && asset?.status === 'ready') {
     props.src = null;
     props.playbackId = playbackId;
 
     if (poster) {
-      srcSet =
-        `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 480 })} 480w,` +
-        `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 640 })} 640w,` +
-        `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 960 })} 960w,` +
-        `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 1280 })} 1280w,` +
-        `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 1600 })} 1600w,` +
-        `${poster} 1920w`;
+      isCustomPoster = poster !== getPosterURLFromPlaybackId(playbackId, props);
+
+      if (!isCustomPoster) {
+        // If it's not a custom poster URL, optimize with a srcset.
+        srcSet =
+          `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 480 })} 480w,` +
+          `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 640 })} 640w,` +
+          `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 960 })} 960w,` +
+          `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 1280 })} 1280w,` +
+          `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 1600 })} 1600w,` +
+          `${poster} 1920w`;
+      }
+    }
+  }
+
+  if (blurDataURL) {
+    const showGeneratedBlur = !isCustomPoster && blurDataURL === asset?.blurDataURL;
+    const showCustomBlur = isCustomPoster && blurDataURL !== asset?.blurDataURL;
+
+    if (showGeneratedBlur || showCustomBlur) {
+      imgStyleProps.backgroundImage = `url('${blurDataURL}')`;
     }
   }
 
   // The Mux player supports a poster image slot which improves the loading speed.
   if (poster) {
-    poster = '';
     children = <>
       {children}
       <img
         slot="poster"
+        src={isCustomPoster ? poster : undefined}
         srcSet={srcSet}
-        style={{ backgroundImage: blurDataURL ? `url('${blurDataURL}')` : undefined }}
+        style={imgStyleProps}
         aria-hidden="true"
       />
     </>
+    poster = '';
   }
 
   return (
