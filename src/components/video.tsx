@@ -127,3 +127,9 @@ export function getVideoProps(allProps: VideoProps, state: { asset?: Asset }) {
 }
 
 export default NextVideo;
+
+export type {
+  VideoLoaderProps,
+  VideoProps,
+  DefaultPlayerProps,
+};
