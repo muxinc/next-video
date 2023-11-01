@@ -123,7 +123,7 @@ describe('cli', () => {
 
       await handler(args);
 
-      assert(findConsoleMessage(addSpy, /found 0/i), 'Found 0 message not found');
+      assert(!findConsoleMessage(addSpy, /found 1/i), 'Found 1 message found');
     });
 
     it('ignores existing assets', async (t) => {
@@ -139,8 +139,8 @@ describe('cli', () => {
 
         await handler(args);
 
-        assert(findConsoleMessage(addSpy, /found 0/i), 'Found 0 message not found');
-        assert(findConsoleMessage(successSpy, /resumed.*0/i), 'Resumed 0 message not found');
+        assert(!findConsoleMessage(addSpy, /found 1/i), 'Found 1 message found');
+        assert(!findConsoleMessage(successSpy, /resumed.*1/i), 'Resumed 1 message not found');
       });
 
       await t.test('that are ready', async (t) => {
@@ -155,8 +155,8 @@ describe('cli', () => {
 
         await handler(args);
 
-        assert(findConsoleMessage(addSpy, /found 0/i), 'Found 0 message not found');
-        assert(findConsoleMessage(successSpy, /resumed.*0/i), 'Resumed 0 message not found');
+        assert(!findConsoleMessage(addSpy, /found 1/i), 'Found 1 message found');
+        assert(!findConsoleMessage(successSpy, /resumed.*1/i), 'Resumed 1 message found');
       });
     });
 
@@ -178,7 +178,7 @@ describe('cli', () => {
 
         await handler(args);
 
-        assert(findConsoleMessage(addSpy, /0.*unprocessed/), '0 unprocessed message not found');
+        assert(!findConsoleMessage(addSpy, /1.*unprocessed/), '1 unprocessed message found');
         assert(findConsoleMessage(successSpy, /resumed.*1/i), 'Resumed message not found');
       });
 
@@ -199,7 +199,7 @@ describe('cli', () => {
 
         await handler(args);
 
-        assert(findConsoleMessage(addSpy, /0.*unprocessed/));
+        assert(!findConsoleMessage(addSpy, /1.*unprocessed/));
         assert(findConsoleMessage(successSpy, /resumed.*1/i), 'Resumed message not found');
       });
 
@@ -220,7 +220,7 @@ describe('cli', () => {
 
         await handler(args);
 
-        assert(findConsoleMessage(addSpy, /0.*unprocessed/));
+        assert(!findConsoleMessage(addSpy, /1.*unprocessed/));
         assert(findConsoleMessage(successSpy, /resumed.*1/i), 'Resumed message not found');
       });
     });

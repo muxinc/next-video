@@ -39,7 +39,6 @@ export async function createAsset(filePath: string, assetDetails?: Asset): Promi
     await writeFile(assetPath, JSON.stringify(newAssetDetails), { flag: 'wx' });
   } catch (err: any) {
     if (err.code === 'EEXIST') {
-      log.warning('Asset file already exists, ignoring.');
       // The file already exists, and that's ok in this case. Ignore the error.
       return;
     }
