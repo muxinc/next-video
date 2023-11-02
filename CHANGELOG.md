@@ -1,3 +1,12 @@
+## [0.8.3](https://github.com/muxinc/next-video/compare/v0.8.2...v0.8.3) (2023-11-02)
+
+
+### Bug Fixes
+
+* upgrade Mux player v2.2.0 ([#95](https://github.com/muxinc/next-video/issues/95)) ([1906d6c](https://github.com/muxinc/next-video/commit/1906d6c707e2e9db915d29bbf6bc4fdf2871a96b))
+
+
+
 ## [0.8.2](https://github.com/muxinc/next-video/compare/v0.8.1...v0.8.2) (2023-11-02)
 
 
