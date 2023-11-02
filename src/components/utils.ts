@@ -13,7 +13,7 @@ const FILES_FOLDER = `${config.folder ?? 'videos'}/`;
 
 export const toSymlinkPath = (path?: string) => {
   if (!path?.startsWith(FILES_FOLDER)) return path;
-  return path?.replace(FILES_FOLDER, `_${FILES_FOLDER}`);
+  return path?.replace(FILES_FOLDER, `_next-video/`);
 }
 
 // Note: doesn't get updated when the callback function changes

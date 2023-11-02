@@ -4,22 +4,23 @@ import { Argv, Arguments } from 'yargs';
 
 import os from 'node:os';
 import { exec } from 'node:child_process';
-import { access, mkdir, stat, readFile, writeFile } from 'node:fs/promises';
+import { access, mkdir, stat, readFile, writeFile, appendFile } from 'node:fs/promises';
 import path from 'node:path';
 
 import log, { Logger } from '../logger.js';
 import { checkPackageJsonForNextVideo, updateTSConfigFileContent } from './lib/json-configs.js';
 import updateNextConfigFile from './lib/next-config.js';
 
-const GITIGNORE_CONTENTS = `*
-!*.json
-!*.js
-!*.ts`;
-
 const TYPES_FILE_CONTENTS = `/// <reference types="next-video/video-types/global" />\n`;
-
 const DEFAULT_DIR = 'videos';
 const DEV_SCRIPT = '& npx next-video sync -w';
+
+const gitIgnoreContents = (videosDir: string) => `
+${videosDir}/*
+${videosDir}/!*.json
+${videosDir}/!*.js
+${videosDir}/!*.ts
+public/_next-video`;
 
 async function preInitCheck(dir: string) {
   try {
@@ -75,7 +76,7 @@ async function createVideoDir(dir: string) {
   const fullPath = path.join(process.cwd(), dir);
 
   await mkdir(fullPath, { recursive: true });
-  await writeFile(path.join(dir, '.gitignore'), GITIGNORE_CONTENTS);
+  await appendFile('.gitignore', gitIgnoreContents(dir));
   return;
 }
 
