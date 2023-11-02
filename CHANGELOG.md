@@ -1,3 +1,14 @@
+## [0.8.2](https://github.com/muxinc/next-video/compare/v0.8.1...v0.8.2) (2023-11-02)
+
+
+### Bug Fixes
+
+* cleaner CLI watch log output  ([#88](https://github.com/muxinc/next-video/issues/88)) ([3d9c428](https://github.com/muxinc/next-video/commit/3d9c4288d03966519b68d31c683616cc37e5158c))
+* poster bugs ([#91](https://github.com/muxinc/next-video/issues/91)) ([1374d98](https://github.com/muxinc/next-video/commit/1374d9863caa2dfc4ac53c622b2e594cd7868f18))
+* symlink lingering in public folder and added to git ([#92](https://github.com/muxinc/next-video/issues/92)) ([84ccc55](https://github.com/muxinc/next-video/commit/84ccc5553b5b2145356cb21d9d10142f8bb3fd71))
+
+
+
 ## [0.8.1](https://github.com/muxinc/next-video/compare/v0.8.0...v0.8.1) (2023-10-26)
 
 
