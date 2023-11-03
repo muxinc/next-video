@@ -275,7 +275,7 @@ export async function handler(argv: Arguments) {
   changes.forEach(([loggerFn, change]) => loggerFn(change));
 
   log.info('');
-  log.info(`NEXT STEP: Set up remote storage:`);
+  log.info(`NEXT STEP: Set up remote storage`);
   log.info(chalk.magenta.bold('https://next-video.dev/docs#remote-storage-and-optimization'));
   log.info('');
 }
