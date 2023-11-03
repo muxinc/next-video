@@ -30,7 +30,10 @@ const withTimeout = async (ms: number, promise: Promise<any>): Promise<any> => {
 };
 
 // Not doing anything in the config right now.
-const DEFAULT_HANDLER_CONFIG = {};
+const DEFAULT_HANDLER_CONFIG = {
+  provider: 'mux',
+};
+
 export async function callHandler(event: string, data: any, config: HandlerConfig = {}): Promise<any> {
   const mergedConfig = { ...DEFAULT_HANDLER_CONFIG, ...config };
   const handler = HANDLERS[event];
