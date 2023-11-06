@@ -16,11 +16,13 @@ const DEFAULT_DIR = 'videos';
 const DEV_SCRIPT = '& npx next-video sync -w';
 
 const gitIgnoreContents = (videosDir: string) => `
+# next-video
 ${videosDir}/*
-${videosDir}/!*.json
-${videosDir}/!*.js
-${videosDir}/!*.ts
-public/_next-video`;
+!${videosDir}/*.json
+!${videosDir}/*.js
+!${videosDir}/*.ts
+public/_next-video
+`;
 
 async function preInitCheck(dir: string) {
   try {
