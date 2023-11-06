@@ -46,7 +46,7 @@ export async function callHandler(event: string, data: any, config: HandlerConfi
   return Promise.resolve(handler(data, mergedConfig));
 }
 
-export default function videoHandler(event: string, callback: VideoHandlerCallback) {
+export function videoHandler(event: string, callback: VideoHandlerCallback) {
   HANDLERS[event] = callback;
 
   return (event: any) => Promise.resolve(callback(event));

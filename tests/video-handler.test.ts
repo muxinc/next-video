@@ -1,7 +1,7 @@
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
 
-import videoHandler, { callHandler } from '../src/video-handler.js';
+import { videoHandler, callHandler } from '../src/video-handler.js';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
