@@ -1,8 +1,8 @@
-import videoHandler, { callHandler } from './video-handler.js';
+import { videoHandler, callHandler } from './video-handler.js';
 import { uploadLocalFile } from './handlers/local-upload.js';
 import { uploadRequestedFile } from './handlers/api-request.js';
 import log from './logger.js';
-import withNextVideo from './with-next-video.js';
+import { withNextVideo } from './with-next-video.js';
 
 try {
   // Don't love this little race condition... we gotta figure that one out.

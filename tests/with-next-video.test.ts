@@ -1,7 +1,7 @@
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
 
-import withNextVideo from '../src/with-next-video.js';
+import { withNextVideo } from '../src/with-next-video.js';
 
 describe('withNextVideo', () => {
   it('should handle nextConfig being a function', async () => {
