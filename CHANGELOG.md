@@ -1,3 +1,12 @@
+## [0.8.5](https://github.com/muxinc/next-video/compare/v0.8.4...v0.8.5) (2023-11-06)
+
+
+### Bug Fixes
+
+* esm next.config.js breaking via require ([#100](https://github.com/muxinc/next-video/issues/100)) ([040de3d](https://github.com/muxinc/next-video/commit/040de3d857f4bd22ca21b0ac8d32151685ac26ef)), closes [#98](https://github.com/muxinc/next-video/issues/98)
+
+
+
 ## [0.8.4](https://github.com/muxinc/next-video/compare/v0.8.3...v0.8.4) (2023-11-06)
 
 
