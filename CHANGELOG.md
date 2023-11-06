@@ -1,3 +1,12 @@
+## [0.8.6](https://github.com/muxinc/next-video/compare/v0.8.5...v0.8.6) (2023-11-06)
+
+
+### Bug Fixes
+
+* hotfix build error ([#101](https://github.com/muxinc/next-video/issues/101)) ([7ca49b3](https://github.com/muxinc/next-video/commit/7ca49b374a15b1de181b90279c6d785663559990))
+
+
+
 ## [0.8.5](https://github.com/muxinc/next-video/compare/v0.8.4...v0.8.5) (2023-11-06)
 
 
