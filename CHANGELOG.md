@@ -1,3 +1,12 @@
+## [0.8.4](https://github.com/muxinc/next-video/compare/v0.8.3...v0.8.4) (2023-11-06)
+
+
+### Bug Fixes
+
+* add provider handler config and structure ([#94](https://github.com/muxinc/next-video/issues/94)) ([82d3098](https://github.com/muxinc/next-video/commit/82d3098acb2a5e6b30f6cd30f74a62924f228945))
+
+
+
 ## [0.8.3](https://github.com/muxinc/next-video/compare/v0.8.2...v0.8.3) (2023-11-02)
 
 
