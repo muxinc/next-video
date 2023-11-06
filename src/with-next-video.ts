@@ -1,7 +1,7 @@
 import symlinkDir from 'symlink-dir';
-import { join, resolve, dirname } from 'node:path';
+import { join, dirname } from 'node:path';
 import fs from 'node:fs/promises';
-import process from 'node:process';
+import { env } from 'node:process';
 import { fileURLToPath } from 'node:url';
 import { videoConfigDefault } from './config.js';
 import type { VideoConfigComplete } from './config.js';
@@ -19,13 +19,15 @@ export async function withNextVideo(nextConfig: any, videoConfig: VideoConfigCom
 
   const { path, folder } = videoConfig;
 
-  process.env['NEXT_PUBLIC_VIDEO_OPTS'] = JSON.stringify({ path });
-  process.env['__NEXT_VIDEO_OPTS'] = JSON.stringify(videoConfig);
+  // Don't use `process.env` here because Next.js replaces public env vars during build.
+  env['NEXT_PUBLIC_VIDEO_OPTS'] = JSON.stringify({ path });
+  env['__NEXT_VIDEO_OPTS'] = JSON.stringify(videoConfig);
 
   // We should probably switch to using `phase` here, just a bit concerned about backwards compatibility.
   if (process.argv[2] === 'dev') {
 
-    process.env['NEXT_PUBLIC_DEV_VIDEO_OPTS'] = JSON.stringify({ path, folder });
+    // Don't use `process.env` here because Next.js replaces public env vars during build.
+    env['NEXT_PUBLIC_DEV_VIDEO_OPTS'] = JSON.stringify({ path, folder });
 
     const VIDEOS_PATH = join(process.cwd(), folder)
     const TMP_PUBLIC_VIDEOS_PATH = join(process.cwd(), 'public', `_next-video`);
@@ -72,7 +74,6 @@ export async function withNextVideo(nextConfig: any, videoConfig: VideoConfigCom
         test: /\.(mp4|webm|mkv|ogg|ogv|wmv|avi|mov|flv|m4v|3gp)$/,
         use: [
           {
-            // @ts-ignore
             loader: join(scriptDir, 'webpack-loader.js')
             // options: {
             //   publicPath: `${prefix || basePath}/_next/static/videos/`,
