@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-
+import { env } from 'node:process';
 import { callHandler } from './main.js';
 import { createAsset, getAsset } from './assets.js';
 
@@ -45,11 +45,15 @@ async function handleRequest(url?: string | null) {
     asset = await createAsset(url);
 
     if (asset) {
-      await callHandler('request.video.added', asset);
+      await callHandler('request.video.added', asset, getCallHandlerConfig());
     }
 
     return { status: 200, data: asset };
   }
 
   return { status: 200, data: asset };
+}
+
+function getCallHandlerConfig() {
+  return JSON.parse(env['__NEXT_VIDEO_OPTS'] ?? '{}');
 }

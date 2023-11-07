@@ -59,7 +59,7 @@ export async function withNextVideo(nextConfig: any, videoConfig: VideoConfigCom
 
       config.experiments.buildHttp = {
         allowedUris: [
-          /https?:\/\/.*\.(mp4|webm|mkv|ogg|ogv|wmv|avi|mov|flv|m4v|3gp)$/,
+          /https?:\/\/.*\.(mp4|webm|mkv|ogg|ogv|wmv|avi|mov|flv|m4v|3gp)\??(?:&?[^=&]*=[^=&]*)*$/,
           ...(config.experiments.buildHttp?.allowedUris ?? [])
         ],
         ...(config.experiments.buildHttp || {}),
@@ -71,7 +71,7 @@ export async function withNextVideo(nextConfig: any, videoConfig: VideoConfigCom
         : dirname(fileURLToPath(import.meta.url)); // ESM module
 
       config.module.rules.push({
-        test: /\.(mp4|webm|mkv|ogg|ogv|wmv|avi|mov|flv|m4v|3gp)$/,
+        test: /\.(mp4|webm|mkv|ogg|ogv|wmv|avi|mov|flv|m4v|3gp)\??(?:&?[^=&]*=[^=&]*)*$/,
         use: [
           {
             loader: join(scriptDir, 'webpack-loader.js')

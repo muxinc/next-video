@@ -79,6 +79,7 @@
     "@mux/mux-node": "8.0.0-canary.0",
     "@mux/mux-player-react": "2.2.0",
     "@next/env": "^13.5.4",
+    "@vercel/blob": "^0.14.1",
     "chalk": "^4.1.2",
     "chokidar": "^3.5.3",
     "magicast": "^0.3.0",
