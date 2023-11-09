@@ -208,6 +208,31 @@ export function ReactPlayerAsVideo(props) {
 }
 ```
 
+### Providers
+
+You can choose between different providers for video processing and hosting. 
+The default provider is [Mux](https://mux.com). 
+To change the provider you can add a `provider` option in the next-video config.
+
+```js
+// next.config.js
+const { withNextVideo } = require('next-video/process')
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {}
+
+module.exports = withNextVideo(nextConfig, {
+  provider: 'vercel-blob',
+})
+```
+
+Supported providers with their required environment variables:
+
+- [`mux`](https://mux.com) (`MUX_TOKEN_ID`, `MUX_TOKEN_SECRET`)
+- [`vercel-blob`](https://vercel.com/docs/storage/vercel-blob) (`BLOB_READ_WRITE_TOKEN`)
+- More coming soon...
+
+
 ## Roadmap
 
 ### v0

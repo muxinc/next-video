@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, useState } from 'react';
+import React, { forwardRef, useState } from 'react';
 import { DefaultPlayer } from './default-player.js';
 import { Alert } from './alert.js';
 import { createVideoRequest, defaultLoader } from './video-loader.js';
@@ -109,15 +109,22 @@ export function getVideoProps(allProps: VideoProps, state: { asset?: Asset }) {
 
   if (asset) {
     if (asset.status === 'ready') {
-      props.blurDataURL = blurDataURL ?? asset.blurDataURL;
+      props.blurDataURL ??= asset.blurDataURL;
 
-      // Mux provider logic
+      // Mux provider
       const playbackId = asset.externalIds?.playbackId;
 
       if (playbackId) {
-        props.src ??= `https://stream.mux.com/${playbackId}.m3u8`;
+        // src can't be overridden by the user.
+        props.src = `https://stream.mux.com/${playbackId}.m3u8`;
         props.poster ??= getPosterURLFromPlaybackId(playbackId, props);
       }
+      // Vercel Blob provider
+      else if (asset.externalIds?.url) {
+        // src can't be overridden by the user.
+        props.src = asset.externalIds?.url;
+      }
+
     } else {
       props.src = toSymlinkPath(asset.originalFilePath);
     }

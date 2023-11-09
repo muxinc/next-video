@@ -1,6 +1,5 @@
 import { env } from 'node:process';
 import { readFile, writeFile } from 'node:fs/promises';
-import log from './logger.js';
 
 export interface Asset {
   status?: 'sourced' | 'pending' | 'uploading' | 'processing' | 'ready' | 'error';
