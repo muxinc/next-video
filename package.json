@@ -1,6 +1,7 @@
 {
   "name": "next-video",
   "version": "0.8.6",
+  "type": "module",
   "description": "A React component for adding video to your Next.js application. It extends both the video element and your Next app with features for automatic video optimization.",
   "author": "Mux Lab <lab@mux.com>",
   "license": "MIT",
@@ -12,7 +13,6 @@
     "type": "git",
     "url": "git+https://github.com/muxinc/next-video.git"
   },
-  "type": "module",
   "files": [
     "dist",
     "video-types"
@@ -20,19 +20,23 @@
   "bin": {
     "next-video": "./dist/cli.js"
   },
-  "main": "./dist/cjs/components/video.js",
-  "module": "./dist/components/video.js",
+  "main": "./dist/components/video.js",
   "exports": {
     ".": "./dist/components/video.js",
     "./process": {
-      "import": "./dist/main.js",
-      "require": "./dist/cjs/main.js",
-      "default": "./dist/main.js"
+      "import": "./dist/process.js",
+      "require": "./dist/cjs/process.js",
+      "default": "./dist/process.js"
     },
     "./request-handler": "./dist/request-handler.js",
     "./video-types/*": "./video-types/*.d.ts",
     "./dist/cjs/*": "./dist/cjs/*",
     "./dist/*": "./dist/*"
+  },
+  "typesVersions": {
+    "*": {
+      "*" : ["./dist/*"]
+    }
   },
   "scripts": {
     "clean": "rm -rf dist",

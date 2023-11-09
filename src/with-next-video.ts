@@ -4,9 +4,9 @@ import fs from 'node:fs/promises';
 import { env } from 'node:process';
 import { fileURLToPath } from 'node:url';
 import { videoConfigDefault } from './config.js';
-import type { VideoConfigComplete } from './config.js';
+import type { VideoConfig } from './config.js';
 
-export async function withNextVideo(nextConfig: any, videoConfig: VideoConfigComplete) {
+export async function withNextVideo(nextConfig: any, videoConfig: VideoConfig) {
 
   if (typeof nextConfig === 'function') {
     return async (...args: any[]) => {
@@ -15,13 +15,12 @@ export async function withNextVideo(nextConfig: any, videoConfig: VideoConfigCom
     };
   }
 
-  videoConfig = Object.assign({}, videoConfigDefault, videoConfig);
-
-  const { path, folder } = videoConfig;
+  const videoConfigComplete = Object.assign({}, videoConfigDefault, videoConfig);
+  const { path, folder } = videoConfigComplete;
 
   // Don't use `process.env` here because Next.js replaces public env vars during build.
   env['NEXT_PUBLIC_VIDEO_OPTS'] = JSON.stringify({ path });
-  env['__NEXT_VIDEO_OPTS'] = JSON.stringify(videoConfig);
+  env['__NEXT_VIDEO_OPTS'] = JSON.stringify(videoConfigComplete);
 
   // We should probably switch to using `phase` here, just a bit concerned about backwards compatibility.
   if (process.argv[2] === 'dev') {
