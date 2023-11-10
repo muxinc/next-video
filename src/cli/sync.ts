@@ -7,7 +7,7 @@ import { stat, readdir } from 'node:fs/promises';
 import path from 'node:path';
 
 import log from '../logger.js';
-import { callHandler } from '../main.js';
+import { callHandler } from '../process.js';
 import { createAsset, getAsset } from '../assets.js';
 import { getNextVideoVersion } from './lib/json-configs.js';
 

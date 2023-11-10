@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { env } from 'node:process';
-import { callHandler } from './main.js';
+import { callHandler } from './process.js';
 import { createAsset, getAsset } from './assets.js';
 
 // App Router
