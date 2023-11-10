@@ -1,3 +1,17 @@
+# [0.9.0](https://github.com/muxinc/next-video/compare/v0.8.6...v0.9.0) (2023-11-10)
+
+
+### Bug Fixes
+
+* type issues ([#104](https://github.com/muxinc/next-video/issues/104)) ([2a1d87a](https://github.com/muxinc/next-video/commit/2a1d87acc790ce9c9016c36ff81c06f58aa7f12f)), closes [#98](https://github.com/muxinc/next-video/issues/98)
+
+
+### Features
+
+* add Vercel Blob provider ([#102](https://github.com/muxinc/next-video/issues/102)) ([c70e1b8](https://github.com/muxinc/next-video/commit/c70e1b8128af65f493b0b8c21fd04b538960555d))
+
+
+
 ## [0.8.6](https://github.com/muxinc/next-video/compare/v0.8.5...v0.8.6) (2023-11-06)
 
 
