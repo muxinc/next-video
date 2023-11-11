@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { videoConfigDefault } from './config.js';
 import type { VideoConfig } from './config.js';
 
-export async function withNextVideo(nextConfig: any, videoConfig: VideoConfig) {
+export async function withNextVideo(nextConfig: any, videoConfig?: VideoConfig) {
 
   if (typeof nextConfig === 'function') {
     return async (...args: any[]) => {
