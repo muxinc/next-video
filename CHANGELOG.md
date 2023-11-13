@@ -1,3 +1,12 @@
+## [0.9.1](https://github.com/muxinc/next-video/compare/v0.9.0...v0.9.1) (2023-11-13)
+
+
+### Bug Fixes
+
+* webpack loader ERR_STRING_TOO_LONG fix [#107](https://github.com/muxinc/next-video/issues/107) ([#110](https://github.com/muxinc/next-video/issues/110)) ([34c79ce](https://github.com/muxinc/next-video/commit/34c79ceb52c6b05e0992cb71d6b0eac1b3322694))
+
+
+
 # [0.9.0](https://github.com/muxinc/next-video/compare/v0.8.6...v0.9.0) (2023-11-10)
 
 
