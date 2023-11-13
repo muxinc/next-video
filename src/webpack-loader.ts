@@ -2,7 +2,10 @@ import path from 'node:path';
 import { readFile, writeFile } from 'node:fs/promises';
 import { env } from 'node:process';
 
-export default async function loader(this: any, source: any) {
+// https://webpack.js.org/api/loaders#raw-loader
+export const raw = true;
+
+export default async function loader(this: any, source: Buffer) {
   const assetPath = path.resolve(getAssetConfigPath(this.resourcePath));
 
   this.addDependency(assetPath);
