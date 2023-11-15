@@ -235,7 +235,7 @@ Supported providers with their required environment variables:
 | [`vercel-blob`](https://vercel.com/docs/storage/vercel-blob) | BLOB_READ_WRITE_TOKEN              | [Pricing](https://vercel.com/docs/storage/vercel-blob/usage-and-pricing) |
 | More coming...                                               |                                    |
 
-#### Provider featuresets
+#### Provider feature set
 
 |                              | Mux (default) | Vercel Blob |
 | ---------------------------- | ------------- | ----------- |
