@@ -63,12 +63,7 @@ export async function uploadLocalFile(asset: Asset) {
 
   return updateAsset(src, {
     status: 'ready',
-    providerSpecific: {
-      [provider]: {
-        url: blob.url,
-        contentType: blob.contentType,
-      }
-    },
+    sources: [{ src: blob.url, type: blob.contentType }],
   });
 }
 
@@ -109,11 +104,6 @@ export async function uploadRequestedFile(asset: Asset) {
 
   return updateAsset(src, {
     status: 'ready',
-    providerSpecific: {
-      [provider]: {
-        url: blob.url,
-        contentType: blob.contentType,
-      }
-    },
+    sources: [{ src: blob.url, type: blob.contentType }],
   });
 }
