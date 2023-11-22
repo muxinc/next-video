@@ -1,12 +1,13 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fetch as uFetch } from 'undici';
-import { put, head } from '@vercel/blob';
+import { put } from '@vercel/blob';
 import chalk from 'chalk';
 
-import { updateAsset, Asset } from '../assets.js';
-import log from '../logger.js';
+import { updateAsset, Asset } from '../../assets.js';
+import log from '../../logger.js';
 
+const provider = 'vercel-blob';
 
 export const config = {
   runtime: 'edge',
@@ -62,8 +63,11 @@ export async function uploadLocalFile(asset: Asset) {
 
   return updateAsset(src, {
     status: 'ready',
-    externalIds: {
-      url: blob.url,
+    providerSpecific: {
+      [provider]: {
+        url: blob.url,
+        contentType: blob.contentType,
+      }
     },
   });
 }
@@ -105,8 +109,11 @@ export async function uploadRequestedFile(asset: Asset) {
 
   return updateAsset(src, {
     status: 'ready',
-    externalIds: {
-      url: blob.url,
+    providerSpecific: {
+      [provider]: {
+        url: blob.url,
+        contentType: blob.contentType,
+      }
     },
   });
 }

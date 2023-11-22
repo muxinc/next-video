@@ -2,13 +2,14 @@ import chalk from 'chalk';
 import chokidar from 'chokidar';
 import { Argv, Arguments } from 'yargs';
 
-import { env, cwd } from 'node:process';
-import { stat, readdir } from 'node:fs/promises';
+import { cwd } from 'node:process';
+import { readdir } from 'node:fs/promises';
 import path from 'node:path';
 
 import log from '../logger.js';
 import { callHandler } from '../process.js';
 import { createAsset, getAsset } from '../assets.js';
+import { getVideoConfig } from '../config.js';
 import { getNextVideoVersion } from './lib/json-configs.js';
 
 export const command = 'sync';
@@ -38,21 +39,14 @@ function watcher(dir: string) {
     persistent: true,
   });
 
-  watcher.on('add', async (filePath, stats) => {
-    const relativePath = path.relative(cwd(), filePath);
-    const newAsset = await createAsset(relativePath, {
-      size: stats?.size,
-    });
+  watcher.on('add', async (filePath) => {
+    const newAsset = await createAsset(filePath);
 
     if (newAsset) {
       log.add(`New file found: ${filePath}`);
-      return callHandler('local.video.added', newAsset, getCallHandlerConfig());
+      return callHandler('local.video.added', newAsset, await getVideoConfig());
     }
   });
-}
-
-function getCallHandlerConfig() {
-  return JSON.parse(env['__NEXT_VIDEO_OPTS'] ?? '{}');
 }
 
 export async function handler(argv: Arguments) {
@@ -76,16 +70,11 @@ export async function handler(argv: Arguments) {
     const newFileProcessor = async (file: string) => {
       log.info(log.label('Processing file:'), file);
 
-      const absolutePath = path.join(directoryPath, file);
-      const relativePath = path.relative(cwd(), absolutePath);
-      const stats = await stat(absolutePath);
-
-      const newAsset = await createAsset(relativePath, {
-        size: stats.size,
-      });
+      const filePath = path.join(directoryPath, file);
+      const newAsset = await createAsset(filePath);
 
       if (newAsset) {
-        return callHandler('local.video.added', newAsset, getCallHandlerConfig());
+        return callHandler('local.video.added', newAsset, await getVideoConfig());
       }
     };
 
@@ -99,7 +88,7 @@ export async function handler(argv: Arguments) {
       // it back through the local video handler.
       const assetStatus = existingAsset?.status;
       if (assetStatus && ['sourced', 'pending', 'uploading', 'processing'].includes(assetStatus)) {
-        return callHandler('local.video.added', existingAsset, getCallHandlerConfig());
+        return callHandler('local.video.added', existingAsset, await getVideoConfig());
       }
     };
 

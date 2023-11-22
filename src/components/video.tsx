@@ -4,7 +4,8 @@ import React, { forwardRef, useState } from 'react';
 import { DefaultPlayer } from './default-player.js';
 import { Alert } from './alert.js';
 import { createVideoRequest, defaultLoader } from './video-loader.js';
-import { getPosterURLFromPlaybackId, toSymlinkPath, usePolling } from './utils.js';
+import { config, camelCase, toSymlinkPath, usePolling } from './utils.js';
+import * as transformers from '../providers/transformers.js';
 
 import type { DefaultPlayerRefAttributes, DefaultPlayerProps } from './default-player.js';
 import type { Asset } from '../assets.js';
@@ -111,26 +112,27 @@ export function getVideoProps(allProps: VideoProps, state: { asset?: Asset }) {
     if (asset.status === 'ready') {
       props.blurDataURL ??= asset.blurDataURL;
 
-      // Mux provider
-      const playbackId = asset.externalIds?.playbackId;
-
-      if (playbackId) {
+      const transformedAsset = transform(asset);
+      if (transformedAsset) {
         // src can't be overridden by the user.
-        props.src = `https://stream.mux.com/${playbackId}.m3u8`;
-        props.poster ??= getPosterURLFromPlaybackId(playbackId, props);
+        props.src = transformedAsset.sources?.[0]?.src;
+        props.poster ??= transformedAsset.poster;
       }
-      // Vercel Blob provider
-      else if (asset.externalIds?.url) {
-        // src can't be overridden by the user.
-        props.src = asset.externalIds?.url;
-      }
-
     } else {
       props.src = toSymlinkPath(asset.originalFilePath);
     }
   }
 
   return props;
+}
+
+function transform(asset: Asset) {
+  const provider = asset.provider ?? config.provider;
+  for (let [key, transformer] of Object.entries(transformers)) {
+    if (key === camelCase(provider)) {
+      return transformer.transform(asset);
+    }
+  }
 }
 
 export default NextVideo;

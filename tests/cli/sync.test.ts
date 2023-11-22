@@ -169,7 +169,9 @@ describe('cli', () => {
         await createAsset(filePath, {});
         await updateAsset(filePath, {
           status: 'pending',
-          externalIds: { assetId: 'fake-asset-id' },
+          providerSpecific: {
+            mux: { assetId: 'fake-asset-id' },
+          },
         });
 
         const { addSpy, successSpy } = logSpies(t);
@@ -190,7 +192,9 @@ describe('cli', () => {
         await createAsset(filePath, {});
         await updateAsset(filePath, {
           status: 'uploading',
-          externalIds: { assetId: 'fake-asset-id' },
+          providerSpecific: {
+            mux: { assetId: 'fake-asset-id' },
+          }
         });
 
         const { addSpy, successSpy } = logSpies(t);
@@ -211,7 +215,9 @@ describe('cli', () => {
         await createAsset(filePath, {});
         await updateAsset(filePath, {
           status: 'processing',
-          externalIds: { assetId: 'fake-asset-id' },
+          providerSpecific: {
+            mux: { assetId: 'fake-asset-id' },
+          }
         });
 
         const { addSpy, successSpy } = logSpies(t);
