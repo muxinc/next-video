@@ -45,7 +45,8 @@ async function handleRequest(url?: string | null) {
     asset = await createAsset(url);
 
     if (asset) {
-      await callHandler('request.video.added', asset, await getVideoConfig());
+      const videoConfig = await getVideoConfig();
+      await callHandler('request.video.added', asset, videoConfig);
     }
 
     return { status: 200, data: asset };

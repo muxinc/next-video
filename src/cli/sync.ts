@@ -44,7 +44,8 @@ function watcher(dir: string) {
 
     if (newAsset) {
       log.add(`New file found: ${filePath}`);
-      return callHandler('local.video.added', newAsset, await getVideoConfig());
+      const videoConfig = await getVideoConfig();
+      return callHandler('local.video.added', newAsset, videoConfig);
     }
   });
 }
@@ -74,7 +75,8 @@ export async function handler(argv: Arguments) {
       const newAsset = await createAsset(filePath);
 
       if (newAsset) {
-        return callHandler('local.video.added', newAsset, await getVideoConfig());
+        const videoConfig = await getVideoConfig();
+        return callHandler('local.video.added', newAsset, videoConfig);
       }
     };
 
@@ -88,7 +90,8 @@ export async function handler(argv: Arguments) {
       // it back through the local video handler.
       const assetStatus = existingAsset?.status;
       if (assetStatus && ['sourced', 'pending', 'uploading', 'processing'].includes(assetStatus)) {
-        return callHandler('local.video.added', existingAsset, await getVideoConfig());
+        const videoConfig = await getVideoConfig();
+        return callHandler('local.video.added', existingAsset, videoConfig);
       }
     };
 
