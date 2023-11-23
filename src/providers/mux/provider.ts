@@ -12,24 +12,26 @@ import sharp from 'sharp';
 
 import { updateAsset, Asset } from '../../assets.js';
 import log from '../../logger.js';
+import { sleep } from '../../utils.js';
 
-const provider = 'mux';
-
-let mux: Mux;
-
-// We don't want to blow things up immediately if Mux isn't configured, but we also don't want to
-// need to initialize it every time in situations like polling. So we'll initialize it lazily but cache
-// the instance.
-function initMux() {
-  mux = new Mux();
+export type MuxSpecifics = {
+  uploadId?: string;
+  assetId?: string;
+  playbackId?: string;
 }
 
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+// We don't want to blow things up immediately if Mux isn't configured,
+// but we also don't want to need to initialize it every time in situations like polling.
+// So we'll initialize it lazily but cache the instance.
+let mux: Mux;
+function initMux() {
+  mux ??= new Mux();
 }
 
 async function pollForAssetReady(filePath: string, asset: Asset) {
-  if (!asset.providerSpecific?.[provider]?.assetId) {
+  const providerSpecifics: MuxSpecifics | undefined = asset.providerSpecific?.mux;
+
+  if (!providerSpecifics?.assetId) {
     log.error('No assetId provided for asset.');
     console.error(asset);
     return;
@@ -37,17 +39,16 @@ async function pollForAssetReady(filePath: string, asset: Asset) {
 
   initMux();
 
-  const assetId = asset.providerSpecific?.[provider]?.assetId;
-
+  const assetId = providerSpecifics?.assetId;
   const muxAsset = await mux.video.assets.retrieve(assetId);
   const playbackId = muxAsset.playback_ids?.[0].id!;
 
   let updatedAsset: Asset = asset;
-  if (asset.providerSpecific?.[provider]?.playbackId !== playbackId) {
+  if (providerSpecifics?.playbackId !== playbackId) {
     // We can go ahead and update it here so we have the playback ID, even before the Asset is ready.
     updatedAsset = await updateAsset(filePath, {
       providerSpecific: {
-        [provider]: {
+        mux: {
           playbackId,
         }
       },
@@ -79,7 +80,7 @@ async function pollForAssetReady(filePath: string, asset: Asset) {
       status: 'ready',
       blurDataURL,
       providerSpecific: {
-        [provider]: {
+        mux: {
           playbackId,
         }
       },
@@ -94,7 +95,9 @@ async function pollForAssetReady(filePath: string, asset: Asset) {
 }
 
 async function pollForUploadAsset(filePath: string, asset: Asset) {
-  if (!asset.providerSpecific?.[provider]?.uploadId) {
+  const providerSpecifics: MuxSpecifics | undefined = asset.providerSpecific?.mux;
+
+  if (!providerSpecifics?.uploadId) {
     log.error('No uploadId provided for asset.');
     console.error(asset);
     return;
@@ -102,8 +105,7 @@ async function pollForUploadAsset(filePath: string, asset: Asset) {
 
   initMux();
 
-  const uploadId = asset.providerSpecific?.[provider]?.uploadId;
-
+  const uploadId = providerSpecifics?.uploadId;
   const muxUpload = await mux.video.uploads.retrieve(uploadId);
 
   if (muxUpload.asset_id) {
@@ -113,7 +115,7 @@ async function pollForUploadAsset(filePath: string, asset: Asset) {
     const processingAsset = await updateAsset(filePath, {
       status: 'processing',
       providerSpecific: {
-        [provider]: {
+        mux: {
           assetId: muxUpload.asset_id,
         }
       },
@@ -173,7 +175,7 @@ export async function uploadLocalFile(asset: Asset) {
   await updateAsset(src, {
     status: 'uploading',
     providerSpecific: {
-      [provider]: {
+      mux: {
         uploadId: upload.id as string, // more typecasting while we use the beta mux sdk
       }
     },
@@ -244,7 +246,7 @@ export async function uploadRequestedFile(asset: Asset) {
   const processingAsset = await updateAsset(src, {
     status: 'processing',
     providerSpecific: {
-      [provider]: {
+      mux: {
         assetId: assetObj.id!,
       }
     },

@@ -1,3 +1,7 @@
+export function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export function camelCase(name: string) {
   return name.replace(/[-_]([a-z])/g, ($0, $1) => $1.toUpperCase());
 }

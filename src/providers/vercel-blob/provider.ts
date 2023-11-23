@@ -7,8 +7,6 @@ import chalk from 'chalk';
 import { updateAsset, Asset } from '../../assets.js';
 import log from '../../logger.js';
 
-const provider = 'vercel-blob';
-
 export const config = {
   runtime: 'edge',
 };
