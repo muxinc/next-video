@@ -12,8 +12,6 @@ export interface Asset {
     [provider: string]: { [key: string]: any }
   };
   blurDataURL?: string;
-  poster?: string;
-  sources?: AssetSource[];
   size?: number;
   error?: any;
   createdAt: number;
@@ -25,9 +23,14 @@ export interface Asset {
   };
 }
 
+export interface TransformedAsset extends Asset {
+  poster?: string;
+  sources?: AssetSource[];
+}
+
 export interface AssetSource {
   src: string;
-  type: string;
+  type?: string;
 }
 
 export async function getAsset(filePath: string): Promise<Asset | undefined> {

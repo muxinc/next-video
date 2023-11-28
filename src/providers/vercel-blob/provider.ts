@@ -11,6 +11,11 @@ export const config = {
   runtime: 'edge',
 };
 
+export type VercelBlobSpecifics = {
+  url?: string;
+  contentType?: string;
+}
+
 export async function uploadLocalFile(asset: Asset) {
   if (!asset.originalFilePath) {
     log.error('No filePath provided for asset.');
@@ -62,10 +67,10 @@ export async function uploadLocalFile(asset: Asset) {
   return updateAsset(src, {
     status: 'ready',
     providerSpecific: {
-      [provider]: {
+      'vercel-blob': {
         url: blob.url,
         contentType: blob.contentType,
-      }
+      } as VercelBlobSpecifics
     },
   });
 }
@@ -108,10 +113,10 @@ export async function uploadRequestedFile(asset: Asset) {
   return updateAsset(src, {
     status: 'ready',
     providerSpecific: {
-      [provider]: {
+      'vercel-blob': {
         url: blob.url,
         contentType: blob.contentType,
-      }
+      } as VercelBlobSpecifics
     },
   });
 }

@@ -1,4 +1,4 @@
-import type { Asset } from '../../assets.js';
+import type { Asset, TransformedAsset } from '../../assets.js';
 
 type Props = {
   customDomain?: string;
@@ -16,7 +16,7 @@ type PosterProps = {
 
 const MUX_VIDEO_DOMAIN = 'mux.com';
 
-export function transform(asset: Asset, props?: Props) {
+export function transform(asset: Asset, props?: Props): TransformedAsset {
   const playbackId = getPlaybackId(asset);
   if (!playbackId) return asset;
 
@@ -25,7 +25,6 @@ export function transform(asset: Asset, props?: Props) {
 
     sources: [
       { src: `https://stream.mux.com/${playbackId}.m3u8`, type: 'application/x-mpegURL' }
-      // todo: add progressive downloads?
     ],
 
     poster: getPosterURLFromPlaybackId(playbackId, {
@@ -33,7 +32,7 @@ export function transform(asset: Asset, props?: Props) {
       thumbnailTime: props?.thumbnailTime ?? props?.startTime,
       token: props?.tokens?.thumbnail,
     })
-  }
+  };
 }
 
 export function getPlaybackId(asset: Asset): string | undefined {

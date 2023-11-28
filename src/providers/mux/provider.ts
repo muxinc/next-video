@@ -259,7 +259,8 @@ export async function createThumbHash(imgUrl: string) {
   const response = await uFetch(imgUrl);
   const buffer = await response.arrayBuffer();
 
-  const { data, info } = await sharp(buffer).raw().ensureAlpha().toBuffer({ resolveWithObject: true });
+  const { data, info } = await sharp(buffer)
+    .raw().ensureAlpha().toBuffer({ resolveWithObject: true });
 
   // thumbhash is ESM only so dynamically import it.
   const { rgbaToThumbHash, thumbHashToDataURL } = await import('thumbhash');
