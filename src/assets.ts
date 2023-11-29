@@ -1,38 +1,71 @@
-import { env } from 'node:process';
-import { readFile, writeFile } from 'node:fs/promises';
+import { relative } from 'node:path';
+import { cwd } from 'node:process';
+import { stat, readFile, writeFile } from 'node:fs/promises';
+import { getVideoConfig } from './config.js';
+import { deepMerge } from './utils.js';
 
 export interface Asset {
-  status?: 'sourced' | 'pending' | 'uploading' | 'processing' | 'ready' | 'error';
-  error?: any;
-  originalFilePath?: string;
+  status: 'sourced' | 'pending' | 'uploading' | 'processing' | 'ready' | 'error';
+  originalFilePath: string;
+  provider: string;
+  providerSpecific?: {
+    [provider: string]: { [key: string]: any }
+  };
+  blurDataURL?: string;
   size?: number;
+  error?: any;
+  createdAt: number;
+  updatedAt: number;
+
+  // Here for backwards compatibility with older assets.
   externalIds?: {
     [key: string]: string; // { uploadId, playbackId, assetId }
   };
-  blurDataURL?: string;
-  createdAt?: number;
-  updatedAt?: number;
+}
+
+export interface TransformedAsset extends Asset {
+  poster?: string;
+  sources?: AssetSource[];
+}
+
+export interface AssetSource {
+  src: string;
+  type?: string;
 }
 
 export async function getAsset(filePath: string): Promise<Asset | undefined> {
-  const assetPath = getAssetConfigPath(filePath);
+  const assetPath = await getAssetConfigPath(filePath);
   const file = await readFile(assetPath);
   const asset = JSON.parse(file.toString());
-
   return asset;
 }
 
-export async function createAsset(filePath: string, assetDetails?: Asset): Promise<Asset | undefined> {
-  const assetPath = getAssetConfigPath(filePath);
+export async function createAsset(filePath: string, assetDetails?: Partial<Asset>) {
+  const videoConfig = await getVideoConfig();
+  const assetPath = await getAssetConfigPath(filePath);
+
+  let originalFilePath = filePath;
+  if (!isRemote(filePath))  {
+    originalFilePath = relative(cwd(), filePath);
+  }
 
   const newAssetDetails: Asset = {
+    status: 'pending', // overwritable
     ...assetDetails,
-    status: 'pending',
-    originalFilePath: filePath,
-    externalIds: {},
+    originalFilePath,
+    provider: videoConfig.provider,
+    providerSpecific: {},
     createdAt: Date.now(),
     updatedAt: Date.now(),
   };
+
+  if (!isRemote(filePath)) {
+    try {
+      newAssetDetails.size = (await stat(filePath))?.size;
+    } catch {
+      // Ignore error.
+    }
+  }
 
   try {
     await writeFile(assetPath, JSON.stringify(newAssetDetails), { flag: 'wx' });
@@ -47,29 +80,26 @@ export async function createAsset(filePath: string, assetDetails?: Asset): Promi
   return newAssetDetails;
 }
 
-export async function updateAsset(filePath: string, assetDetails: Asset): Promise<Asset> {
-  const assetPath = getAssetConfigPath(filePath);
-
+export async function updateAsset(filePath: string, assetDetails: Partial<Asset>) {
+  const assetPath = await getAssetConfigPath(filePath);
   const currentAsset = await getAsset(filePath);
 
-  const newAssetDetails = {
-    ...currentAsset,
-    ...assetDetails,
-    externalIds: {
-      ...currentAsset?.externalIds,
-      ...assetDetails.externalIds,
-    },
+  if (!currentAsset) {
+    throw new Error(`Asset not found: ${filePath}`);
+  }
+
+  const newAssetDetails = deepMerge(currentAsset, assetDetails, {
     updatedAt: Date.now(),
-  };
+  }) as Asset;
 
   await writeFile(assetPath, JSON.stringify(newAssetDetails));
 
   return newAssetDetails;
 }
 
-function getAssetConfigPath(filePath: string) {
+export async function getAssetConfigPath(filePath: string) {
   if (isRemote(filePath)) {
-    const VIDEOS_DIR = JSON.parse(env['__NEXT_VIDEO_OPTS'] ?? '{}').folder;
+    const VIDEOS_DIR = (await getVideoConfig()).folder;
     if (!VIDEOS_DIR) throw new Error('Missing video `folder` config.');
 
     // Add the asset directory and make remote url a safe file path.

@@ -16,17 +16,17 @@ export async function withNextVideo(nextConfig: any, videoConfig?: VideoConfig) 
   }
 
   const videoConfigComplete = Object.assign({}, videoConfigDefault, videoConfig);
-  const { path, folder } = videoConfigComplete;
+  const { path, folder, provider } = videoConfigComplete;
 
   // Don't use `process.env` here because Next.js replaces public env vars during build.
-  env['NEXT_PUBLIC_VIDEO_OPTS'] = JSON.stringify({ path });
+  env['NEXT_PUBLIC_VIDEO_OPTS'] = JSON.stringify({ path, provider });
   env['__NEXT_VIDEO_OPTS'] = JSON.stringify(videoConfigComplete);
 
   // We should probably switch to using `phase` here, just a bit concerned about backwards compatibility.
   if (process.argv[2] === 'dev') {
 
     // Don't use `process.env` here because Next.js replaces public env vars during build.
-    env['NEXT_PUBLIC_DEV_VIDEO_OPTS'] = JSON.stringify({ path, folder });
+    env['NEXT_PUBLIC_DEV_VIDEO_OPTS'] = JSON.stringify({ path, folder, provider });
 
     const VIDEOS_PATH = join(process.cwd(), folder)
     const TMP_PUBLIC_VIDEOS_PATH = join(process.cwd(), 'public', `_next-video`);

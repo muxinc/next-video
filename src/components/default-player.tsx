@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 import MuxPlayer from '@mux/mux-player-react';
-import { getPosterURLFromPlaybackId } from './utils.js';
+import { getPlaybackId, getPosterURLFromPlaybackId } from '../providers/mux/transformer.js';
 
 import type { MuxPlayerProps, MuxPlayerRefAttributes } from '@mux/mux-player-react';
 import type { PlayerProps } from './types.js';
@@ -24,7 +24,7 @@ export const DefaultPlayer = forwardRef<DefaultPlayerRefAttributes | null, Defau
 
   const props: MuxPlayerProps = rest;
   const imgStyleProps: React.CSSProperties = {};
-  const playbackId = asset?.externalIds?.playbackId;
+  const playbackId = asset ? getPlaybackId(asset) : undefined;
 
   let isCustomPoster = true;
   let srcSet: string | undefined;
