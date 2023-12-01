@@ -17,6 +17,8 @@ const NextVideo = forwardRef<DefaultPlayerRefAttributes | null, VideoProps>((pro
   let {
     as: VideoPlayer = DefaultPlayer,
     loader = defaultLoader,
+    className,
+    style,
     src,
     width,
     height,
@@ -43,7 +45,10 @@ const NextVideo = forwardRef<DefaultPlayerRefAttributes | null, VideoProps>((pro
   const videoProps = getVideoProps({ ...props, src }, { asset });
 
   return (
-    <div className="next-video-container">
+    <div
+      className={`${className} next-video-container`}
+      style={style}
+    >
       <style>{
         /* css */`
         .next-video-container {
@@ -93,6 +98,8 @@ export function getVideoProps(allProps: VideoProps, state: { asset?: Asset }) {
   const {
     controls = true,
     as,
+    className,
+    style,
     src,
     poster,
     blurDataURL,
