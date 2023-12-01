@@ -1,7 +1,7 @@
 import { videoHandler, callHandler } from './video-handler.js';
 import { uploadLocalFile } from './handlers/local-upload.js';
 import { uploadRequestedFile } from './handlers/api-request.js';
-import log from './logger.js';
+import log from './utils/logger.js';
 import { withNextVideo } from './with-next-video.js';
 
 try {

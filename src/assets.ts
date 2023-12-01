@@ -2,7 +2,8 @@ import { relative } from 'node:path';
 import { cwd } from 'node:process';
 import { stat, readFile, writeFile } from 'node:fs/promises';
 import { getVideoConfig } from './config.js';
-import { deepMerge } from './utils.js';
+import { deepMerge, camelCase } from './utils/utils.js';
+import * as transformers from './providers/transformers.js';
 
 export interface Asset {
   status: 'sourced' | 'pending' | 'uploading' | 'processing' | 'ready' | 'error';
@@ -11,6 +12,8 @@ export interface Asset {
   providerSpecific?: {
     [provider: string]: { [key: string]: any }
   };
+  poster?: string;
+  sources?: AssetSource[];
   blurDataURL?: string;
   size?: number;
   error?: any;
@@ -21,11 +24,6 @@ export interface Asset {
   externalIds?: {
     [key: string]: string; // { uploadId, playbackId, assetId }
   };
-}
-
-export interface TransformedAsset extends Asset {
-  poster?: string;
-  sources?: AssetSource[];
 }
 
 export interface AssetSource {
@@ -88,9 +86,11 @@ export async function updateAsset(filePath: string, assetDetails: Partial<Asset>
     throw new Error(`Asset not found: ${filePath}`);
   }
 
-  const newAssetDetails = deepMerge(currentAsset, assetDetails, {
+  let newAssetDetails = deepMerge(currentAsset, assetDetails, {
     updatedAt: Date.now(),
   }) as Asset;
+
+  newAssetDetails = transformAsset(transformers, newAssetDetails);
 
   await writeFile(assetPath, JSON.stringify(newAssetDetails));
 
@@ -116,4 +116,21 @@ function toSafePath(str: string) {
   return str
     .replace(/^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$/g, '')
     .replace(/[^a-zA-Z0-9._-]+/g, '_');
+}
+
+type TransformerRecord = Record<string, {
+  transform: (asset: Asset, props?: any) => Asset;
+}>;
+
+function transformAsset(transformers: TransformerRecord, asset: Asset) {
+  const provider = asset.provider;
+  if (!provider) return asset;
+
+  for (let [key, transformer] of Object.entries(transformers)) {
+    if (key === camelCase(provider)) {
+      return transformer.transform(asset);
+    }
+  }
+
+  return asset;
 }

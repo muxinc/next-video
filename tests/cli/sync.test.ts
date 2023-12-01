@@ -6,7 +6,7 @@ import { describe, it, before, after, mock } from 'node:test';
 
 import Mux from '@mux/mux-node';
 import yargs from 'yargs';
-import log from '../../src/logger.js';
+import log from '../../src/utils/logger.js';
 
 import { handler, builder } from '../../src/cli/sync.js';
 import { createAsset, updateAsset } from '../../src/assets.js';

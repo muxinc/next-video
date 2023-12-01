@@ -1,6 +1,6 @@
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
-import { deepMerge } from '../src/utils.js';
+import { deepMerge } from '../src/utils/utils.js';
 
 describe('utils', () => {
   it('deepMerge', () => {
