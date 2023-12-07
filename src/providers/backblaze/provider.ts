@@ -9,6 +9,7 @@ import cuid2 from '@paralleldrive/cuid2';
 import { S3Client } from '@aws-sdk/client-s3';
 
 import { updateAsset, Asset } from '../../assets.js';
+import { getVideoConfig } from '../../config.js';
 import { findBucket, createBucket, putBucketCors, putObject } from '../../utils/s3.js';
 import log from '../../utils/logger.js';
 
@@ -29,8 +30,11 @@ let bucketName: string;
 let endpoint: string;
 
 async function initS3() {
-  bucketName = env.BACKBLAZE_BUCKET ?? '';
-  endpoint = env.BACKBLAZE_ENDPOINT ?? '';
+  const { providerConfig } = await getVideoConfig();
+  const backblazeConfig = providerConfig.backblaze;
+  bucketName = backblazeConfig?.bucket ?? '';
+  endpoint = backblazeConfig?.endpoint ?? '';
+
   const regionMatch = endpoint.match(/\.([a-z0-9-]+)\.backblazeb2\.com$/);
   const region =  regionMatch ? regionMatch[1] : '';
 

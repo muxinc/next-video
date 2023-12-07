@@ -14,6 +14,14 @@ export type VideoConfigComplete = {
 
   /* The default provider that will deliver your video. */
   provider: string;
+
+  /* Config by provider. */
+  providerConfig: {
+    backblaze?: {
+      endpoint: string;
+      bucket?: string;
+    };
+  }
 }
 
 export type VideoConfig = Partial<VideoConfigComplete>;
@@ -22,6 +30,7 @@ export const videoConfigDefault: VideoConfigComplete = {
   folder: 'videos',
   path: '/api/video',
   provider: 'mux',
+  providerConfig: {},
 }
 
 /**
