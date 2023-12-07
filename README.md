@@ -233,23 +233,24 @@ Supported providers with their required environment variables:
 | ------------------------------------------------------------ | ---------------------------------- | ------------------------------------------------------------------------ |
 | [`mux`](https://mux.com) (default)                           | MUX_TOKEN_ID <br/>MUX_TOKEN_SECRET | [Pricing](https://www.mux.com/pricing/video)                             |
 | [`vercel-blob`](https://vercel.com/docs/storage/vercel-blob) | BLOB_READ_WRITE_TOKEN              | [Pricing](https://vercel.com/docs/storage/vercel-blob/usage-and-pricing) |
+| [`backblaze`](https://www.backblaze.com/cloud-storage) | BACKBLAZE_ACCESS_KEY_ID<br/>BACKBLAZE_SECRET_ACCESS_KEY<br/>BACKBLAZE_ENDPOINT              | [Pricing](https://www.backblaze.com/cloud-storage/pricing) |
 | More coming...                                               |                                    |
 
 #### Provider feature set
 
-|                              | Mux (default) | Vercel Blob |
-| ---------------------------- | ------------- | ----------- |
-| Off-repo storage             | ✅            | ✅          |
-| Delivery via CDN             | ✅            | ✅          |
-| BYO player                   | ✅            | ✅          |
-| Compressed for streaming     | ✅            | -           |
-| Adapt to slow networks (HLS) | ✅            | -           |
-| Automatic placeholder poster | ✅            | -           |
-| Timeline hover thumbnails    | ✅            | -           |
-| Stream any soure format      | ✅            | -           |
-| AI captions & subtitles      | ✅            | -           |
-| Video analytics              | ✅            | -           |
-| Pricing                      | Minutes-based | GB-based    |
+|                              | Mux (default) | Vercel Blob | Backblaze   |
+| ---------------------------- | ------------- | ----------- | ----------- |
+| Off-repo storage             | ✅            | ✅          | ✅          |
+| Delivery via CDN             | ✅            | ✅          | -           |
+| BYO player                   | ✅            | ✅          | ✅          |
+| Compressed for streaming     | ✅            | -           | -           |
+| Adapt to slow networks (HLS) | ✅            | -           | -           |
+| Automatic placeholder poster | ✅            | -           | -           |
+| Timeline hover thumbnails    | ✅            | -           | -           |
+| Stream any soure format      | ✅            | -           | -           |
+| AI captions & subtitles      | ✅            | -           | -           |
+| Video analytics              | ✅            | -           | -           |
+| Pricing                      | Minutes-based | GB-based    | GB-based    |
 
 ## Roadmap
 
