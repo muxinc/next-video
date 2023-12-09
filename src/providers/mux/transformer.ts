@@ -1,4 +1,4 @@
-import type { Asset, TransformedAsset } from '../../assets.js';
+import type { Asset } from '../../assets.js';
 
 type Props = {
   customDomain?: string;
@@ -16,7 +16,7 @@ type PosterProps = {
 
 const MUX_VIDEO_DOMAIN = 'mux.com';
 
-export function transform(asset: Asset, props?: Props): TransformedAsset {
+export function transform(asset: Asset, props?: Props) {
   const playbackId = getPlaybackId(asset);
   if (!playbackId) return asset;
 
@@ -37,8 +37,8 @@ export function transform(asset: Asset, props?: Props): TransformedAsset {
 
 export function getPlaybackId(asset: Asset): string | undefined {
   // Fallback to asset.externalIds for backwards compatibility with older assets.
-  const providerDetails = asset.providerSpecific?.mux ?? asset.externalIds;
-  return providerDetails?.playbackId;
+  const providerMetadata = asset.providerMetadata?.mux ?? asset.externalIds;
+  return providerMetadata?.playbackId;
 }
 
 export const getPosterURLFromPlaybackId = (

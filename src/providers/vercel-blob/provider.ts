@@ -1,26 +1,33 @@
+import { ReadStream, createReadStream } from 'node:fs';
 import fs from 'node:fs/promises';
-import path from 'node:path';
 import { fetch as uFetch } from 'undici';
 import { put } from '@vercel/blob';
 import chalk from 'chalk';
 
 import { updateAsset, Asset } from '../../assets.js';
-import log from '../../logger.js';
+import log from '../../utils/logger.js';
 
 export const config = {
   runtime: 'edge',
 };
 
-export type VercelBlobSpecifics = {
+export type VercelBlobMetadata = {
   url?: string;
   contentType?: string;
 }
 
 export async function uploadLocalFile(asset: Asset) {
-  if (!asset.originalFilePath) {
+  const filePath = asset.originalFilePath;
+
+  if (!filePath) {
     log.error('No filePath provided for asset.');
     console.error(asset);
     return;
+  }
+
+  // Handle imported remote videos.
+  if (filePath && /^https?:\/\//.test(filePath)) {
+    return uploadRequestedFile(asset);
   }
 
   if (asset.status === 'ready') {
@@ -28,55 +35,23 @@ export async function uploadLocalFile(asset: Asset) {
   } else if (asset.status === 'uploading') {
     // Right now this re-starts the upload from the beginning.
     // We should probably do something smarter here.
-    log.info(log.label('Resuming upload:'), asset.originalFilePath);
+    log.info(log.label('Resuming upload:'), filePath);
   }
 
-  const src = asset.originalFilePath;
-
-  await updateAsset(src, {
+  await updateAsset(filePath, {
     status: 'uploading'
   });
 
-  // Imported remote videos can take an easy path.
-  if (src && /^https?:\/\//.test(src)) {
-    return uploadRequestedFile(asset);
-  }
+  const fileStats = await fs.stat(filePath);
+  const stream = createReadStream(filePath);
 
-  // get the file locally and such
-  const filePath = path.join(src);
-  const fileDescriptor = await fs.open(filePath);
-  const fileStats = await fileDescriptor.stat();
-  const stream = fileDescriptor.createReadStream();
-
-  log.info(log.label('Uploading file:'), `${filePath} (${fileStats.size} bytes)`);
-
-  let blob;
-  try {
-    blob = await put(asset.originalFilePath, stream, { access: 'public' });
-    stream.close();
-    await fileDescriptor.close();
-  } catch (e) {
-    log.error('Error uploading to the Vercel Blob store');
-    console.error(e);
-    return;
-  }
-
-  log.success(log.label('File uploaded:'), `${filePath} (${fileStats.size} bytes)`);
-  log.space(chalk.gray('>'), log.label('URL:'), blob.url);
-
-  return updateAsset(src, {
-    status: 'ready',
-    providerSpecific: {
-      'vercel-blob': {
-        url: blob.url,
-        contentType: blob.contentType,
-      } as VercelBlobSpecifics
-    },
-  });
+  return putAsset(filePath, fileStats.size, stream);
 }
 
 export async function uploadRequestedFile(asset: Asset) {
-  if (!asset.originalFilePath) {
+  const filePath = asset.originalFilePath;
+
+  if (!filePath) {
     log.error('No URL provided for asset.');
     console.error(asset);
     return;
@@ -86,37 +61,53 @@ export async function uploadRequestedFile(asset: Asset) {
     return;
   }
 
-  const src = asset.originalFilePath;
-  const fileName = path.basename(src);
-  const stream = (await uFetch(src)).body;
+  await updateAsset(filePath, {
+    status: 'uploading'
+  });
+
+  const response = await uFetch(filePath);
+  const size = Number(response.headers.get('content-length'));
+  const stream = response.body;
 
   if (!stream) {
-    log.error('Error fetching the requested file:', src);
+    log.error('Error fetching the requested file:', filePath);
     return;
   }
 
-  log.info(log.label('Uploading file:'), src);
+  return putAsset(filePath, size, stream as ReadableStream);
+}
+
+async function putAsset(filePath: string, size: number, stream: ReadStream | ReadableStream) {
+  log.info(log.label('Uploading file:'), `${filePath} (${size} bytes)`);
 
   let blob;
   try {
-    // @ts-ignore
-    blob = await put(fileName, stream, { access: 'public' });
+    blob = await put(filePath, stream, { access: 'public' });
+
+    if (stream instanceof ReadStream) {
+      stream.close();
+    }
   } catch (e) {
-    log.error('Error uploading to the Vercel Blob store');
+    log.error('Error uploading to Vercel Blob');
     console.error(e);
     return;
   }
 
-  log.success(log.label('File uploaded:'), src);
+  log.success(log.label('File uploaded:'), `${filePath} (${size} bytes)`);
   log.space(chalk.gray('>'), log.label('URL:'), blob.url);
 
-  return updateAsset(src, {
+  const updatedAsset = await updateAsset(filePath, {
     status: 'ready',
-    providerSpecific: {
+    providerMetadata: {
       'vercel-blob': {
         url: blob.url,
         contentType: blob.contentType,
-      } as VercelBlobSpecifics
+      } as VercelBlobMetadata
     },
   });
+
+  const url = updatedAsset.sources?.[0].src;
+  log.space(chalk.gray('>'), log.label('URL:'), url);
+
+  return updatedAsset;
 }

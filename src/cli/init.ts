@@ -7,7 +7,7 @@ import { exec } from 'node:child_process';
 import { access, mkdir, stat, readFile, writeFile, appendFile } from 'node:fs/promises';
 import path from 'node:path';
 
-import log, { Logger } from '../logger.js';
+import log, { Logger } from '../utils/logger.js';
 import { checkPackageJsonForNextVideo, updateTSConfigFileContent } from './lib/json-configs.js';
 import updateNextConfigFile from './lib/next-config.js';
 

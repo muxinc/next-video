@@ -1,9 +1,8 @@
 // Right now, this thing does nothing with timeouts. It should.
 // We probably want to migrate this from being a stateless function to a stateful function.
 // Also really need to do a ton of work to make this more resilient around retries, etc.
-
+import { createReadStream } from 'node:fs';
 import fs from 'node:fs/promises';
-import path from 'node:path';
 
 import chalk from 'chalk';
 import Mux from '@mux/mux-node';
@@ -11,10 +10,10 @@ import { fetch as uFetch } from 'undici';
 import sharp from 'sharp';
 
 import { updateAsset, Asset } from '../../assets.js';
-import log from '../../logger.js';
-import { sleep } from '../../utils.js';
+import log from '../../utils/logger.js';
+import { sleep } from '../../utils/utils.js';
 
-export type MuxSpecifics = {
+export type MuxMetadata = {
   uploadId?: string;
   assetId?: string;
   playbackId?: string;
@@ -29,9 +28,9 @@ function initMux() {
 }
 
 async function pollForAssetReady(filePath: string, asset: Asset) {
-  const providerSpecifics: MuxSpecifics | undefined = asset.providerSpecific?.mux;
+  const providerMetadata: MuxMetadata | undefined = asset.providerMetadata?.mux;
 
-  if (!providerSpecifics?.assetId) {
+  if (!providerMetadata?.assetId) {
     log.error('No assetId provided for asset.');
     console.error(asset);
     return;
@@ -39,15 +38,15 @@ async function pollForAssetReady(filePath: string, asset: Asset) {
 
   initMux();
 
-  const assetId = providerSpecifics?.assetId;
+  const assetId = providerMetadata?.assetId;
   const muxAsset = await mux.video.assets.retrieve(assetId);
   const playbackId = muxAsset.playback_ids?.[0].id!;
 
   let updatedAsset: Asset = asset;
-  if (providerSpecifics?.playbackId !== playbackId) {
+  if (providerMetadata?.playbackId !== playbackId) {
     // We can go ahead and update it here so we have the playback ID, even before the Asset is ready.
     updatedAsset = await updateAsset(filePath, {
-      providerSpecific: {
+      providerMetadata: {
         mux: {
           playbackId,
         }
@@ -79,7 +78,7 @@ async function pollForAssetReady(filePath: string, asset: Asset) {
     return updateAsset(filePath, {
       status: 'ready',
       blurDataURL,
-      providerSpecific: {
+      providerMetadata: {
         mux: {
           playbackId,
         }
@@ -95,9 +94,9 @@ async function pollForAssetReady(filePath: string, asset: Asset) {
 }
 
 async function pollForUploadAsset(filePath: string, asset: Asset) {
-  const providerSpecifics: MuxSpecifics | undefined = asset.providerSpecific?.mux;
+  const providerMetadata: MuxMetadata | undefined = asset.providerMetadata?.mux;
 
-  if (!providerSpecifics?.uploadId) {
+  if (!providerMetadata?.uploadId) {
     log.error('No uploadId provided for asset.');
     console.error(asset);
     return;
@@ -105,7 +104,7 @@ async function pollForUploadAsset(filePath: string, asset: Asset) {
 
   initMux();
 
-  const uploadId = providerSpecifics?.uploadId;
+  const uploadId = providerMetadata?.uploadId;
   const muxUpload = await mux.video.uploads.retrieve(uploadId);
 
   if (muxUpload.asset_id) {
@@ -114,7 +113,7 @@ async function pollForUploadAsset(filePath: string, asset: Asset) {
 
     const processingAsset = await updateAsset(filePath, {
       status: 'processing',
-      providerSpecific: {
+      providerMetadata: {
         mux: {
           assetId: muxUpload.asset_id,
         }
@@ -130,7 +129,9 @@ async function pollForUploadAsset(filePath: string, asset: Asset) {
 }
 
 export async function uploadLocalFile(asset: Asset) {
-  if (!asset.originalFilePath) {
+  const filePath = asset.originalFilePath;
+
+  if (!filePath) {
     log.error('No filePath provided for asset.');
     console.error(asset);
     return;
@@ -141,18 +142,16 @@ export async function uploadLocalFile(asset: Asset) {
   if (asset.status === 'ready') {
     return;
   } else if (asset.status === 'processing') {
-    log.info(log.label('Asset is already processing. Polling for completion:'), asset.originalFilePath);
-    return pollForAssetReady(asset.originalFilePath, asset);
+    log.info(log.label('Asset is already processing. Polling for completion:'), filePath);
+    return pollForAssetReady(filePath, asset);
   } else if (asset.status === 'uploading') {
     // Right now this re-starts the upload from the beginning.
     // We should probably do something smarter here.
-    log.info(log.label('Resuming upload:'), asset.originalFilePath);
+    log.info(log.label('Resuming upload:'), filePath);
   }
 
-  const src = asset.originalFilePath;
-
-  // Imported remote videos can take an easy path.
-  if (src && /^https?:\/\//.test(src)) {
+  // Handle imported remote videos.
+  if (filePath && /^https?:\/\//.test(filePath)) {
     return uploadRequestedFile(asset);
   }
 
@@ -172,20 +171,17 @@ export async function uploadLocalFile(asset: Asset) {
     return;
   }
 
-  await updateAsset(src, {
+  await updateAsset(filePath, {
     status: 'uploading',
-    providerSpecific: {
+    providerMetadata: {
       mux: {
         uploadId: upload.id as string, // more typecasting while we use the beta mux sdk
       }
     },
   });
 
-  // get the file locally and such
-  const filePath = path.join(src);
-  const fileDescriptor = await fs.open(filePath);
-  const fileStats = await fileDescriptor.stat();
-  const stream = fileDescriptor.createReadStream();
+  const fileStats = await fs.stat(filePath);
+  const stream = createReadStream(filePath);
 
   log.info(log.label('Uploading file:'), `${filePath} (${fileStats.size} bytes)`);
 
@@ -197,9 +193,7 @@ export async function uploadLocalFile(asset: Asset) {
       body: stream,
       duplex: 'half',
     });
-
     stream.close();
-    await fileDescriptor.close();
   } catch (e) {
     log.error('Error uploading to the Mux upload URL');
     console.error(e);
@@ -207,15 +201,18 @@ export async function uploadLocalFile(asset: Asset) {
   }
 
   log.success(log.label('File uploaded:'), `${filePath} (${fileStats.size} bytes)`);
-  const processingAsset = await updateAsset(src, {
+
+  const processingAsset = await updateAsset(filePath, {
     status: 'processing',
   });
 
-  return pollForUploadAsset(src, processingAsset);
+  return pollForUploadAsset(filePath, processingAsset);
 }
 
 export async function uploadRequestedFile(asset: Asset) {
-  if (!asset.originalFilePath) {
+  const filePath = asset.originalFilePath;
+
+  if (!filePath) {
     log.error('No URL provided for asset.');
     console.error(asset);
     return;
@@ -226,33 +223,31 @@ export async function uploadRequestedFile(asset: Asset) {
   if (asset.status === 'ready') {
     return;
   } else if (asset.status === 'processing') {
-    log.info(log.label('Asset is already processing. Polling for completion:'), asset.originalFilePath);
-    return pollForAssetReady(asset.originalFilePath, asset);
+    log.info(log.label('Asset is already processing. Polling for completion:'), filePath);
+    return pollForAssetReady(filePath, asset);
   }
-
-  const src = asset.originalFilePath;
 
   const assetObj = await mux.video.assets.create({
     // @ts-ignore
     input: [{
-      url: asset.originalFilePath
+      url: filePath
     }],
     playback_policy: ['public']
   });
 
-  log.info(log.label('Asset is processing:'), src);
+  log.info(log.label('Asset is processing:'), filePath);
   log.space(chalk.gray('>'), log.label('Mux Asset ID:'), assetObj.id);
 
-  const processingAsset = await updateAsset(src, {
+  const processingAsset = await updateAsset(filePath, {
     status: 'processing',
-    providerSpecific: {
+    providerMetadata: {
       mux: {
         assetId: assetObj.id!,
       }
     },
   });
 
-  return pollForAssetReady(src, processingAsset);
+  return pollForAssetReady(filePath, processingAsset);
 }
 
 export async function createThumbHash(imgUrl: string) {

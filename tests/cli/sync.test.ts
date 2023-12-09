@@ -6,7 +6,7 @@ import { describe, it, before, after, mock } from 'node:test';
 
 import Mux from '@mux/mux-node';
 import yargs from 'yargs';
-import log from '../../src/logger.js';
+import log from '../../src/utils/logger.js';
 
 import { handler, builder } from '../../src/cli/sync.js';
 import { createAsset, updateAsset } from '../../src/assets.js';
@@ -169,7 +169,7 @@ describe('cli', () => {
         await createAsset(filePath, {});
         await updateAsset(filePath, {
           status: 'pending',
-          providerSpecific: {
+          providerMetadata: {
             mux: { assetId: 'fake-asset-id' },
           },
         });
@@ -192,7 +192,7 @@ describe('cli', () => {
         await createAsset(filePath, {});
         await updateAsset(filePath, {
           status: 'uploading',
-          providerSpecific: {
+          providerMetadata: {
             mux: { assetId: 'fake-asset-id' },
           }
         });
@@ -215,7 +215,7 @@ describe('cli', () => {
         await createAsset(filePath, {});
         await updateAsset(filePath, {
           status: 'processing',
-          providerSpecific: {
+          providerMetadata: {
             mux: { assetId: 'fake-asset-id' },
           }
         });

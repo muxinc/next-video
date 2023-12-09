@@ -1,8 +1,8 @@
-import type { Asset, TransformedAsset, AssetSource } from '../../assets.js';
+import type { Asset, AssetSource } from '../../assets.js';
 
-export function transform(asset: Asset): TransformedAsset {
+export function transform(asset: Asset) {
   // Fallback to asset.externalIds for backwards compatibility with older assets.
-  const providerDetails = asset.providerSpecific?.['vercel-blob'] ?? asset.externalIds;
+  const providerDetails = asset.providerMetadata?.['vercel-blob'] ?? asset.externalIds;
   if (!providerDetails) return asset;
 
   const source: AssetSource = {

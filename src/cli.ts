@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import process from 'node:process';
 import nextEnv from '@next/env';
-import log from './logger.js';
+import log from './utils/logger.js';
 import yargs from 'yargs/yargs';
 
 import * as init from './cli/init.js';

@@ -1,6 +1,6 @@
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
-import { deepMerge } from '../src/utils.js';
+import { deepMerge } from '../src/utils/utils.js';
 
 describe('utils', () => {
   it('deepMerge', () => {
@@ -10,7 +10,7 @@ describe('utils', () => {
         qux: 'quux',
       },
       beep: 'boop',
-      providerSpecific: {
+      providerMetadata: {
         mux: {
           uploadId: '1',
           assetId: '2',
@@ -23,7 +23,7 @@ describe('utils', () => {
         bar: 'baz2',
       },
       beep: 'boop2',
-      providerSpecific: {
+      providerMetadata: {
         mux: {
           assetId: '3',
           playbackId: '4',
@@ -36,8 +36,8 @@ describe('utils', () => {
     assert(c.foo.bar === 'baz2');
     assert(c.foo.qux === 'quux');
     assert(c.beep === 'boop2');
-    assert(c.providerSpecific.mux.uploadId === '1');
-    assert(c.providerSpecific.mux.assetId === '3');
-    assert(c.providerSpecific.mux.playbackId === '4');
+    assert(c.providerMetadata.mux.uploadId === '1');
+    assert(c.providerMetadata.mux.assetId === '3');
+    assert(c.providerMetadata.mux.playbackId === '4');
   });
 });
