@@ -214,6 +214,7 @@ export function ReactPlayerAsVideo(props) {
 You can choose between different providers for video processing and hosting.
 The default provider is [Mux](https://mux.com).
 To change the provider you can add a `provider` option in the next-video config.
+Some providers require additional configuration which can be passed in the `providerConfig` property.
 
 ```js
 // next.config.js
@@ -223,18 +224,21 @@ const { withNextVideo } = require('next-video/process');
 const nextConfig = {};
 
 module.exports = withNextVideo(nextConfig, {
-  provider: 'vercel-blob',
+  provider: 'backblaze',
+  providerConfig: {
+    backblaze: { endpoint: 'https://s3.us-west-000.backblazeb2.com' }
+  }
 });
 ```
 
 Supported providers with their required environment variables:
 
-| Provider                                                     | Environment vars                   | Pricing link                                                             |
-| ------------------------------------------------------------ | ---------------------------------- | ------------------------------------------------------------------------ |
-| [`mux`](https://mux.com) (default)                           | MUX_TOKEN_ID <br/>MUX_TOKEN_SECRET | [Pricing](https://www.mux.com/pricing/video)                             |
-| [`vercel-blob`](https://vercel.com/docs/storage/vercel-blob) | BLOB_READ_WRITE_TOKEN              | [Pricing](https://vercel.com/docs/storage/vercel-blob/usage-and-pricing) |
-| [`backblaze`](https://www.backblaze.com/cloud-storage) | BACKBLAZE_ACCESS_KEY_ID<br/>BACKBLAZE_SECRET_ACCESS_KEY<br/>BACKBLAZE_ENDPOINT              | [Pricing](https://www.backblaze.com/cloud-storage/pricing) |
-| More coming...                                               |                                    |
+| Provider                                                     | Environment vars                                            | Provider config                    | Pricing link                                                             |
+| ------------------------------------------------------------ | ----------------------------------------------------------- | ---------------------------------- | ------------------------------------------------------------------------ |
+| [`mux`](https://mux.com) (default)                           | `MUX_TOKEN_ID`<br/>`MUX_TOKEN_SECRET`                       |                                    | [Pricing](https://www.mux.com/pricing/video)                             |
+| [`vercel-blob`](https://vercel.com/docs/storage/vercel-blob) | `BLOB_READ_WRITE_TOKEN`                                     |                                    | [Pricing](https://vercel.com/docs/storage/vercel-blob/usage-and-pricing) |
+| [`backblaze`](https://www.backblaze.com/cloud-storage)       | `BACKBLAZE_ACCESS_KEY_ID`<br/>`BACKBLAZE_SECRET_ACCESS_KEY` | `endpoint`<br/>`bucket` (optional) | [Pricing](https://www.backblaze.com/cloud-storage/pricing)               |
+| More coming...                                               |                                                             |                                    |
 
 #### Provider feature set
 
