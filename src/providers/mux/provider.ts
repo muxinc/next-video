@@ -13,7 +13,7 @@ import { updateAsset, Asset } from '../../assets.js';
 import log from '../../utils/logger.js';
 import { sleep } from '../../utils/utils.js';
 
-export type MuxSpecifics = {
+export type MuxMetadata = {
   uploadId?: string;
   assetId?: string;
   playbackId?: string;
@@ -28,9 +28,9 @@ function initMux() {
 }
 
 async function pollForAssetReady(filePath: string, asset: Asset) {
-  const providerSpecifics: MuxSpecifics | undefined = asset.providerSpecific?.mux;
+  const providerMetadata: MuxMetadata | undefined = asset.providerMetadata?.mux;
 
-  if (!providerSpecifics?.assetId) {
+  if (!providerMetadata?.assetId) {
     log.error('No assetId provided for asset.');
     console.error(asset);
     return;
@@ -38,15 +38,15 @@ async function pollForAssetReady(filePath: string, asset: Asset) {
 
   initMux();
 
-  const assetId = providerSpecifics?.assetId;
+  const assetId = providerMetadata?.assetId;
   const muxAsset = await mux.video.assets.retrieve(assetId);
   const playbackId = muxAsset.playback_ids?.[0].id!;
 
   let updatedAsset: Asset = asset;
-  if (providerSpecifics?.playbackId !== playbackId) {
+  if (providerMetadata?.playbackId !== playbackId) {
     // We can go ahead and update it here so we have the playback ID, even before the Asset is ready.
     updatedAsset = await updateAsset(filePath, {
-      providerSpecific: {
+      providerMetadata: {
         mux: {
           playbackId,
         }
@@ -78,7 +78,7 @@ async function pollForAssetReady(filePath: string, asset: Asset) {
     return updateAsset(filePath, {
       status: 'ready',
       blurDataURL,
-      providerSpecific: {
+      providerMetadata: {
         mux: {
           playbackId,
         }
@@ -94,9 +94,9 @@ async function pollForAssetReady(filePath: string, asset: Asset) {
 }
 
 async function pollForUploadAsset(filePath: string, asset: Asset) {
-  const providerSpecifics: MuxSpecifics | undefined = asset.providerSpecific?.mux;
+  const providerMetadata: MuxMetadata | undefined = asset.providerMetadata?.mux;
 
-  if (!providerSpecifics?.uploadId) {
+  if (!providerMetadata?.uploadId) {
     log.error('No uploadId provided for asset.');
     console.error(asset);
     return;
@@ -104,7 +104,7 @@ async function pollForUploadAsset(filePath: string, asset: Asset) {
 
   initMux();
 
-  const uploadId = providerSpecifics?.uploadId;
+  const uploadId = providerMetadata?.uploadId;
   const muxUpload = await mux.video.uploads.retrieve(uploadId);
 
   if (muxUpload.asset_id) {
@@ -113,7 +113,7 @@ async function pollForUploadAsset(filePath: string, asset: Asset) {
 
     const processingAsset = await updateAsset(filePath, {
       status: 'processing',
-      providerSpecific: {
+      providerMetadata: {
         mux: {
           assetId: muxUpload.asset_id,
         }
@@ -173,7 +173,7 @@ export async function uploadLocalFile(asset: Asset) {
 
   await updateAsset(filePath, {
     status: 'uploading',
-    providerSpecific: {
+    providerMetadata: {
       mux: {
         uploadId: upload.id as string, // more typecasting while we use the beta mux sdk
       }
@@ -240,7 +240,7 @@ export async function uploadRequestedFile(asset: Asset) {
 
   const processingAsset = await updateAsset(filePath, {
     status: 'processing',
-    providerSpecific: {
+    providerMetadata: {
       mux: {
         assetId: assetObj.id!,
       }

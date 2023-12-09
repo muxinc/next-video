@@ -37,8 +37,8 @@ export function transform(asset: Asset, props?: Props) {
 
 export function getPlaybackId(asset: Asset): string | undefined {
   // Fallback to asset.externalIds for backwards compatibility with older assets.
-  const providerSpecifics = asset.providerSpecific?.mux ?? asset.externalIds;
-  return providerSpecifics?.playbackId;
+  const providerMetadata = asset.providerMetadata?.mux ?? asset.externalIds;
+  return providerMetadata?.playbackId;
 }
 
 export const getPosterURLFromPlaybackId = (

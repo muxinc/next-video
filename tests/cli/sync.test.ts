@@ -169,7 +169,7 @@ describe('cli', () => {
         await createAsset(filePath, {});
         await updateAsset(filePath, {
           status: 'pending',
-          providerSpecific: {
+          providerMetadata: {
             mux: { assetId: 'fake-asset-id' },
           },
         });
@@ -192,7 +192,7 @@ describe('cli', () => {
         await createAsset(filePath, {});
         await updateAsset(filePath, {
           status: 'uploading',
-          providerSpecific: {
+          providerMetadata: {
             mux: { assetId: 'fake-asset-id' },
           }
         });
@@ -215,7 +215,7 @@ describe('cli', () => {
         await createAsset(filePath, {});
         await updateAsset(filePath, {
           status: 'processing',
-          providerSpecific: {
+          providerMetadata: {
             mux: { assetId: 'fake-asset-id' },
           }
         });

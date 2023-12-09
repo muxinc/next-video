@@ -11,7 +11,7 @@ export const config = {
   runtime: 'edge',
 };
 
-export type VercelBlobSpecifics = {
+export type VercelBlobMetadata = {
   url?: string;
   contentType?: string;
 }
@@ -98,11 +98,11 @@ async function putAsset(filePath: string, size: number, stream: ReadStream | Rea
 
   const updatedAsset = await updateAsset(filePath, {
     status: 'ready',
-    providerSpecific: {
+    providerMetadata: {
       'vercel-blob': {
         url: blob.url,
         contentType: blob.contentType,
-      } as VercelBlobSpecifics
+      } as VercelBlobMetadata
     },
   });
 

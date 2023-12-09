@@ -9,7 +9,7 @@ export interface Asset {
   status: 'sourced' | 'pending' | 'uploading' | 'processing' | 'ready' | 'error';
   originalFilePath: string;
   provider: string;
-  providerSpecific?: {
+  providerMetadata?: {
     [provider: string]: { [key: string]: any }
   };
   poster?: string;
@@ -52,7 +52,7 @@ export async function createAsset(filePath: string, assetDetails?: Partial<Asset
     ...assetDetails,
     originalFilePath,
     provider: videoConfig.provider,
-    providerSpecific: {},
+    providerMetadata: {},
     createdAt: Date.now(),
     updatedAt: Date.now(),
   };

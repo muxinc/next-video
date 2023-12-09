@@ -13,7 +13,7 @@ import { getVideoConfig } from '../../config.js';
 import { findBucket, createBucket, putBucketCors, putObject } from '../../utils/s3.js';
 import log from '../../utils/logger.js';
 
-export type BackblazeSpecifics = {
+export type BackblazeMetadata = {
   bucket?: string;
   endpoint?: string;
 }
@@ -164,11 +164,11 @@ async function putAsset(filePath: string, size: number, stream: ReadStream | Rea
 
   const updatedAsset = await updateAsset(filePath, {
     status: 'ready',
-    providerSpecific: {
+    providerMetadata: {
       backblaze: {
         endpoint,
         bucket: bucketName,
-      } as BackblazeSpecifics
+      } as BackblazeMetadata
     },
   });
 

@@ -1,11 +1,11 @@
 import type { Asset, AssetSource } from '../../assets.js';
 
 export function transform(asset: Asset) {
-  const providerSpecifics = asset.providerSpecific?.backblaze;
-  if (!providerSpecifics) return asset;
+  const providerMetadata = asset.providerMetadata?.backblaze;
+  if (!providerMetadata) return asset;
 
-  const src = new URL(providerSpecifics.endpoint);
-  src.hostname = `${providerSpecifics.bucket}.${src.hostname}`;
+  const src = new URL(providerMetadata.endpoint);
+  src.hostname = `${providerMetadata.bucket}.${src.hostname}`;
 
   const basename = asset.originalFilePath.split('/').pop();
   if (basename) src.pathname = basename
