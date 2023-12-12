@@ -71,9 +71,31 @@ export interface VideoProps extends Omit<DefaultPlayerProps, 'src'> {
   sizes?: string;
 
   /**
-   * A custom function used to resolve video URLs.
+   * A custom function used to resolve string based video URLs (not imports).
    */
   loader?: VideoLoader;
+
+  /**
+   * A custom function to transform the asset object (src and poster).
+   */
+  transform?: (asset: Asset) => Asset;
+}
+
+export interface VideoPropsInternal extends VideoProps {
+  /**
+   * The component type to render the video as.
+   */
+  as: FunctionComponent<DefaultPlayerProps>;
+
+  /**
+   * A custom function used to resolve string based video URLs (not imports).
+   */
+  loader: VideoLoader;
+
+  /**
+   * A custom function to transform the asset object (src and poster).
+   */
+  transform: (asset: Asset) => Asset;
 }
 
 export interface PlayerProps {

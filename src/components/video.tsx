@@ -9,7 +9,7 @@ import * as transformers from '../providers/transformers.js';
 
 import type { DefaultPlayerRefAttributes, DefaultPlayerProps } from './default-player.js';
 import type { Asset } from '../assets.js';
-import type { VideoLoaderProps, VideoProps } from './types.js';
+import type { VideoLoaderProps, VideoProps, VideoPropsInternal } from './types.js';
 
 const DEV_MODE = process.env.NODE_ENV === 'development';
 
@@ -17,6 +17,7 @@ const NextVideo = forwardRef<DefaultPlayerRefAttributes | null, VideoProps>((pro
   let {
     as: VideoPlayer = DefaultPlayer,
     loader = defaultLoader,
+    transform = defaultTransformer,
     className,
     style,
     src,
@@ -42,7 +43,10 @@ const NextVideo = forwardRef<DefaultPlayerRefAttributes | null, VideoProps>((pro
   const needsPolling = DEV_MODE && (typeof src === 'string' && status != 'ready');
   usePolling(request, needsPolling ? 1000 : null);
 
-  const videoProps = getVideoProps({ ...props, src }, { asset });
+  const videoProps = getVideoProps(
+    { ...props, transform, src } as VideoPropsInternal,
+    { asset }
+  );
 
   return (
     <div
@@ -92,7 +96,7 @@ const NextVideo = forwardRef<DefaultPlayerRefAttributes | null, VideoProps>((pro
   );
 });
 
-export function getVideoProps(allProps: VideoProps, state: { asset?: Asset }) {
+export function getVideoProps(allProps: VideoPropsInternal, state: { asset?: Asset }) {
   const { asset } = state;
   // Remove props that are not needed for VideoPlayer.
   const {
@@ -104,6 +108,7 @@ export function getVideoProps(allProps: VideoProps, state: { asset?: Asset }) {
     poster,
     blurDataURL,
     loader,
+    transform,
     ...rest
   } = allProps;
 
@@ -133,7 +138,7 @@ export function getVideoProps(allProps: VideoProps, state: { asset?: Asset }) {
   return props;
 }
 
-function transform(asset: Asset) {
+function defaultTransformer(asset: Asset) {
   const provider = asset.provider ?? config.provider;
   for (let [key, transformer] of Object.entries(transformers)) {
     if (key === camelCase(provider)) {
