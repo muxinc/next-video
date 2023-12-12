@@ -20,7 +20,11 @@ export type VideoConfigComplete = {
     backblaze?: {
       endpoint: string;
       bucket?: string;
-    };
+    },
+    'amazon-s3'?: {
+      endpoint: string;
+      bucket?: string;
+    },
   }
 }
 
