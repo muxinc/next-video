@@ -238,23 +238,60 @@ Supported providers with their required environment variables:
 | [`mux`](https://mux.com) (default)                           | `MUX_TOKEN_ID`<br/>`MUX_TOKEN_SECRET`                       |                                    | [Pricing](https://www.mux.com/pricing/video)                             |
 | [`vercel-blob`](https://vercel.com/docs/storage/vercel-blob) | `BLOB_READ_WRITE_TOKEN`                                     |                                    | [Pricing](https://vercel.com/docs/storage/vercel-blob/usage-and-pricing) |
 | [`backblaze`](https://www.backblaze.com/cloud-storage)       | `BACKBLAZE_ACCESS_KEY_ID`<br/>`BACKBLAZE_SECRET_ACCESS_KEY` | `endpoint`<br/>`bucket` (optional) | [Pricing](https://www.backblaze.com/cloud-storage/pricing)               |
-| More coming...                                               |                                                             |                                    |
+| [`amazon-s3`](https://aws.amazon.com/s3)                     | `AWS_ACCESS_KEY_ID`<br/>`AWS_SECRET_ACCESS_KEY`             | `endpoint`<br/>`bucket` (optional) | [Pricing](https://aws.amazon.com/s3/pricing/)                            |
+| More coming...                                               |                                                             |                                    |                                                                          |
+
 
 #### Provider feature set
 
-|                              | Mux (default) | Vercel Blob | Backblaze   |
-| ---------------------------- | ------------- | ----------- | ----------- |
-| Off-repo storage             | ✅            | ✅          | ✅          |
-| Delivery via CDN             | ✅            | ✅          | -           |
-| BYO player                   | ✅            | ✅          | ✅          |
-| Compressed for streaming     | ✅            | -           | -           |
-| Adapt to slow networks (HLS) | ✅            | -           | -           |
-| Automatic placeholder poster | ✅            | -           | -           |
-| Timeline hover thumbnails    | ✅            | -           | -           |
-| Stream any soure format      | ✅            | -           | -           |
-| AI captions & subtitles      | ✅            | -           | -           |
-| Video analytics              | ✅            | -           | -           |
-| Pricing                      | Minutes-based | GB-based    | GB-based    |
+|                              | Mux (default) | Vercel Blob | Backblaze | Amazon S3 |
+| ---------------------------- | ------------- | ----------- | --------- | --------- |
+| Off-repo storage             | ✅            | ✅          | ✅        | ✅        |
+| Delivery via CDN             | ✅            | ✅          | -         | -         |
+| BYO player                   | ✅            | ✅          | ✅        | ✅        |
+| Compressed for streaming     | ✅            | -           | -         | -         |
+| Adapt to slow networks (HLS) | ✅            | -           | -         | -         |
+| Automatic placeholder poster | ✅            | -           | -         | -         |
+| Timeline hover thumbnails    | ✅            | -           | -         | -         |
+| Stream any soure format      | ✅            | -           | -         | -         |
+| AI captions & subtitles      | ✅            | -           | -         | -         |
+| Video analytics              | ✅            | -           | -         | -         |
+| Pricing                      | Minutes-based | GB-based    | GB-based  | GB-based  |
+
+
+## Required Permissions for Amazon S3
+
+If you're using Amazon S3 as the provider, you'll need to create a new IAM user with the following permissions:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListAllMyBuckets",
+        "s3:CreateBucket",
+        "s3:PutBucketOwnershipControls"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutBucketPublicAccessBlock",
+        "s3:PutBucketAcl",
+        "s3:PutBucketCORS",
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:PutObjectAcl",
+        "s3:ListBucket"
+      ],
+      "Resource": "arn:aws:s3:::next-videos-*"
+    }
+  ]
+}
+```
 
 ## Roadmap
 
