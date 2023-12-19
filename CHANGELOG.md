@@ -1,3 +1,12 @@
+## [0.10.1](https://github.com/muxinc/next-video/compare/v0.10.0...v0.10.1) (2023-12-19)
+
+
+### Bug Fixes
+
+* bundling related issues  ([#125](https://github.com/muxinc/next-video/issues/125)) ([4245768](https://github.com/muxinc/next-video/commit/42457682f29f0bc0830624ed8fbc6b0a6d35d0a6))
+
+
+
 # [0.10.0](https://github.com/muxinc/next-video/compare/v0.9.1...v0.10.0) (2023-12-19)
 
 
