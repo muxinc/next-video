@@ -81,7 +81,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.461.0",
+    "@aws-sdk/client-s3": "~3.437.0",
     "@inquirer/prompts": "^3.2.0",
     "@mux/mux-node": "8.0.0-canary.0",
     "@mux/mux-player-react": "2.2.0",

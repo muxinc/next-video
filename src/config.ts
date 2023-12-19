@@ -46,10 +46,10 @@ export async function getVideoConfig(): Promise<VideoConfigComplete> {
     // Import the app's next.config.(m)js file so the env variable
     // __NEXT_VIDEO_OPTS set in with-next-video.ts can be used.
     try {
-      await import(path.resolve('next.config.js'));
+      await import(/* webpackIgnore: true */ path.resolve('next.config.js'));
     } catch {
       try {
-        await import(path.resolve('next.config.mjs'));
+        await import(/* webpackIgnore: true */ path.resolve('next.config.mjs'));
       } catch {
         console.error('Failed to load next.config.js or next.config.mjs');
       }
