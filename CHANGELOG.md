@@ -1,3 +1,21 @@
+# [0.10.0](https://github.com/muxinc/next-video/compare/v0.9.1...v0.10.0) (2023-12-19)
+
+
+### Bug Fixes
+
+* add comp className & style to container ([#79](https://github.com/muxinc/next-video/issues/79)) ([abfd1da](https://github.com/muxinc/next-video/commit/abfd1da1aa8b0baeb355fe215cc03e3be6498f79)), closes [#76](https://github.com/muxinc/next-video/issues/76)
+* import related bugs ([#124](https://github.com/muxinc/next-video/issues/124)) ([bd26dec](https://github.com/muxinc/next-video/commit/bd26dec9dbf09235773c5edda20f4bbeb82ec324))
+
+
+### Features
+
+* add Amazon S3 provider ([#121](https://github.com/muxinc/next-video/issues/121)) ([1d56169](https://github.com/muxinc/next-video/commit/1d56169052c831a9c55f3019fe8f736efde66eba))
+* add Backblaze B2 (S3 compatible API) ([#118](https://github.com/muxinc/next-video/issues/118)) ([3d8a58f](https://github.com/muxinc/next-video/commit/3d8a58f5c3c6f75db2f7c466e3f0c80bc8f9c03a))
+* add transformer prop to change src & poster ([b36a6c3](https://github.com/muxinc/next-video/commit/b36a6c3b6a28a10389a580378502b45affb4b3c6))
+* update schema, add provider key + transform ([#113](https://github.com/muxinc/next-video/issues/113)) ([540e705](https://github.com/muxinc/next-video/commit/540e705671db3ee86bc9fadc4e59421cfb0e5002))
+
+
+
 ## [0.9.1](https://github.com/muxinc/next-video/compare/v0.9.0...v0.9.1) (2023-11-13)
 
 
