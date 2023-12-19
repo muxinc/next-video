@@ -87,7 +87,7 @@ ${generateCode(mod).code}
     const mod = await loadFile(configPath);
 
     mod.imports.$add({
-      from: PACKAGE_NAME,
+      from: path.join(PACKAGE_NAME, 'process'),
       imported: 'withNextVideo',
       local: 'withNextVideo',
     });

@@ -56,6 +56,14 @@ export async function withNextVideo(nextConfig: any, videoConfig?: VideoConfig) 
         }, config.externals);
       }
 
+      config.infrastructureLogging = {
+        ...config.infrastructureLogging,
+        // Silence warning about dynamic import of next.config file.
+        // > [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Parsing of /Users/wes/Sites/mux/next-video/dist/config.js for build dependencies failed at 'import(path.resolve("next.config.js"))'.
+        // > Build dependencies behind this expression are ignored and might cause incorrect cache invalidation.
+        level: 'error',
+      };
+
       config.experiments.buildHttp = {
         allowedUris: [
           /https?:\/\/.*\.(mp4|webm|mkv|ogg|ogv|wmv|avi|mov|flv|m4v|3gp)\??(?:&?[^=&]*=[^=&]*)*$/,
