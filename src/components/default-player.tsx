@@ -1,11 +1,10 @@
-import { forwardRef } from 'react';
-import MuxPlayer from '@mux/mux-player-react';
+import { forwardRef, Suspense, lazy } from 'react';
 import { getPlaybackId, getPosterURLFromPlaybackId } from '../providers/mux/transformer.js';
 
 import type { MuxPlayerProps, MuxPlayerRefAttributes } from '@mux/mux-player-react';
 import type { PlayerProps } from './types.js';
 
-export * from '@mux/mux-player-react';
+const MuxPlayer = lazy(() => import('@mux/mux-player-react'));
 
 export type DefaultPlayerRefAttributes = MuxPlayerRefAttributes;
 
@@ -74,15 +73,17 @@ export const DefaultPlayer = forwardRef<DefaultPlayerRefAttributes | null, Defau
   }
 
   return (
-    <MuxPlayer
-      ref={forwardedRef}
-      style={{
-        '--controls': controls === false ? 'none' : undefined,
-        ...style,
-      }}
-      children={children}
-      poster={poster}
-      {...props}
-    />
+    <Suspense fallback={null}>
+      <MuxPlayer
+        ref={forwardedRef}
+        style={{
+          '--controls': controls === false ? 'none' : undefined,
+          ...style,
+        }}
+        children={children}
+        poster={poster}
+        {...props}
+      />
+    </Suspense>
   );
 });
