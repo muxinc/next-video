@@ -26,8 +26,7 @@
     "./process": {
       "import": "./dist/process.js",
       "require": "./dist/cjs/process.js",
-      "default": "./dist/process.js",
-      "types": "./dist/process.d.ts"
+      "default": "./dist/process.js"
     },
     "./request-handler": "./dist/request-handler.js",
     "./video-types/*": "./video-types/*.d.ts",
@@ -36,9 +35,9 @@
   },
   "typesVersions": {
     "*": {
-      "*": [
-        "./dist/*"
-      ]
+      "process": ["./dist/process.d.ts"],
+      "request-handler": ["./dist/request-handler.d.ts"],
+      "*": ["./dist/*"]
     }
   },
   "scripts": {
