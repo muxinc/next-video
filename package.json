@@ -26,7 +26,8 @@
     "./process": {
       "import": "./dist/process.js",
       "require": "./dist/cjs/process.js",
-      "default": "./dist/process.js"
+      "default": "./dist/process.js",
+      "types": "./dist/process.d.ts"
     },
     "./request-handler": "./dist/request-handler.js",
     "./video-types/*": "./video-types/*.d.ts",
