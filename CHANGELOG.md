@@ -1,3 +1,12 @@
+# [0.11.0](https://github.com/muxinc/next-video/compare/v0.10.1...v0.11.0) (2023-12-20)
+
+
+### Features
+
+* use lazy loading of Mux player ([#127](https://github.com/muxinc/next-video/issues/127)) ([823e976](https://github.com/muxinc/next-video/commit/823e97675ead59a5e541a2019113c68c77c69430))
+
+
+
 ## [0.10.1](https://github.com/muxinc/next-video/compare/v0.10.0...v0.10.1) (2023-12-19)
 
 
