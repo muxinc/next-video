@@ -50,7 +50,7 @@ const NextVideo = forwardRef<DefaultPlayerRefAttributes | null, VideoProps>((pro
 
   return (
     <div
-      className={`${className} next-video-container`}
+      className={`${className ? `${className} ` : ''}next-video-container`}
       style={style}
     >
       <style>{

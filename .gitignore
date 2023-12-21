@@ -5,3 +5,4 @@ example-app/
 .vscode/
 .env
 .DS_Store
+coverage/

@@ -53,7 +53,8 @@
     "postbuild:cjs": "echo '{\"type\": \"commonjs\"}' > ./dist/cjs/package.json",
     "prepare": "npm run build",
     "cli": "node --loader tsx --no-warnings ./src/cli",
-    "test": "glob -c \"node --loader tsx --no-warnings --test\" \"./tests/**/*.test.ts\""
+    "test": "glob -c \"c8 --src src --exclude 'tests/**' node --loader tsx --no-warnings --test\" \"./tests/**/*.test.{ts,tsx}\"",
+    "coverage": "c8 report --reporter=text-lcov > ./coverage/lcov.info"
   },
   "peerDependencies": {
     "@types/react": "^17.0.0 || ^18",
@@ -73,10 +74,12 @@
     "@types/node": "^20.8.4",
     "@types/react": "^18.2.27",
     "@types/yargs": "^17.0.28",
+    "c8": "^8.0.1",
     "esbuild": "^0.19.5",
     "glob": "^10.3.10",
     "next": "^13.5.4",
     "react": "^18.2.0",
+    "react-test-renderer": "^18.2.0",
     "tsx": "^3.13.0",
     "typescript": "^5.2.2"
   },
