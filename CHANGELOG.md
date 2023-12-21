@@ -1,3 +1,12 @@
+## [0.11.1](https://github.com/muxinc/next-video/compare/v0.11.0...v0.11.1) (2023-12-21)
+
+
+### Bug Fixes
+
+* className undefined issue ([#129](https://github.com/muxinc/next-video/issues/129)) ([717ef00](https://github.com/muxinc/next-video/commit/717ef00d7be36e41941006ec425456ca4d25926a))
+
+
+
 # [0.11.0](https://github.com/muxinc/next-video/compare/v0.10.1...v0.11.0) (2023-12-20)
 
 
