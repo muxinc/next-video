@@ -253,11 +253,12 @@ Supported providers with their required environment variables:
 | Adapt to slow networks (HLS) | ✅            | -           | -         | -         |
 | Automatic placeholder poster | ✅            | -           | -         | -         |
 | Timeline hover thumbnails    | ✅            | -           | -         | -         |
-| Stream any soure format      | ✅            | -           | -         | -         |
+| Stream any soure format      | ✅            | *           | *         | *         |
 | AI captions & subtitles      | ✅            | -           | -         | -         |
 | Video analytics              | ✅            | -           | -         | -         |
 | Pricing                      | Minutes-based | GB-based    | GB-based  | GB-based  |
 
+*Web-compatible MP4 files required for hosting providers without video processing
 
 ## Required Permissions for Amazon S3
 
