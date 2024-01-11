@@ -1,3 +1,12 @@
+## [0.11.2](https://github.com/muxinc/next-video/compare/v0.11.1...v0.11.2) (2024-01-11)
+
+
+### Bug Fixes
+
+* set aspect on container, easier override ([#132](https://github.com/muxinc/next-video/issues/132)) ([f0eb578](https://github.com/muxinc/next-video/commit/f0eb57807374f341cfdad149fb352ba4eeb093f9))
+
+
+
 ## [0.11.1](https://github.com/muxinc/next-video/compare/v0.11.0...v0.11.1) (2023-12-21)
 
 
