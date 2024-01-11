@@ -58,12 +58,13 @@ const NextVideo = forwardRef<DefaultPlayerRefAttributes | null, VideoProps>((pro
         .next-video-container {
           position: relative;
           width: 100%;
+          aspect-ratio: 16 / 9;
         }
 
         [data-next-video] {
           position: relative;
           width: 100%;
-          aspect-ratio: 16 / 9;
+          height: 100%;
           display: inline-block;
           line-height: 0;
         }
