@@ -53,9 +53,9 @@ It will also add a .gitignore file to the `/videos` directory that ignores video
 
 ### Remote storage and optimization
 
-Vercel [recommends](https://vercel.com/guides/best-practices-for-hosting-videos-on-vercel-nextjs-mp4-gif) using a dedicated content platform for video because video files are large and can lead to excessive bandwidth usage. By default, next-video uses [Mux](https://mux.com), which is built by the the creators of Video.js, powers popular streaming apps like Patreon, and whose video performance monitoring is used on the largest live events in the world.
+Vercel [recommends](https://vercel.com/guides/best-practices-for-hosting-videos-on-vercel-nextjs-mp4-gif) using a dedicated content platform for video because video files are large and can lead to excessive bandwidth usage. By default, next-video uses [Mux](https://mux.com?utm_source=next-video.dev), which is built by the the creators of Video.js, powers popular streaming apps like Patreon, and whose video performance monitoring is used on the largest live events in the world.
 
-- [Sign up for Mux](https://dashboard.mux.com/signup)
+- [Sign up for Mux](https://dashboard.mux.com/signup?utm_source=next-video.dev)
 - [Create an access token](https://dashboard.mux.com/settings/access-tokens#create)
 - Add environment variables to `.env.local` (or however you export local env variables)
 
@@ -212,7 +212,7 @@ export function ReactPlayerAsVideo(props) {
 ### Hosting & Processing Providers
 
 You can choose between different providers for video processing and hosting.
-The default provider is [Mux](https://mux.com).
+The default provider is [Mux](https://mux.com?utm_source=next-video.dev).
 To change the provider you can add a `provider` option in the next-video config.
 Some providers require additional configuration which can be passed in the `providerConfig` property.
 
@@ -235,7 +235,7 @@ Supported providers with their required environment variables:
 
 | Provider                                                     | Environment vars                                            | Provider config                    | Pricing link                                                             |
 | ------------------------------------------------------------ | ----------------------------------------------------------- | ---------------------------------- | ------------------------------------------------------------------------ |
-| [`mux`](https://mux.com) (default)                           | `MUX_TOKEN_ID`<br/>`MUX_TOKEN_SECRET`                       |                                    | [Pricing](https://www.mux.com/pricing/video)                             |
+| [`mux`](https://mux.com?utm_source=next-video.dev) (default)                           | `MUX_TOKEN_ID`<br/>`MUX_TOKEN_SECRET`                       |                                    | [Pricing](https://www.mux.com/pricing/video?utm_source=next-video.dev)                             |
 | [`vercel-blob`](https://vercel.com/docs/storage/vercel-blob) | `BLOB_READ_WRITE_TOKEN`                                     |                                    | [Pricing](https://vercel.com/docs/storage/vercel-blob/usage-and-pricing) |
 | [`backblaze`](https://www.backblaze.com/cloud-storage)       | `BACKBLAZE_ACCESS_KEY_ID`<br/>`BACKBLAZE_SECRET_ACCESS_KEY` | `endpoint`<br/>`bucket` (optional) | [Pricing](https://www.backblaze.com/cloud-storage/pricing)               |
 | [`amazon-s3`](https://aws.amazon.com/s3)                     | `AWS_ACCESS_KEY_ID`<br/>`AWS_SECRET_ACCESS_KEY`             | `endpoint`<br/>`bucket` (optional) | [Pricing](https://aws.amazon.com/s3/pricing/)                            |
