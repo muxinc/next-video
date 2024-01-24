@@ -5,7 +5,6 @@ import path from 'node:path';
  * Video configurations
  */
 export type VideoConfigComplete = {
-
   /** The folder in your project where you will put all video source files. */
   folder: string;
 
@@ -20,13 +19,15 @@ export type VideoConfigComplete = {
     backblaze?: {
       endpoint: string;
       bucket?: string;
-    },
+    };
     'amazon-s3'?: {
       endpoint: string;
       bucket?: string;
-    },
-  }
-}
+      access_key?: string;
+      secret_key?: string;
+    };
+  };
+};
 
 export type VideoConfig = Partial<VideoConfigComplete>;
 
@@ -35,7 +36,7 @@ export const videoConfigDefault: VideoConfigComplete = {
   path: '/api/video',
   provider: 'mux',
   providerConfig: {},
-}
+};
 
 /**
  * The video config is set in `next.config.js` and passed to the `withNextVideo` function.
