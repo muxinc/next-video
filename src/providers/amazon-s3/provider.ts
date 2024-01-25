@@ -18,7 +18,7 @@ export type AmazonS3Metadata = {
   endpoint?: string;
   accessKeyId?: string;
   secretAccessKey?: string;
-};
+}
 
 // Why 11?
 //  - Reasonable id length visually in the src URL

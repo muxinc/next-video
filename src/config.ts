@@ -26,7 +26,7 @@ export type VideoConfigComplete = {
       bucket?: string;
       accessKeyId?: string;
       secretAccessKey?: string;
-    }
+    },
   }
 }
 
