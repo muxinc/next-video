@@ -313,10 +313,10 @@ export async function handler(argv: Arguments) {
   }
   `);
 
-  log.info('');
+  log.space();
   log.info(`NEXT STEP: Set up remote storage`);
   log.info(chalk.magenta.bold('https://next-video.dev/docs#remote-storage-and-optimization'));
-  log.info('');
+  log.space();
 }
 
 async function isCmd() {
