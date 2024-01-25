@@ -4,7 +4,7 @@ import React, { forwardRef, useState } from 'react';
 import { DefaultPlayer } from './default-player.js';
 import { Alert } from './alert.js';
 import { createVideoRequest, defaultLoader } from './video-loader.js';
-import { config, camelCase, toSymlinkPath, usePolling } from './utils.js';
+import { config, camelCase, toSymlinkPath, usePolling, isReactComponent } from './utils.js';
 import * as transformers from '../providers/transformers.js';
 
 import type { DefaultPlayerRefAttributes, DefaultPlayerProps } from './default-player.js';
@@ -47,6 +47,10 @@ const NextVideo = forwardRef<DefaultPlayerRefAttributes | null, VideoProps>((pro
     { ...props, transform, src } as VideoPropsInternal,
     { asset }
   );
+
+  if (!isReactComponent(VideoPlayer)) {
+    console.warn('The `as` property is not a valid component:', VideoPlayer);
+  }
 
   return (
     <div

@@ -1,9 +1,9 @@
 import { useEffect, useRef, useCallback } from 'react';
 
 export const config = JSON.parse(
-  process.env.NEXT_PUBLIC_DEV_VIDEO_OPTS
-  ?? process.env.NEXT_PUBLIC_VIDEO_OPTS
-  ?? '{}'
+  process.env.NEXT_PUBLIC_DEV_VIDEO_OPTS ??
+    process.env.NEXT_PUBLIC_VIDEO_OPTS ??
+    '{}'
 );
 
 const MUX_VIDEO_DOMAIN = 'mux.com';
@@ -22,7 +22,7 @@ export function camelCase(name: string) {
 // Note: doesn't get updated when the callback function changes
 export function usePolling(
   callback: (abortSignal: AbortSignal) => any,
-  interval: number | null = DEFAULT_POLLING_INTERVAL,
+  interval: number | null = DEFAULT_POLLING_INTERVAL
 ) {
   const abortControllerRef = useRef(new AbortController());
 
@@ -33,7 +33,7 @@ export function usePolling(
     return () => {
       // Effects run twice in dev mode so this will run once.
       abortControllerRef.current.abort();
-    }
+    };
   }, []);
 
   const intervalFn = useCallback(() => {
@@ -49,7 +49,7 @@ export function useInterval(callback: () => any, delay: number | null) {
   // Remember the latest callback.
   useEffect(() => {
     savedCallback.current = callback;
-  }, [callback])
+  }, [callback]);
 
   // Set up the interval.
   useEffect(() => {
@@ -62,11 +62,39 @@ export function useInterval(callback: () => any, delay: number | null) {
       if (delay != null) {
         id = setTimeout(tick, delay);
       }
-    }
+    };
 
     if (delay != null) {
       id = setTimeout(tick, delay);
       return () => clearTimeout(id);
     }
   }, [delay]);
+}
+
+export function isReactComponent<TProps>(
+  component: unknown
+): component is React.ComponentType<TProps> {
+  return (
+    isClassComponent(component) ||
+    typeof component === 'function' ||
+    isExoticComponent(component)
+  );
+}
+
+function isClassComponent(component: any) {
+  return (
+    typeof component === 'function' &&
+    (() => {
+      const proto = Object.getPrototypeOf(component);
+      return proto.prototype && proto.prototype.isReactComponent;
+    })()
+  );
+}
+
+function isExoticComponent(component: any) {
+  return (
+    typeof component === 'object' &&
+    typeof component.$$typeof === 'symbol' &&
+    ['react.memo', 'react.forward_ref'].includes(component.$$typeof.description)
+  );
 }
