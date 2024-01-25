@@ -1,3 +1,19 @@
+# [0.12.0](https://github.com/muxinc/next-video/compare/v0.11.2...v0.12.0) (2024-01-25)
+
+
+### Bug Fixes
+
+* add warning for non React comps ([#144](https://github.com/muxinc/next-video/issues/144)) ([c0beedd](https://github.com/muxinc/next-video/commit/c0beedddffa7e7180fc40a5b8fc83b3aa25fd72a)), closes [#103](https://github.com/muxinc/next-video/issues/103)
+* prettier init log ([#145](https://github.com/muxinc/next-video/issues/145)) ([e992cf1](https://github.com/muxinc/next-video/commit/e992cf104ea58435febc8fe1467ff92800079f35))
+
+
+### Features
+
+* add init workflow get-started.mp4 json ([#138](https://github.com/muxinc/next-video/issues/138)) ([2ae04bf](https://github.com/muxinc/next-video/commit/2ae04bf39ff07d0fb24fe93949387320e90156d3))
+* choose your env variables names for the s3 provider ([#137](https://github.com/muxinc/next-video/issues/137)) ([1fe4d40](https://github.com/muxinc/next-video/commit/1fe4d403d71d652bd3a5ed4f697aab56020e47b6))
+
+
+
 ## [0.11.2](https://github.com/muxinc/next-video/compare/v0.11.1...v0.11.2) (2024-01-11)
 
 
