@@ -24,6 +24,8 @@ export type VideoConfigComplete = {
     'amazon-s3'?: {
       endpoint: string;
       bucket?: string;
+      accessKeyId?: string;
+      secretAccessKey?: string;
     },
   }
 }

@@ -16,6 +16,8 @@ import log from '../../utils/logger.js';
 export type AmazonS3Metadata = {
   bucket?: string;
   endpoint?: string;
+  accessKeyId?: string;
+  secretAccessKey?: string;
 }
 
 // Why 11?
@@ -42,8 +44,8 @@ async function initS3() {
     endpoint,
     region,
     credentials: {
-      accessKeyId: env.AWS_ACCESS_KEY_ID ?? '',
-      secretAccessKey: env.AWS_SECRET_ACCESS_KEY ?? '',
+      accessKeyId: amazonS3Config?.accessKeyId ?? env.AWS_ACCESS_KEY_ID ?? '',
+      secretAccessKey: amazonS3Config?.secretAccessKey ?? env.AWS_SECRET_ACCESS_KEY ?? '',
     }
   });
 
