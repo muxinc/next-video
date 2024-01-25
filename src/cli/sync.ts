@@ -2,12 +2,15 @@ import chalk from 'chalk';
 import chokidar from 'chokidar';
 import { Argv, Arguments } from 'yargs';
 
-import { stat, readdir } from 'node:fs/promises';
+import { cwd } from 'node:process';
+import { readdir } from 'node:fs/promises';
 import path from 'node:path';
 
-import log from '../logger.js';
-import { callHandler } from '../main.js';
+import log from '../utils/logger.js';
+import { callHandler } from '../process.js';
 import { createAsset, getAsset } from '../assets.js';
+import { getVideoConfig } from '../config.js';
+import { getNextVideoVersion } from './lib/json-configs.js';
 
 export const command = 'sync';
 export const desc =
@@ -36,21 +39,19 @@ function watcher(dir: string) {
     persistent: true,
   });
 
-  watcher.on('add', async (filePath, stats) => {
-    const relativePath = path.relative(process.cwd(), filePath);
-    const newAsset = await createAsset(relativePath, {
-      size: stats?.size,
-    });
+  watcher.on('add', async (filePath) => {
+    const newAsset = await createAsset(filePath);
 
     if (newAsset) {
       log.add(`New file found: ${filePath}`);
-      return callHandler('local.video.added', newAsset);
+      const videoConfig = await getVideoConfig();
+      return callHandler('local.video.added', newAsset, videoConfig);
     }
   });
 }
 
 export async function handler(argv: Arguments) {
-  const directoryPath = path.join(process.cwd(), argv.dir as string);
+  const directoryPath = path.join(cwd(), argv.dir as string);
 
   try {
     const files = await readdir(directoryPath);
@@ -58,19 +59,24 @@ export async function handler(argv: Arguments) {
     const jsonFiles = files.filter((file) => file.endsWith('.json'));
     const otherFiles = files.filter((file) => !file.match(/(^|[\/\\])\..*|\.json$/));
 
+    if (argv.watch) {
+      const version = await getNextVideoVersion();
+      const relativePath = path.relative(cwd(), directoryPath);
+      log.space(log.label(`▶︎ next-video ${version}`));
+      log.base('log', ' ', `- Watching for file changes in ./${relativePath}`);
+      log.space();
+      watcher(directoryPath);
+    }
+
     const newFileProcessor = async (file: string) => {
       log.info(log.label('Processing file:'), file);
 
-      const absolutePath = path.join(directoryPath, file);
-      const relativePath = path.relative(process.cwd(), absolutePath);
-      const stats = await stat(absolutePath);
-
-      const newAsset = await createAsset(relativePath, {
-        size: stats.size,
-      });
+      const filePath = path.join(directoryPath, file);
+      const newAsset = await createAsset(filePath);
 
       if (newAsset) {
-        return callHandler('local.video.added', newAsset);
+        const videoConfig = await getVideoConfig();
+        return callHandler('local.video.added', newAsset, videoConfig);
       }
     };
 
@@ -84,7 +90,8 @@ export async function handler(argv: Arguments) {
       // it back through the local video handler.
       const assetStatus = existingAsset?.status;
       if (assetStatus && ['sourced', 'pending', 'uploading', 'processing'].includes(assetStatus)) {
-        return callHandler('local.video.added', existingAsset);
+        const videoConfig = await getVideoConfig();
+        return callHandler('local.video.added', existingAsset, videoConfig);
       }
     };
 
@@ -95,7 +102,10 @@ export async function handler(argv: Arguments) {
 
     const unprocessedVideos = otherFiles.filter(unprocessedFilter);
 
-    log.add(`Found ${unprocessedVideos.length} unprocessed video(s).`);
+    if (unprocessedVideos.length > 0) {
+      const s = unprocessedVideos.length === 1 ? '' : 's';
+      log.add(`Found ${unprocessedVideos.length} unprocessed video${s}`);
+    }
 
     const processing = await Promise.all([
       ...unprocessedVideos.map(newFileProcessor),
@@ -103,11 +113,10 @@ export async function handler(argv: Arguments) {
     ]);
 
     const processed = processing.flat().filter((asset) => asset);
-    log.success(`Processed (or resumed processing) ${processed.length} videos.`);
 
-    if (argv.watch) {
-      log.info('Watching for changes in the videos directory:', directoryPath);
-      watcher(directoryPath);
+    if (processed.length > 0) {
+      const s = processed.length === 1 ? '' : 's';
+      log.success(`Processed (or resumed processing) ${processed.length} video${s}`);
     }
   } catch (err: any) {
     if (err.code === 'ENOENT' && err.path === directoryPath) {

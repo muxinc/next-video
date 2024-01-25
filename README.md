@@ -7,12 +7,12 @@ Next video is a react component for adding video to your [next.js](https://githu
 - **Customizable UI:** Choose from themes or build your own player controls
 - **Posters & Previews:** Zero-config placeholder images and timeline hover thumbnails
 - **Wider compatibility:** Use videos that aren’t supported natively by all browsers
-- **Analytics built-in (optional):** See how often videos get watched and track video peformance
+- **Analytics built-in (optional):** See how often videos get watched and track video performance
 - **AI-powered:** Whisper captions coming soon...
 
 ```tsx
 import Video from 'next-video';
-import myVideo from '/videos/myVideo.mp4';
+import myVideo from '/videos/my-video.mp4';
 
 export default function Page() {
   return <Video src={myVideo} />;
@@ -53,9 +53,9 @@ It will also add a .gitignore file to the `/videos` directory that ignores video
 
 ### Remote storage and optimization
 
-Vercel [recommends](https://vercel.com/guides/best-practices-for-hosting-videos-on-vercel-nextjs-mp4-gif) using a dedicated content platform for video because video files are large and can lead to excessive bandwidth usage. By default, next-video uses [Mux](https://mux.com), which is built by the the creators of Video.js, powers popular streaming apps like Patreon, and whose video performance monitoring is used on the largest live events in the world.
+Vercel [recommends](https://vercel.com/guides/best-practices-for-hosting-videos-on-vercel-nextjs-mp4-gif) using a dedicated content platform for video because video files are large and can lead to excessive bandwidth usage. By default, next-video uses [Mux](https://mux.com?utm_source=next-video.dev), which is built by the the creators of Video.js, powers popular streaming apps like Patreon, and whose video performance monitoring is used on the largest live events in the world.
 
-- [Sign up for Mux](https://dashboard.mux.com/signup)
+- [Sign up for Mux](https://dashboard.mux.com/signup?utm_source=next-video.dev)
 - [Create an access token](https://dashboard.mux.com/settings/access-tokens#create)
 - Add environment variables to `.env.local` (or however you export local env variables)
 
@@ -65,7 +65,9 @@ MUX_TOKEN_ID=[YOUR_TOKEN_ID]
 MUX_TOKEN_SECRET=[YOUR_TOKEN_SECRET]
 ```
 
-### If you choose to do things manually
+### OPTIONAL Manual Setup
+
+If you choose to do any of the init steps manually.
 
 #### Add Next Video to `next.config.js`
 
@@ -185,7 +187,6 @@ The custom player component accepts the following props:
 - `poster`: A string image source URL if the asset is ready.
 - `blurDataURL`: A string base64 image source URL that can be used as a placeholder.
 
-
 ```tsx
 import Video from 'next-video';
 import { ReactPlayerAsVideo } from './player';
@@ -208,11 +209,96 @@ export function ReactPlayerAsVideo(props) {
 }
 ```
 
+### Hosting & Processing Providers
+
+You can choose between different providers for video processing and hosting.
+The default provider is [Mux](https://mux.com?utm_source=next-video.dev).
+To change the provider you can add a `provider` option in the next-video config.
+Some providers require additional configuration which can be passed in the `providerConfig` property.
+
+```js
+// next.config.js
+const { withNextVideo } = require('next-video/process');
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {};
+
+module.exports = withNextVideo(nextConfig, {
+  provider: 'backblaze',
+  providerConfig: {
+    backblaze: { endpoint: 'https://s3.us-west-000.backblazeb2.com' }
+  }
+});
+```
+
+Supported providers with their required environment variables:
+
+| Provider                                                     | Environment vars                                            | Provider config                    | Pricing link                                                             |
+| ------------------------------------------------------------ | ----------------------------------------------------------- | ---------------------------------- | ------------------------------------------------------------------------ |
+| [`mux`](https://mux.com?utm_source=next-video.dev) (default)                           | `MUX_TOKEN_ID`<br/>`MUX_TOKEN_SECRET`                       |                                    | [Pricing](https://www.mux.com/pricing/video?utm_source=next-video.dev)                             |
+| [`vercel-blob`](https://vercel.com/docs/storage/vercel-blob) | `BLOB_READ_WRITE_TOKEN`                                     |                                    | [Pricing](https://vercel.com/docs/storage/vercel-blob/usage-and-pricing) |
+| [`backblaze`](https://www.backblaze.com/cloud-storage)       | `BACKBLAZE_ACCESS_KEY_ID`<br/>`BACKBLAZE_SECRET_ACCESS_KEY` | `endpoint`<br/>`bucket` (optional) | [Pricing](https://www.backblaze.com/cloud-storage/pricing)               |
+| [`amazon-s3`](https://aws.amazon.com/s3)                     | `AWS_ACCESS_KEY_ID`<br/>`AWS_SECRET_ACCESS_KEY`             | `endpoint`<br/>`bucket` (optional) | [Pricing](https://aws.amazon.com/s3/pricing/)                            |
+| More coming...                                               |                                                             |                                    |                                                                          |
+
+
+#### Provider feature set
+
+|                              | Mux (default) | Vercel Blob | Backblaze | Amazon S3 |
+| ---------------------------- | ------------- | ----------- | --------- | --------- |
+| Off-repo storage             | ✅            | ✅          | ✅        | ✅        |
+| Delivery via CDN             | ✅            | ✅          | -         | -         |
+| BYO player                   | ✅            | ✅          | ✅        | ✅        |
+| Compressed for streaming     | ✅            | -           | -         | -         |
+| Adapt to slow networks (HLS) | ✅            | -           | -         | -         |
+| Automatic placeholder poster | ✅            | -           | -         | -         |
+| Timeline hover thumbnails    | ✅            | -           | -         | -         |
+| Stream any soure format      | ✅            | *           | *         | *         |
+| AI captions & subtitles      | ✅            | -           | -         | -         |
+| Video analytics              | ✅            | -           | -         | -         |
+| Pricing                      | Minutes-based | GB-based    | GB-based  | GB-based  |
+
+*Web-compatible MP4 files required for hosting providers without video processing
+
+## Required Permissions for Amazon S3
+
+If you're using Amazon S3 as the provider, you'll need to create a new IAM user with the following permissions:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListAllMyBuckets",
+        "s3:CreateBucket",
+        "s3:PutBucketOwnershipControls"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutBucketPublicAccessBlock",
+        "s3:PutBucketAcl",
+        "s3:PutBucketCORS",
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:PutObjectAcl",
+        "s3:ListBucket"
+      ],
+      "Resource": "arn:aws:s3:::next-videos-*"
+    }
+  ]
+}
+```
+
 ## Roadmap
 
 ### v0
 
-- [x] Automatic video optimzation
+- [x] Automatic video optimization
 - [x] Delivery via a CDN
 - [x] Automatically upload and process local source files
 - [x] Automatically process remote hosted source files
@@ -220,9 +306,8 @@ export function ReactPlayerAsVideo(props) {
 ### v1
 
 - [ ] Customizable player
-- [ ] Connectors for additional video services
+- [x] Connectors for additional video services
 - [ ] AI captions
-- [ ] Kitchen sink template
 
 ## Trying it out locally
 

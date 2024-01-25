@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-
-import { callHandler } from './main.js';
+import { callHandler } from './process.js';
 import { createAsset, getAsset } from './assets.js';
+import { getVideoConfig } from './config.js';
 
 // App Router
 export async function GET(request: Request) {
@@ -45,7 +45,8 @@ async function handleRequest(url?: string | null) {
     asset = await createAsset(url);
 
     if (asset) {
-      await callHandler('request.video.added', asset);
+      const videoConfig = await getVideoConfig();
+      await callHandler('request.video.added', asset, videoConfig);
     }
 
     return { status: 200, data: asset };

@@ -1,6 +1,7 @@
 {
   "name": "next-video",
-  "version": "0.8.0",
+  "version": "0.11.2",
+  "type": "module",
   "description": "A React component for adding video to your Next.js application. It extends both the video element and your Next app with features for automatic video optimization.",
   "author": "Mux Lab <lab@mux.com>",
   "license": "MIT",
@@ -12,7 +13,6 @@
     "type": "git",
     "url": "git+https://github.com/muxinc/next-video.git"
   },
-  "type": "module",
   "files": [
     "dist",
     "video-types"
@@ -20,37 +20,41 @@
   "bin": {
     "next-video": "./dist/cli.js"
   },
-  "main": "./dist/cjs/components/video.js",
-  "module": "./dist/components/video.js",
+  "main": "./dist/components/video.js",
   "exports": {
-    ".": {
-      "import": "./dist/components/video.js",
-      "require": "./dist/cjs/components/video.js",
-      "default": "./dist/components/video.js"
-    },
+    ".": "./dist/components/video.js",
     "./process": {
-      "import": "./dist/main.js",
-      "require": "./dist/cjs/main.js",
-      "default": "./dist/main.js"
+      "import": "./dist/process.js",
+      "require": "./dist/cjs/process.js",
+      "default": "./dist/process.js"
     },
-    "./request-handler": {
-      "import": "./dist/request-handler.js",
-      "require": "./dist/cjs/request-handler.js",
-      "default": "./dist/request-handler.js"
-    },
+    "./request-handler": "./dist/request-handler.js",
     "./video-types/*": "./video-types/*.d.ts",
+    "./dist/cjs/*": "./dist/cjs/*",
     "./dist/*": "./dist/*"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/*"
+      ]
+    }
   },
   "scripts": {
     "clean": "rm -rf dist",
-    "watch": "npm run build:esm -- -w & npm run build:cjs -- -w",
-    "build": "npm run clean && (npm run build:esm && npm run build:cjs)",
-    "build:esm": "tsc --module es2020",
-    "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+    "watch": "npm run types:esm -- -w & npm run types:cjs -- -w & npm run build:esm -- --watch=forever & npm run build:cjs -- --watch=forever",
+    "types": "npm run types:esm & npm run types:cjs",
+    "types:esm": "tsc --outDir dist",
+    "types:cjs": "tsc --outDir dist/cjs",
+    "prebuild": "npm run clean && npm run types",
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:esm": "esbuild src/*.ts* src/*/*.ts* src/*/*/*.ts* --outdir=dist --format=esm --target=es2020",
+    "build:cjs": "esbuild src/*.ts* src/*/*.ts* src/*/*/*.ts* --outdir=dist/cjs --platform=node --format=cjs --target=es2020 --define:import.meta.url=\\\"\\\"",
     "postbuild:cjs": "echo '{\"type\": \"commonjs\"}' > ./dist/cjs/package.json",
     "prepare": "npm run build",
     "cli": "node --loader tsx --no-warnings ./src/cli",
-    "test": "glob -c \"node --loader tsx --no-warnings --test\" \"./tests/**/*.test.ts\""
+    "test": "glob -c \"c8 --src src --exclude 'tests/**' node --loader tsx --no-warnings --test\" \"./tests/**/*.test.{ts,tsx}\"",
+    "coverage": "c8 report --reporter=text-lcov > ./coverage/lcov.info"
   },
   "peerDependencies": {
     "@types/react": "^17.0.0 || ^18",
@@ -70,17 +74,23 @@
     "@types/node": "^20.8.4",
     "@types/react": "^18.2.27",
     "@types/yargs": "^17.0.28",
+    "c8": "^8.0.1",
+    "esbuild": "^0.19.5",
     "glob": "^10.3.10",
     "next": "^13.5.4",
     "react": "^18.2.0",
+    "react-test-renderer": "^18.2.0",
     "tsx": "^3.13.0",
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "~3.437.0",
     "@inquirer/prompts": "^3.2.0",
     "@mux/mux-node": "8.0.0-canary.0",
-    "@mux/mux-player-react": "2.0.1",
+    "@mux/mux-player-react": "2.2.0",
     "@next/env": "^13.5.4",
+    "@paralleldrive/cuid2": "^2.2.2",
+    "@vercel/blob": "^0.14.1",
     "chalk": "^4.1.2",
     "chokidar": "^3.5.3",
     "magicast": "^0.3.0",

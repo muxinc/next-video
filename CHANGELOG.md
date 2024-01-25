@@ -1,3 +1,137 @@
+## [0.11.2](https://github.com/muxinc/next-video/compare/v0.11.1...v0.11.2) (2024-01-11)
+
+
+### Bug Fixes
+
+* set aspect on container, easier override ([#132](https://github.com/muxinc/next-video/issues/132)) ([f0eb578](https://github.com/muxinc/next-video/commit/f0eb57807374f341cfdad149fb352ba4eeb093f9))
+
+
+
+## [0.11.1](https://github.com/muxinc/next-video/compare/v0.11.0...v0.11.1) (2023-12-21)
+
+
+### Bug Fixes
+
+* className undefined issue ([#129](https://github.com/muxinc/next-video/issues/129)) ([717ef00](https://github.com/muxinc/next-video/commit/717ef00d7be36e41941006ec425456ca4d25926a))
+
+
+
+# [0.11.0](https://github.com/muxinc/next-video/compare/v0.10.1...v0.11.0) (2023-12-20)
+
+
+### Features
+
+* use lazy loading of Mux player ([#127](https://github.com/muxinc/next-video/issues/127)) ([823e976](https://github.com/muxinc/next-video/commit/823e97675ead59a5e541a2019113c68c77c69430))
+
+
+
+## [0.10.1](https://github.com/muxinc/next-video/compare/v0.10.0...v0.10.1) (2023-12-19)
+
+
+### Bug Fixes
+
+* bundling related issues  ([#125](https://github.com/muxinc/next-video/issues/125)) ([4245768](https://github.com/muxinc/next-video/commit/42457682f29f0bc0830624ed8fbc6b0a6d35d0a6))
+
+
+
+# [0.10.0](https://github.com/muxinc/next-video/compare/v0.9.1...v0.10.0) (2023-12-19)
+
+
+### Bug Fixes
+
+* add comp className & style to container ([#79](https://github.com/muxinc/next-video/issues/79)) ([abfd1da](https://github.com/muxinc/next-video/commit/abfd1da1aa8b0baeb355fe215cc03e3be6498f79)), closes [#76](https://github.com/muxinc/next-video/issues/76)
+* import related bugs ([#124](https://github.com/muxinc/next-video/issues/124)) ([bd26dec](https://github.com/muxinc/next-video/commit/bd26dec9dbf09235773c5edda20f4bbeb82ec324))
+
+
+### Features
+
+* add Amazon S3 provider ([#121](https://github.com/muxinc/next-video/issues/121)) ([1d56169](https://github.com/muxinc/next-video/commit/1d56169052c831a9c55f3019fe8f736efde66eba))
+* add Backblaze B2 (S3 compatible API) ([#118](https://github.com/muxinc/next-video/issues/118)) ([3d8a58f](https://github.com/muxinc/next-video/commit/3d8a58f5c3c6f75db2f7c466e3f0c80bc8f9c03a))
+* add transformer prop to change src & poster ([b36a6c3](https://github.com/muxinc/next-video/commit/b36a6c3b6a28a10389a580378502b45affb4b3c6))
+* update schema, add provider key + transform ([#113](https://github.com/muxinc/next-video/issues/113)) ([540e705](https://github.com/muxinc/next-video/commit/540e705671db3ee86bc9fadc4e59421cfb0e5002))
+
+
+
+## [0.9.1](https://github.com/muxinc/next-video/compare/v0.9.0...v0.9.1) (2023-11-13)
+
+
+### Bug Fixes
+
+* webpack loader ERR_STRING_TOO_LONG fix [#107](https://github.com/muxinc/next-video/issues/107) ([#110](https://github.com/muxinc/next-video/issues/110)) ([34c79ce](https://github.com/muxinc/next-video/commit/34c79ceb52c6b05e0992cb71d6b0eac1b3322694))
+
+
+
+# [0.9.0](https://github.com/muxinc/next-video/compare/v0.8.6...v0.9.0) (2023-11-10)
+
+
+### Bug Fixes
+
+* type issues ([#104](https://github.com/muxinc/next-video/issues/104)) ([2a1d87a](https://github.com/muxinc/next-video/commit/2a1d87acc790ce9c9016c36ff81c06f58aa7f12f)), closes [#98](https://github.com/muxinc/next-video/issues/98)
+
+
+### Features
+
+* add Vercel Blob provider ([#102](https://github.com/muxinc/next-video/issues/102)) ([c70e1b8](https://github.com/muxinc/next-video/commit/c70e1b8128af65f493b0b8c21fd04b538960555d))
+
+
+
+## [0.8.6](https://github.com/muxinc/next-video/compare/v0.8.5...v0.8.6) (2023-11-06)
+
+
+### Bug Fixes
+
+* hotfix build error ([#101](https://github.com/muxinc/next-video/issues/101)) ([7ca49b3](https://github.com/muxinc/next-video/commit/7ca49b374a15b1de181b90279c6d785663559990))
+
+
+
+## [0.8.5](https://github.com/muxinc/next-video/compare/v0.8.4...v0.8.5) (2023-11-06)
+
+
+### Bug Fixes
+
+* esm next.config.js breaking via require ([#100](https://github.com/muxinc/next-video/issues/100)) ([040de3d](https://github.com/muxinc/next-video/commit/040de3d857f4bd22ca21b0ac8d32151685ac26ef)), closes [#98](https://github.com/muxinc/next-video/issues/98)
+
+
+
+## [0.8.4](https://github.com/muxinc/next-video/compare/v0.8.3...v0.8.4) (2023-11-06)
+
+
+### Bug Fixes
+
+* add provider handler config and structure ([#94](https://github.com/muxinc/next-video/issues/94)) ([82d3098](https://github.com/muxinc/next-video/commit/82d3098acb2a5e6b30f6cd30f74a62924f228945))
+
+
+
+## [0.8.3](https://github.com/muxinc/next-video/compare/v0.8.2...v0.8.3) (2023-11-02)
+
+
+### Bug Fixes
+
+* upgrade Mux player v2.2.0 ([#95](https://github.com/muxinc/next-video/issues/95)) ([1906d6c](https://github.com/muxinc/next-video/commit/1906d6c707e2e9db915d29bbf6bc4fdf2871a96b))
+
+
+
+## [0.8.2](https://github.com/muxinc/next-video/compare/v0.8.1...v0.8.2) (2023-11-02)
+
+
+### Bug Fixes
+
+* cleaner CLI watch log output  ([#88](https://github.com/muxinc/next-video/issues/88)) ([3d9c428](https://github.com/muxinc/next-video/commit/3d9c4288d03966519b68d31c683616cc37e5158c))
+* poster bugs ([#91](https://github.com/muxinc/next-video/issues/91)) ([1374d98](https://github.com/muxinc/next-video/commit/1374d9863caa2dfc4ac53c622b2e594cd7868f18))
+* symlink lingering in public folder and added to git ([#92](https://github.com/muxinc/next-video/issues/92)) ([84ccc55](https://github.com/muxinc/next-video/commit/84ccc5553b5b2145356cb21d9d10142f8bb3fd71))
+
+
+
+## [0.8.1](https://github.com/muxinc/next-video/compare/v0.8.0...v0.8.1) (2023-10-26)
+
+
+### Bug Fixes
+
+* add CLI devscript flag ([#82](https://github.com/muxinc/next-video/issues/82)) ([073ca6b](https://github.com/muxinc/next-video/commit/073ca6ba2385dae29514d2d056b5dc2f37066c5b))
+* override poster & blurDataURL prop ([#87](https://github.com/muxinc/next-video/issues/87)) ([258ace0](https://github.com/muxinc/next-video/commit/258ace0b934cac3c6bedffcf9891b70e34f1cfc2))
+
+
+
 # [0.8.0](https://github.com/muxinc/next-video/compare/v0.7.2...v0.8.0) (2023-10-24)
 
 

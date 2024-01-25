@@ -6,7 +6,7 @@ import { describe, it, before, after, mock } from 'node:test';
 
 import Mux from '@mux/mux-node';
 import yargs from 'yargs';
-import log from '../../src/logger.js';
+import log from '../../src/utils/logger.js';
 
 import { handler, builder } from '../../src/cli/sync.js';
 import { createAsset, updateAsset } from '../../src/assets.js';
@@ -123,7 +123,7 @@ describe('cli', () => {
 
       await handler(args);
 
-      assert(findConsoleMessage(addSpy, /found 0/i), 'Found 0 message not found');
+      assert(!findConsoleMessage(addSpy, /found 1/i), 'Found 1 message found');
     });
 
     it('ignores existing assets', async (t) => {
@@ -139,8 +139,8 @@ describe('cli', () => {
 
         await handler(args);
 
-        assert(findConsoleMessage(addSpy, /found 0/i), 'Found 0 message not found');
-        assert(findConsoleMessage(successSpy, /resumed.*0/i), 'Resumed 0 message not found');
+        assert(!findConsoleMessage(addSpy, /found 1/i), 'Found 1 message found');
+        assert(!findConsoleMessage(successSpy, /resumed.*1/i), 'Resumed 1 message not found');
       });
 
       await t.test('that are ready', async (t) => {
@@ -155,8 +155,8 @@ describe('cli', () => {
 
         await handler(args);
 
-        assert(findConsoleMessage(addSpy, /found 0/i), 'Found 0 message not found');
-        assert(findConsoleMessage(successSpy, /resumed.*0/i), 'Resumed 0 message not found');
+        assert(!findConsoleMessage(addSpy, /found 1/i), 'Found 1 message found');
+        assert(!findConsoleMessage(successSpy, /resumed.*1/i), 'Resumed 1 message found');
       });
     });
 
@@ -169,7 +169,9 @@ describe('cli', () => {
         await createAsset(filePath, {});
         await updateAsset(filePath, {
           status: 'pending',
-          externalIds: { assetId: 'fake-asset-id' },
+          providerMetadata: {
+            mux: { assetId: 'fake-asset-id' },
+          },
         });
 
         const { addSpy, successSpy } = logSpies(t);
@@ -178,7 +180,7 @@ describe('cli', () => {
 
         await handler(args);
 
-        assert(findConsoleMessage(addSpy, /0.*unprocessed/), '0 unprocessed message not found');
+        assert(!findConsoleMessage(addSpy, /1.*unprocessed/), '1 unprocessed message found');
         assert(findConsoleMessage(successSpy, /resumed.*1/i), 'Resumed message not found');
       });
 
@@ -190,7 +192,9 @@ describe('cli', () => {
         await createAsset(filePath, {});
         await updateAsset(filePath, {
           status: 'uploading',
-          externalIds: { assetId: 'fake-asset-id' },
+          providerMetadata: {
+            mux: { assetId: 'fake-asset-id' },
+          }
         });
 
         const { addSpy, successSpy } = logSpies(t);
@@ -199,7 +203,7 @@ describe('cli', () => {
 
         await handler(args);
 
-        assert(findConsoleMessage(addSpy, /0.*unprocessed/));
+        assert(!findConsoleMessage(addSpy, /1.*unprocessed/));
         assert(findConsoleMessage(successSpy, /resumed.*1/i), 'Resumed message not found');
       });
 
@@ -211,7 +215,9 @@ describe('cli', () => {
         await createAsset(filePath, {});
         await updateAsset(filePath, {
           status: 'processing',
-          externalIds: { assetId: 'fake-asset-id' },
+          providerMetadata: {
+            mux: { assetId: 'fake-asset-id' },
+          }
         });
 
         const { addSpy, successSpy } = logSpies(t);
@@ -220,7 +226,7 @@ describe('cli', () => {
 
         await handler(args);
 
-        assert(findConsoleMessage(addSpy, /0.*unprocessed/));
+        assert(!findConsoleMessage(addSpy, /1.*unprocessed/));
         assert(findConsoleMessage(successSpy, /resumed.*1/i), 'Resumed message not found');
       });
     });

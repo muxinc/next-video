@@ -1,11 +1,12 @@
 import symlinkDir from 'symlink-dir';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
 import fs from 'node:fs/promises';
 import { env } from 'node:process';
+import { fileURLToPath } from 'node:url';
 import { videoConfigDefault } from './config.js';
-import type { VideoConfigComplete } from './config.js';
+import type { VideoConfig } from './config.js';
 
-export default async function withNextVideo(nextConfig: any, videoConfig: VideoConfigComplete) {
+export async function withNextVideo(nextConfig: any, videoConfig?: VideoConfig) {
 
   if (typeof nextConfig === 'function') {
     return async (...args: any[]) => {
@@ -14,20 +15,21 @@ export default async function withNextVideo(nextConfig: any, videoConfig: VideoC
     };
   }
 
-  videoConfig = Object.assign({}, videoConfigDefault, videoConfig);
+  const videoConfigComplete = Object.assign({}, videoConfigDefault, videoConfig);
+  const { path, folder, provider } = videoConfigComplete;
 
-  const { path, folder } = videoConfig;
-
-  env['NEXT_PUBLIC_VIDEO_OPTS'] = JSON.stringify({ path });
-  env['__NEXT_VIDEO_OPTS'] = JSON.stringify(videoConfig);
+  // Don't use `process.env` here because Next.js replaces public env vars during build.
+  env['NEXT_PUBLIC_VIDEO_OPTS'] = JSON.stringify({ path, provider });
+  env['__NEXT_VIDEO_OPTS'] = JSON.stringify(videoConfigComplete);
 
   // We should probably switch to using `phase` here, just a bit concerned about backwards compatibility.
   if (process.argv[2] === 'dev') {
 
-    env['NEXT_PUBLIC_DEV_VIDEO_OPTS'] = JSON.stringify({ path, folder });
+    // Don't use `process.env` here because Next.js replaces public env vars during build.
+    env['NEXT_PUBLIC_DEV_VIDEO_OPTS'] = JSON.stringify({ path, folder, provider });
 
     const VIDEOS_PATH = join(process.cwd(), folder)
-    const TMP_PUBLIC_VIDEOS_PATH = join(process.cwd(), 'public', `_${folder}`);
+    const TMP_PUBLIC_VIDEOS_PATH = join(process.cwd(), 'public', `_next-video`);
 
     await symlinkDir(VIDEOS_PATH, TMP_PUBLIC_VIDEOS_PATH);
 
@@ -56,7 +58,7 @@ export default async function withNextVideo(nextConfig: any, videoConfig: VideoC
 
       config.experiments.buildHttp = {
         allowedUris: [
-          /https?:\/\/.*\.(mp4|webm|mkv|ogg|ogv|wmv|avi|mov|flv|m4v|3gp)$/,
+          /https?:\/\/.*\.(mp4|webm|mkv|ogg|ogv|wmv|avi|mov|flv|m4v|3gp)\??(?:&?[^=&]*=[^=&]*)*$/,
           ...(config.experiments.buildHttp?.allowedUris ?? [])
         ],
         ...(config.experiments.buildHttp || {}),
@@ -64,11 +66,14 @@ export default async function withNextVideo(nextConfig: any, videoConfig: VideoC
         cacheLocation: false,
       }
 
+      const scriptDir = typeof __dirname === 'string' ? __dirname // CJS module
+        : dirname(fileURLToPath(import.meta.url)); // ESM module
+
       config.module.rules.push({
-        test: /\.(mp4|webm|mkv|ogg|ogv|wmv|avi|mov|flv|m4v|3gp)$/,
+        test: /\.(mp4|webm|mkv|ogg|ogv|wmv|avi|mov|flv|m4v|3gp)\??(?:&?[^=&]*=[^=&]*)*$/,
         use: [
           {
-            loader: require.resolve('./webpack-loader'),
+            loader: join(scriptDir, 'webpack-loader.js')
             // options: {
             //   publicPath: `${prefix || basePath}/_next/static/videos/`,
             //   outputPath: `${isServer ? '../' : ''}static/videos/`,
