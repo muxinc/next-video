@@ -44,7 +44,7 @@ async function initS3() {
     endpoint,
     region,
     credentials: {
-      accessKeyId: amazonS3Config?.access_key ?? env.AWS_SECRET_ACCESS_KEY ?? '',
+      accessKeyId: amazonS3Config?.access_key ?? env.AWS_ACCESS_KEY_ID ?? '',
       secretAccessKey: amazonS3Config?.secret_key ?? env.AWS_SECRET_ACCESS_KEY ?? '',
     },
   });
