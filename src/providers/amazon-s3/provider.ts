@@ -16,8 +16,8 @@ import log from '../../utils/logger.js';
 export type AmazonS3Metadata = {
   bucket?: string;
   endpoint?: string;
-  access_key?: string;
-  secret_key?: string;
+  accessKeyId?: string;
+  secretAccessKey?: string;
 };
 
 // Why 11?
@@ -44,14 +44,14 @@ async function initS3() {
     endpoint,
     region,
     credentials: {
-      accessKeyId: amazonS3Config?.access_key ?? env.AWS_ACCESS_KEY_ID ?? '',
-      secretAccessKey: amazonS3Config?.secret_key ?? env.AWS_SECRET_ACCESS_KEY ?? '',
-    },
+      accessKeyId: amazonS3Config?.accessKeyId ?? env.AWS_ACCESS_KEY_ID ?? '',
+      secretAccessKey: amazonS3Config?.secretAccessKey ?? env.AWS_SECRET_ACCESS_KEY ?? '',
+    }
   });
 
   if (!bucketName) {
     try {
-      const bucket = await findBucket(s3, (bucket) => bucket.Name?.startsWith('next-videos-'));
+      const bucket = await findBucket(s3, bucket => bucket.Name?.startsWith('next-videos-'));
 
       if (bucket) {
         bucketName = bucket.Name!;
@@ -77,7 +77,7 @@ async function initS3() {
 
         // Since the security changes the default ObjectOwnership is BucketOwnerEnforced which doesn't allow ACLs. Change it here.
         // InvalidBucketAclWithObjectOwnership: Bucket cannot have ACLs set with ObjectOwnership's BucketOwnerEnforced setting
-        ObjectOwnership: 'ObjectWriter',
+        ObjectOwnership: 'ObjectWriter'
       });
       await putBucketAcl(s3, bucketName);
       await putBucketCors(s3, bucketName);
@@ -111,7 +111,7 @@ export async function uploadLocalFile(asset: Asset) {
   }
 
   await updateAsset(filePath, {
-    status: 'uploading',
+    status: 'uploading'
   });
 
   await initS3();
@@ -136,7 +136,7 @@ export async function uploadRequestedFile(asset: Asset) {
   }
 
   await updateAsset(filePath, {
-    status: 'uploading',
+    status: 'uploading'
   });
 
   await initS3();
@@ -182,7 +182,7 @@ async function putAsset(filePath: string, size: number, stream: ReadStream | Rea
       'amazon-s3': {
         endpoint,
         bucket: bucketName,
-      } as AmazonS3Metadata,
+      } as AmazonS3Metadata
     },
   });
 
