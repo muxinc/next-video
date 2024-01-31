@@ -53,7 +53,7 @@
     "postbuild:cjs": "echo '{\"type\": \"commonjs\"}' > ./dist/cjs/package.json",
     "prepare": "npm run build",
     "cli": "node --loader tsx --no-warnings ./src/cli",
-    "test": "glob -c \"c8 --src src --exclude 'tests/**' node --loader tsx --no-warnings --test\" \"./tests/**/*.test.{ts,tsx}\"",
+    "test": "glob -c \"c8 --src src --exclude 'next.config.js' --exclude 'tests/**' --exclude 'dist/**' node --loader tsx --no-warnings --test\" \"./tests/**/*.test.{ts,tsx}\"",
     "coverage": "c8 report --reporter=text-lcov > ./coverage/lcov.info"
   },
   "peerDependencies": {
