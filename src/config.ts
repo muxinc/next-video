@@ -70,5 +70,6 @@ async function importConfig(file: string) {
     .relative(dirname, absFilePath)
     .split(path.sep)
     .join('/');
+  console.log(filePath);
   return import(/* webpackIgnore: true */ `${filePath}`);
 }
