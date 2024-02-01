@@ -1,6 +1,6 @@
 import { env } from 'node:process';
 import path from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { pathToFileURL } from 'node:url';
 
 /**
  * Video configurations
@@ -62,14 +62,7 @@ export async function getVideoConfig(): Promise<VideoConfigComplete> {
 }
 
 async function importConfig(file: string) {
-  const dirname = path.dirname(fileURLToPath(import.meta.url));
   const absFilePath = path.resolve(file);
-  // Windows uses backslashes, so we need to replace them
-  // with forward slashes for the dynamic import statement to work.
-  const filePath = path
-    .relative(dirname, absFilePath)
-    .split(path.sep)
-    .join('/');
-  console.log(filePath);
-  return import(/* webpackIgnore: true */ `${filePath}`);
+  const fileUrl = pathToFileURL(absFilePath).href;
+  return import(/* webpackIgnore: true */ fileUrl);
 }
