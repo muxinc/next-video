@@ -48,12 +48,12 @@
     "types:cjs": "tsc --outDir dist/cjs",
     "prebuild": "npm run clean && npm run types",
     "build": "npm run build:esm && npm run build:cjs",
-    "build:esm": "esbuild src/*.ts* src/*/*.ts* src/*/*/*.ts* --outdir=dist --format=esm --target=es2020",
-    "build:cjs": "esbuild src/*.ts* src/*/*.ts* src/*/*/*.ts* --outdir=dist/cjs --platform=node --format=cjs --target=es2020 --define:import.meta.url=\\\"\\\"",
-    "postbuild:cjs": "echo '{\"type\": \"commonjs\"}' > ./dist/cjs/package.json",
+    "build:esm": "esbuild \"src/**/*.ts*\" --outdir=dist --format=esm --target=es2020",
+    "build:cjs": "esbuild \"src/**/*.ts*\" --outdir=dist/cjs --platform=node --format=cjs --target=es2020 --define:import.meta.url=\\\"\\\"",
+    "postbuild:cjs": "node --eval \"fs.writeFileSync('./dist/cjs/package.json', '{\\\"type\\\": \\\"commonjs\\\"}')\"",
     "prepare": "npm run build",
     "cli": "node --loader tsx --no-warnings ./src/cli",
-    "test": "glob -c \"c8 --src src --exclude 'tests/**' node --loader tsx --no-warnings --test\" \"./tests/**/*.test.{ts,tsx}\"",
+    "test": "glob -c \"c8 --src src --exclude 'next.config.js' --exclude 'tests/**' --exclude 'dist/**' node --loader tsx --no-warnings --test\" \"./tests/**/*.test.{ts,tsx}\"",
     "coverage": "c8 report --reporter=text-lcov > ./coverage/lcov.info"
   },
   "peerDependencies": {

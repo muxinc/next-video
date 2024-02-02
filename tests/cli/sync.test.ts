@@ -55,14 +55,14 @@ describe('cli', () => {
 
   async function createTempDir(): Promise<string> {
     // Create a temporary directory and populate it with some files.
-    const dir = await fs.mkdtemp(path.join('tests', 'tmp-videos-'));
-
+    const dir = await fs.mkdtemp('tmp-videos-');
     tmpDirs.push(dir);
-
     return dir;
   }
 
   before(() => {
+    process.chdir('tests');
+
     process.env.MUX_TOKEN_ID = 'fake-token-id';
     process.env.MUX_TOKEN_SECRET = 'fake-token-secret';
 
@@ -79,12 +79,14 @@ describe('cli', () => {
     });
   });
 
-  after(() => {
+  after(async () => {
     server.close();
 
-    tmpDirs.forEach(async (dir) => {
+    for (const dir of tmpDirs) {
       await fs.rm(dir, { recursive: true, force: true });
-    });
+    }
+
+    process.chdir('../');
   });
 
   describe('sync', () => {

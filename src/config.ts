@@ -1,5 +1,6 @@
-import { env } from 'node:process';
+import { env, cwd } from 'node:process';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 /**
  * Video configurations
@@ -48,14 +49,22 @@ export async function getVideoConfig(): Promise<VideoConfigComplete> {
     // Import the app's next.config.(m)js file so the env variable
     // __NEXT_VIDEO_OPTS set in with-next-video.ts can be used.
     try {
-      await import(/* webpackIgnore: true */ path.resolve('next.config.js'));
-    } catch {
+      await importConfig('next.config.js');
+    } catch (err) {
+      console.error(err);
+
       try {
-        await import(/* webpackIgnore: true */ path.resolve('next.config.mjs'));
+        await importConfig('next.config.mjs');
       } catch {
         console.error('Failed to load next.config.js or next.config.mjs');
       }
     }
   }
   return JSON.parse(env['__NEXT_VIDEO_OPTS'] ?? '{}');
+}
+
+async function importConfig(file: string) {
+  const absFilePath = path.resolve(cwd(), file);
+  const fileUrl = pathToFileURL(absFilePath).href;
+  return import(/* webpackIgnore: true */ fileUrl);
 }
