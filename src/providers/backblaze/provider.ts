@@ -1,7 +1,6 @@
 import { ReadStream, createReadStream } from 'node:fs';
 import { Readable } from 'node:stream';
 import fs from 'node:fs/promises';
-import path from 'node:path';
 import { env } from 'node:process';
 import { fetch as uFetch } from 'undici';
 import chalk from 'chalk';
@@ -148,7 +147,7 @@ async function putAsset(filePath: string, size: number, stream: ReadStream | Rea
   try {
     await putObject(s3, {
       Bucket: bucketName,
-      Key: path.basename(filePath),
+      Key: filePath,
       Body: stream,
       ContentLength: size,
     });
