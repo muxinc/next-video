@@ -1,8 +1,16 @@
 import assert from 'node:assert';
-import { describe, it } from 'node:test';
+import { describe, it, before, after } from 'node:test';
 import { getVideoConfig } from '../src/config.js';
 
 describe('config', () => {
+  before(() => {
+    process.chdir('tests');
+  });
+
+  after(() => {
+    process.chdir('../');
+  });
+
   it('getVideoConfig', async () => {
     // Test that the default config is returned if no next.config.js file is found.
     const videoConfig = await getVideoConfig();
