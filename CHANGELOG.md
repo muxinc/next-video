@@ -1,3 +1,12 @@
+## [0.12.1](https://github.com/muxinc/next-video/compare/v0.12.0...v0.12.1) (2024-02-02)
+
+
+### Bug Fixes
+
+* import next.config.js in Windows ([#159](https://github.com/muxinc/next-video/issues/159)) ([969d6e8](https://github.com/muxinc/next-video/commit/969d6e805bf66a8940094d3d4fe6a991274155a6))
+
+
+
 # [0.12.0](https://github.com/muxinc/next-video/compare/v0.11.2...v0.12.0) (2024-01-25)
 
 
