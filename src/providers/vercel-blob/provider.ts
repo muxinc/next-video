@@ -5,6 +5,8 @@ import { put } from '@vercel/blob';
 import chalk from 'chalk';
 
 import { updateAsset, Asset } from '../../assets.js';
+import { createAssetKey } from '../../utils/provider.js';
+import { isRemote } from '../../utils/utils.js';
 import log from '../../utils/logger.js';
 
 export const config = {
@@ -26,7 +28,7 @@ export async function uploadLocalFile(asset: Asset) {
   }
 
   // Handle imported remote videos.
-  if (filePath && /^https?:\/\//.test(filePath)) {
+  if (isRemote(filePath)) {
     return uploadRequestedFile(asset);
   }
 
@@ -80,9 +82,11 @@ export async function uploadRequestedFile(asset: Asset) {
 async function putAsset(filePath: string, size: number, stream: ReadStream | ReadableStream) {
   log.info(log.label('Uploading file:'), `${filePath} (${size} bytes)`);
 
+  let key;
   let blob;
   try {
-    blob = await put(filePath, stream, { access: 'public' });
+    key = await createAssetKey(filePath, 'vercel-blob');
+    blob = await put(key, stream, { access: 'public' });
 
     if (stream instanceof ReadStream) {
       stream.close();
@@ -100,6 +104,7 @@ async function putAsset(filePath: string, size: number, stream: ReadStream | Rea
     status: 'ready',
     providerMetadata: {
       'vercel-blob': {
+        key,
         url: blob.url,
         contentType: blob.contentType,
       } as VercelBlobMetadata

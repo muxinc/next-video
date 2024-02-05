@@ -6,7 +6,7 @@ export function transform(asset: Asset) {
 
   const src = new URL(providerMetadata.endpoint);
   src.hostname = `${providerMetadata.bucket}.${src.hostname}`;
-  src.pathname = asset.originalFilePath;
+  src.pathname = providerMetadata.key;
 
   const source: AssetSource = { src: `${src}` };
 

@@ -54,10 +54,22 @@ export async function handler(argv: Arguments) {
   const directoryPath = path.join(cwd(), argv.dir as string);
 
   try {
-    const files = await readdir(directoryPath);
+    const dirents = await readdir(directoryPath, {
+      recursive: true,
+      withFileTypes: true,
+    });
+
+    // Filter out directories and get relative file paths.
+    const files = dirents
+      .filter((dirent) => dirent.isFile())
+      .map((dirent) =>
+        path.join(path.relative(directoryPath, dirent.path), dirent.name)
+      );
 
     const jsonFiles = files.filter((file) => file.endsWith('.json'));
-    const otherFiles = files.filter((file) => !file.match(/(^|[\/\\])\..*|\.json$/));
+    const otherFiles = files.filter(
+      (file) => !file.match(/(^|[\/\\])\..*|\.json$/)
+    );
 
     if (argv.watch) {
       const version = await getNextVideoVersion();
@@ -89,7 +101,11 @@ export async function handler(argv: Arguments) {
       // If the existing asset is 'pending', 'uploading', or 'processing', run
       // it back through the local video handler.
       const assetStatus = existingAsset?.status;
-      if (assetStatus && ['sourced', 'pending', 'uploading', 'processing'].includes(assetStatus)) {
+
+      if (
+        assetStatus &&
+        ['sourced', 'pending', 'uploading', 'processing'].includes(assetStatus)
+      ) {
         const videoConfig = await getVideoConfig();
         return callHandler('local.video.added', existingAsset, videoConfig);
       }
@@ -116,7 +132,9 @@ export async function handler(argv: Arguments) {
 
     if (processed.length > 0) {
       const s = processed.length === 1 ? '' : 's';
-      log.success(`Processed (or resumed processing) ${processed.length} video${s}`);
+      log.success(
+        `Processed (or resumed processing) ${processed.length} video${s}`
+      );
     }
   } catch (err: any) {
     if (err.code === 'ENOENT' && err.path === directoryPath) {

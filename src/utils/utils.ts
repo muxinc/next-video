@@ -6,6 +6,16 @@ export function camelCase(name: string) {
   return name.replace(/[-_]([a-z])/g, ($0, $1) => $1.toUpperCase());
 }
 
+export function isRemote(filePath: string) {
+  return /^https?:\/\//.test(filePath);
+}
+
+export function toSafePath(str: string) {
+  return str
+    .replace(/^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$/g, '')
+    .replace(/[^a-zA-Z0-9._-]+/g, '_');
+}
+
 /**
 * Performs a deep merge of objects and returns a new object.
 * Does not modify objects (immutable) and merges arrays via concatenation.
