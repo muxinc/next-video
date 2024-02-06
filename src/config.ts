@@ -29,7 +29,7 @@ export type ProviderConfig = {
 
   'vercel-blob'?: {
     /* An optional function to generate the bucket asset key. */
-    generateAssetKey?: (filePathOrURL: string) => string;
+    generateAssetKey?: (filePathOrURL: string, folder: string) => string;
   };
 
   backblaze?: {
@@ -38,7 +38,7 @@ export type ProviderConfig = {
     accessKeyId?: string;
     secretAccessKey?: string;
     /* An optional function to generate the bucket asset key. */
-    generateAssetKey?: (filePathOrURL: string) => string;
+    generateAssetKey?: (filePathOrURL: string, folder: string) => string;
   };
 
   'amazon-s3'?: {
@@ -47,7 +47,7 @@ export type ProviderConfig = {
     accessKeyId?: string;
     secretAccessKey?: string;
     /* An optional function to generate the bucket asset key. */
-    generateAssetKey?: (filePathOrURL: string) => string;
+    generateAssetKey?: (filePathOrURL: string, folder: string) => string;
   };
 };
 
