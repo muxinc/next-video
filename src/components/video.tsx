@@ -40,29 +40,24 @@ const NextVideo = forwardRef<DefaultPlayerRefAttributes | null, VideoProps>((pro
   const request = createVideoRequest(loader, loaderProps, (json) => setAsset(json));
 
   const status = asset?.status;
-  const needsPolling = DEV_MODE && (typeof src === 'string' && status != 'ready');
+  const needsPolling = DEV_MODE && typeof src === 'string' && status != 'ready';
   usePolling(request, needsPolling ? 1000 : null);
 
-  const videoProps = getVideoProps(
-    { ...props, transform, src } as VideoPropsInternal,
-    { asset }
-  );
+  const videoProps = getVideoProps({ ...props, transform, src } as VideoPropsInternal, { asset });
 
   if (!isReactComponent(VideoPlayer)) {
     console.warn('The `as` property is not a valid component:', VideoPlayer);
   }
 
   return (
-    <div
-      className={`${className ? `${className} ` : ''}next-video-container`}
-      style={style}
-    >
+    <div className={`${className ? `${className} ` : ''}next-video-container`} style={style}>
       <style>{
-        /* css */`
+        /* css */ `
         .next-video-container {
           position: relative;
           width: 100%;
           aspect-ratio: 16 / 9;
+          overflow: hidden;
         }
 
         [data-next-video] {
@@ -93,10 +88,7 @@ const NextVideo = forwardRef<DefaultPlayerRefAttributes | null, VideoProps>((pro
         {...videoProps}
       ></VideoPlayer>
 
-      {DEV_MODE && <Alert
-        hidden={Boolean(playing || !status || status === 'ready')}
-        status={status}
-      />}
+      {DEV_MODE && <Alert hidden={Boolean(playing || !status || status === 'ready')} status={status} />}
     </div>
   );
 });
@@ -104,25 +96,14 @@ const NextVideo = forwardRef<DefaultPlayerRefAttributes | null, VideoProps>((pro
 export function getVideoProps(allProps: VideoPropsInternal, state: { asset?: Asset }) {
   const { asset } = state;
   // Remove props that are not needed for VideoPlayer.
-  const {
-    controls = true,
-    as,
-    className,
-    style,
-    src,
-    poster,
-    blurDataURL,
-    loader,
-    transform,
-    ...rest
-  } = allProps;
+  const { controls = true, as, className, style, src, poster, blurDataURL, loader, transform, ...rest } = allProps;
 
   const props: DefaultPlayerProps = {
     src: src as string | undefined,
     controls,
     poster,
     blurDataURL,
-    ...rest
+    ...rest,
   };
 
   if (asset) {
@@ -154,8 +135,4 @@ function defaultTransformer(asset: Asset) {
 
 export default NextVideo;
 
-export type {
-  VideoLoaderProps,
-  VideoProps,
-  DefaultPlayerProps,
-};
+export type { VideoLoaderProps, VideoProps, DefaultPlayerProps };
