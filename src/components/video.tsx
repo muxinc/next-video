@@ -128,10 +128,17 @@ export function getVideoProps(allProps: VideoPropsInternal, state: { asset?: Ass
   const props: DefaultPlayerProps = {
     src: src as string | undefined,
     controls,
-    poster,
     blurDataURL,
     ...rest
   };
+
+  // Handle StaticImageData which are image imports that resolve to an object.
+  if (typeof poster === 'object') {
+    props.poster = poster.src;
+    props.blurDataURL ??= poster.blurDataURL;
+  } else {
+    props.poster = poster;
+  }
 
   if (asset) {
     if (asset.status === 'ready') {

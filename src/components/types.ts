@@ -2,6 +2,7 @@ import type { VideoConfig } from '../config.js';
 import type { FunctionComponent } from 'react';
 import type { DefaultPlayerProps } from './default-player.js';
 import type { Asset } from '../assets.js';
+import { StaticImageData } from 'next/image.js';
 
 declare module 'react' {
   interface CSSProperties {
@@ -29,7 +30,7 @@ export interface PosterProps {
   domain?: string;
 }
 
-export interface VideoProps extends Omit<DefaultPlayerProps, 'src'> {
+export interface VideoProps extends Omit<DefaultPlayerProps, 'src' | 'poster'> {
   /**
    * The component type to render the video as.
    */
@@ -41,6 +42,11 @@ export interface VideoProps extends Omit<DefaultPlayerProps, 'src'> {
    * If it's a string be sure to create an API endpoint to handle the request.
    */
   src?: Asset | string;
+
+  /**
+   * The poster image for the video.
+   */
+  poster?: StaticImageData | string;
 
   /**
    * Give a fixed width to the video.
