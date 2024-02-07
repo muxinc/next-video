@@ -1,7 +1,6 @@
 import { ReadStream, createReadStream } from 'node:fs';
 import { Readable } from 'node:stream';
 import fs from 'node:fs/promises';
-import path from 'node:path';
 import { env } from 'node:process';
 import { fetch as uFetch } from 'undici';
 import chalk from 'chalk';
@@ -11,13 +10,14 @@ import { S3Client } from '@aws-sdk/client-s3';
 import { updateAsset, Asset } from '../../assets.js';
 import { getVideoConfig } from '../../config.js';
 import { findBucket, createBucket, putBucketCors, putObject, putBucketAcl } from '../../utils/s3.js';
+import { createAssetKey } from '../../utils/provider.js';
+import { isRemote } from '../../utils/utils.js';
 import log from '../../utils/logger.js';
 
 export type AmazonS3Metadata = {
   bucket?: string;
   endpoint?: string;
-  accessKeyId?: string;
-  secretAccessKey?: string;
+  key?: string;
 }
 
 // Why 11?
@@ -98,7 +98,7 @@ export async function uploadLocalFile(asset: Asset) {
   }
 
   // Handle imported remote videos.
-  if (filePath && /^https?:\/\//.test(filePath)) {
+  if (isRemote(filePath)) {
     return uploadRequestedFile(asset);
   }
 
@@ -156,11 +156,14 @@ export async function uploadRequestedFile(asset: Asset) {
 async function putAsset(filePath: string, size: number, stream: ReadStream | Readable) {
   log.info(log.label('Uploading file:'), `${filePath} (${size} bytes)`);
 
+  let key;
   try {
+    key = await createAssetKey(filePath, 'amazon-s3');
+
     await putObject(s3, {
       ACL: 'public-read',
       Bucket: bucketName,
-      Key: path.basename(filePath),
+      Key: key,
       Body: stream,
       ContentLength: size,
     });
@@ -182,6 +185,7 @@ async function putAsset(filePath: string, size: number, stream: ReadStream | Rea
       'amazon-s3': {
         endpoint,
         bucket: bucketName,
+        key,
       } as AmazonS3Metadata
     },
   });

@@ -6,7 +6,6 @@ import { pathToFileURL } from 'node:url';
  * Video configurations
  */
 export type VideoConfigComplete = {
-
   /** The folder in your project where you will put all video source files. */
   folder: string;
 
@@ -14,22 +13,43 @@ export type VideoConfigComplete = {
   path: string;
 
   /* The default provider that will deliver your video. */
-  provider: string;
+  provider: keyof ProviderConfig;
 
   /* Config by provider. */
-  providerConfig: {
-    backblaze?: {
-      endpoint: string;
-      bucket?: string;
-    },
-    'amazon-s3'?: {
-      endpoint: string;
-      bucket?: string;
-      accessKeyId?: string;
-      secretAccessKey?: string;
-    },
-  }
-}
+  providerConfig: ProviderConfig;
+
+  /* An optional function to generate the local asset path for remote sources. */
+  remoteSourceAssetPath?: (url: string) => string;
+};
+
+export type ProviderConfig = {
+  mux?: {
+    generateAssetKey: undefined;
+  };
+
+  'vercel-blob'?: {
+    /* An optional function to generate the bucket asset key. */
+    generateAssetKey?: (filePathOrURL: string, folder: string) => string;
+  };
+
+  backblaze?: {
+    endpoint: string;
+    bucket?: string;
+    accessKeyId?: string;
+    secretAccessKey?: string;
+    /* An optional function to generate the bucket asset key. */
+    generateAssetKey?: (filePathOrURL: string, folder: string) => string;
+  };
+
+  'amazon-s3'?: {
+    endpoint: string;
+    bucket?: string;
+    accessKeyId?: string;
+    secretAccessKey?: string;
+    /* An optional function to generate the bucket asset key. */
+    generateAssetKey?: (filePathOrURL: string, folder: string) => string;
+  };
+};
 
 export type VideoConfig = Partial<VideoConfigComplete>;
 
@@ -38,33 +58,30 @@ export const videoConfigDefault: VideoConfigComplete = {
   path: '/api/video',
   provider: 'mux',
   providerConfig: {},
-}
+};
 
 /**
  * The video config is set in `next.config.js` and passed to the `withNextVideo` function.
  * The video config is then stored as an environment variable __NEXT_VIDEO_OPTS.
  */
 export async function getVideoConfig(): Promise<VideoConfigComplete> {
-  if (!env['__NEXT_VIDEO_OPTS']) {
-    // Import the app's next.config.(m)js file so the env variable
-    // __NEXT_VIDEO_OPTS set in with-next-video.ts can be used.
-    try {
-      await importConfig('next.config.js');
-    } catch (err) {
-      console.error(err);
+  let nextConfig;
 
-      try {
-        await importConfig('next.config.mjs');
-      } catch {
-        console.error('Failed to load next.config.js or next.config.mjs');
-      }
+  try {
+    nextConfig = await importConfig('next.config.js');
+  } catch (err) {
+    try {
+      nextConfig = await importConfig('next.config.mjs');
+    } catch {
+      console.error('Failed to load next.config.js or next.config.mjs');
     }
   }
-  return JSON.parse(env['__NEXT_VIDEO_OPTS'] ?? '{}');
+
+  return nextConfig?.serverRuntimeConfig?.nextVideo;
 }
 
 async function importConfig(file: string) {
   const absFilePath = path.resolve(cwd(), file);
   const fileUrl = pathToFileURL(absFilePath).href;
-  return import(/* webpackIgnore: true */ fileUrl);
+  return (await import(/* webpackIgnore: true */ fileUrl))?.default;
 }

@@ -6,7 +6,8 @@ import { createAsset, getAssetConfigPath } from './assets.js';
 export const raw = true;
 
 export default async function loader(this: any, source: Buffer) {
-  const assetPath = path.resolve(await getAssetConfigPath(this.resourcePath));
+  const importPath = `${this.resourcePath}${this.resourceQuery ?? ''}`;
+  const assetPath = path.resolve(await getAssetConfigPath(importPath));
 
   this.addDependency(assetPath);
 
@@ -14,7 +15,7 @@ export default async function loader(this: any, source: Buffer) {
   try {
     asset = await readFile(assetPath, 'utf-8');
   } catch {
-    asset = JSON.stringify(await createAsset(this.resourcePath, {
+    asset = JSON.stringify(await createAsset(importPath, {
       status: 'sourced'
     }));
   }

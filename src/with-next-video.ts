@@ -39,6 +39,10 @@ export async function withNextVideo(nextConfig: any, videoConfig?: VideoConfig) 
   }
 
   return Object.assign({}, nextConfig, {
+    serverRuntimeConfig: {
+      ...nextConfig.serverRuntimeConfig,
+      nextVideo: videoConfigComplete,
+    },
     webpack(config: any, options: any) {
       if (!options.defaultLoaders) {
         throw new Error(

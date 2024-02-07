@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { callHandler } from './process.js';
 import { createAsset, getAsset } from './assets.js';
 import { getVideoConfig } from './config.js';
+import { isRemote } from './utils/utils.js';
 
 // App Router
 export async function GET(request: Request) {
@@ -26,10 +27,7 @@ async function handleRequest(url?: string | null) {
     };
   }
 
-  const remoteRegex = /^https?:\/\//;
-  const isRemote = remoteRegex.test(url);
-
-  if (!isRemote) {
+  if (!isRemote(url)) {
     // todo: handle local files via string src
     return {
       status: 400,

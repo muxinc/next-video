@@ -1,16 +1,26 @@
-import { relative } from 'node:path';
+import * as path from 'node:path';
 import { cwd } from 'node:process';
-import { stat, readFile, writeFile } from 'node:fs/promises';
+import { stat, readFile, writeFile, mkdir } from 'node:fs/promises';
 import { getVideoConfig } from './config.js';
-import { deepMerge, camelCase } from './utils/utils.js';
+import { deepMerge, camelCase, isRemote, toSafePath } from './utils/utils.js';
 import * as transformers from './providers/transformers.js';
 
 export interface Asset {
-  status: 'sourced' | 'pending' | 'uploading' | 'processing' | 'ready' | 'error';
+  status:
+    | 'sourced'
+    | 'pending'
+    | 'uploading'
+    | 'processing'
+    | 'ready'
+    | 'error';
   originalFilePath: string;
+  // TODO: should we add a `filePath` field which would store the file path
+  // without the configurable folder? This would allow us to change the folder
+  // without having to update the file paths in the assets.
+  // filePath?: string;
   provider: string;
   providerMetadata?: {
-    [provider: string]: { [key: string]: any }
+    [provider: string]: { [key: string]: any };
   };
   poster?: string;
   sources?: AssetSource[];
@@ -32,19 +42,46 @@ export interface AssetSource {
 }
 
 export async function getAsset(filePath: string): Promise<Asset | undefined> {
-  const assetPath = await getAssetConfigPath(filePath);
-  const file = await readFile(assetPath);
+  const assetConfigPath = await getAssetConfigPath(filePath);
+  const file = await readFile(assetConfigPath);
   const asset = JSON.parse(file.toString());
   return asset;
 }
 
-export async function createAsset(filePath: string, assetDetails?: Partial<Asset>) {
+export async function getAssetConfigPath(filePath: string) {
+  return `${await getAssetPath(filePath)}.json`;
+}
+
+async function getAssetPath(filePath: string) {
+  if (!isRemote(filePath)) return filePath;
+
+  const { folder, remoteSourceAssetPath = defaultRemoteSourceAssetPath } =
+    await getVideoConfig();
+
+  if (!folder) throw new Error('Missing video `folder` config.');
+
+  // Add the asset directory and make remote url a safe file path.
+  return path.join(folder, remoteSourceAssetPath(filePath));
+}
+
+function defaultRemoteSourceAssetPath(url: string) {
+  const urlObj = new URL(url);
+  // Strip the https from the asset path.
+  // Strip the search params from the file path so in most cases it'll
+  // have a video file extension and not a query string in the end.
+  return toSafePath(decodeURIComponent(`${urlObj.hostname}${urlObj.pathname}`));
+}
+
+export async function createAsset(
+  filePath: string,
+  assetDetails?: Partial<Asset>
+) {
   const videoConfig = await getVideoConfig();
-  const assetPath = await getAssetConfigPath(filePath);
+  const assetConfigPath = await getAssetConfigPath(filePath);
 
   let originalFilePath = filePath;
-  if (!isRemote(filePath))  {
-    originalFilePath = relative(cwd(), filePath);
+  if (!isRemote(filePath)) {
+    originalFilePath = path.relative(cwd(), filePath);
   }
 
   const newAssetDetails: Asset = {
@@ -66,7 +103,10 @@ export async function createAsset(filePath: string, assetDetails?: Partial<Asset
   }
 
   try {
-    await writeFile(assetPath, JSON.stringify(newAssetDetails), { flag: 'wx' });
+    await mkdir(path.dirname(assetConfigPath), { recursive: true });
+    await writeFile(assetConfigPath, JSON.stringify(newAssetDetails), {
+      flag: 'wx',
+    });
   } catch (err: any) {
     if (err.code === 'EEXIST') {
       // The file already exists, and that's ok in this case. Ignore the error.
@@ -78,8 +118,11 @@ export async function createAsset(filePath: string, assetDetails?: Partial<Asset
   return newAssetDetails;
 }
 
-export async function updateAsset(filePath: string, assetDetails: Partial<Asset>) {
-  const assetPath = await getAssetConfigPath(filePath);
+export async function updateAsset(
+  filePath: string,
+  assetDetails: Partial<Asset>
+) {
+  const assetConfigPath = await getAssetConfigPath(filePath);
   const currentAsset = await getAsset(filePath);
 
   if (!currentAsset) {
@@ -92,35 +135,17 @@ export async function updateAsset(filePath: string, assetDetails: Partial<Asset>
 
   newAssetDetails = transformAsset(transformers, newAssetDetails);
 
-  await writeFile(assetPath, JSON.stringify(newAssetDetails));
+  await writeFile(assetConfigPath, JSON.stringify(newAssetDetails));
 
   return newAssetDetails;
 }
 
-export async function getAssetConfigPath(filePath: string) {
-  if (isRemote(filePath)) {
-    const VIDEOS_DIR = (await getVideoConfig()).folder;
-    if (!VIDEOS_DIR) throw new Error('Missing video `folder` config.');
-
-    // Add the asset directory and make remote url a safe file path.
-    return `${VIDEOS_DIR}/${toSafePath(filePath)}.json`;
+type TransformerRecord = Record<
+  string,
+  {
+    transform: (asset: Asset, props?: any) => Asset;
   }
-  return `${filePath}.json`
-}
-
-function isRemote(filePath: string) {
-  return /^https?:\/\//.test(filePath);
-}
-
-function toSafePath(str: string) {
-  return str
-    .replace(/^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$/g, '')
-    .replace(/[^a-zA-Z0-9._-]+/g, '_');
-}
-
-type TransformerRecord = Record<string, {
-  transform: (asset: Asset, props?: any) => Asset;
-}>;
+>;
 
 function transformAsset(transformers: TransformerRecord, asset: Asset) {
   const provider = asset.provider;
