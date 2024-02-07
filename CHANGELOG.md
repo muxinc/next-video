@@ -1,3 +1,12 @@
+## [0.12.2](https://github.com/muxinc/next-video/compare/v0.12.1...v0.12.2) (2024-02-07)
+
+
+### Bug Fixes
+
+* prevent polling of string source m3u8 / mpd ([#171](https://github.com/muxinc/next-video/issues/171)) ([5b57ff3](https://github.com/muxinc/next-video/commit/5b57ff3c7dad9ca62134e3256f68c375d8a813a5)), closes [#166](https://github.com/muxinc/next-video/issues/166)
+
+
+
 ## [0.12.1](https://github.com/muxinc/next-video/compare/v0.12.0...v0.12.1) (2024-02-02)
 
 
