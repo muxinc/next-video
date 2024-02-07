@@ -19,6 +19,12 @@ export function camelCase(name: string) {
   return name.replace(/[-_]([a-z])/g, ($0, $1) => $1.toUpperCase());
 }
 
+export function getUrlExtension(url: string | unknown) {
+  if (typeof url === 'string') {
+    return url.split(/[#?]/)[0].split('.').pop()?.trim();
+  }
+}
+
 // Note: doesn't get updated when the callback function changes
 export function usePolling(
   callback: (abortSignal: AbortSignal) => any,
