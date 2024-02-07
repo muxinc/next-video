@@ -1,3 +1,12 @@
+# [0.14.0](https://github.com/muxinc/next-video/compare/v0.13.0...v0.14.0) (2024-02-07)
+
+
+### Features
+
+* custom local remote source folder & custom asset bucket key ([#161](https://github.com/muxinc/next-video/issues/161)) ([bf28a4b](https://github.com/muxinc/next-video/commit/bf28a4bb48c6330ce9892039a56158ef126a9133)), closes [#149](https://github.com/muxinc/next-video/issues/149)
+
+
+
 # [0.13.0](https://github.com/muxinc/next-video/compare/v0.12.2...v0.13.0) (2024-02-07)
 
 
