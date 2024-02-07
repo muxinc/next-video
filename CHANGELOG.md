@@ -1,3 +1,12 @@
+# [0.13.0](https://github.com/muxinc/next-video/compare/v0.12.2...v0.13.0) (2024-02-07)
+
+
+### Features
+
+* support poster image imports ([#170](https://github.com/muxinc/next-video/issues/170)) ([646dc30](https://github.com/muxinc/next-video/commit/646dc30cd06a79b77a6efeab9df924afba08a03f)), closes [#165](https://github.com/muxinc/next-video/issues/165)
+
+
+
 ## [0.12.2](https://github.com/muxinc/next-video/compare/v0.12.1...v0.12.2) (2024-02-07)
 
 
