@@ -4,7 +4,7 @@ import React, { forwardRef, useState } from 'react';
 import { DefaultPlayer } from './default-player.js';
 import { Alert } from './alert.js';
 import { createVideoRequest, defaultLoader } from './video-loader.js';
-import { config, camelCase, toSymlinkPath, usePolling, isReactComponent } from './utils.js';
+import { config, camelCase, toSymlinkPath, usePolling, isReactComponent, getUrlExtension } from './utils.js';
 import * as transformers from '../providers/transformers.js';
 
 import type { DefaultPlayerRefAttributes, DefaultPlayerProps } from './default-player.js';
@@ -40,7 +40,15 @@ const NextVideo = forwardRef<DefaultPlayerRefAttributes | null, VideoProps>((pro
   const request = createVideoRequest(loader, loaderProps, (json) => setAsset(json));
 
   const status = asset?.status;
-  const needsPolling = DEV_MODE && (typeof src === 'string' && status != 'ready');
+
+  // Polling is only needed for unprocessed video sources (not HLS or DASH).
+  const fileExtension = getUrlExtension(src);
+  const needsPolling =
+    DEV_MODE &&
+    typeof src === 'string' &&
+    status != 'ready' &&
+    !['m3u8', 'mpd'].includes(fileExtension ?? '');
+
   usePolling(request, needsPolling ? 1000 : null);
 
   const videoProps = getVideoProps(
