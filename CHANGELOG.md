@@ -1,3 +1,12 @@
+## [0.14.1](https://github.com/muxinc/next-video/compare/v0.14.0...v0.14.1) (2024-02-08)
+
+
+### Bug Fixes
+
+* upgrade Mux dependencies ([#172](https://github.com/muxinc/next-video/issues/172)) ([6ad5827](https://github.com/muxinc/next-video/commit/6ad5827d432e63faab9aacdfa1990480a568390f))
+
+
+
 # [0.14.0](https://github.com/muxinc/next-video/compare/v0.13.0...v0.14.0) (2024-02-07)
 
 
