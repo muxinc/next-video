@@ -32,8 +32,7 @@ let bucketName: string;
 let endpoint: string;
 
 async function initS3() {
-  const { providerConfig } = await getVideoConfig();
-  const amazonS3Config = providerConfig['amazon-s3'];
+  const { providerConfig: amazonS3Config } = await getVideoConfig<'amazon-s3'>();
   bucketName = amazonS3Config?.bucket ?? '';
   endpoint = amazonS3Config?.endpoint ?? '';
 

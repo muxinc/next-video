@@ -74,14 +74,16 @@ export const videoConfigDefault: VideoConfigComplete = {
   folder: 'videos',
   path: '/api/video',
   provider: 'mux',
-  providerConfig: {},
+  providerConfig: {
+    generateAssetKey: undefined,
+  },
 };
 
 /**
  * The video config is set in `next.config.js` and passed to the `withNextVideo` function.
  * The video config is then stored as an environment variable __NEXT_VIDEO_OPTS.
  */
-export async function getVideoConfig(): Promise<VideoConfigComplete> {
+export async function getVideoConfig<T extends VideoConfig['provider']>(): Promise<Extract<VideoConfigComplete, { provider: T }>> {
   let nextConfig;
 
   try {

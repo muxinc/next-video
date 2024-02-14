@@ -1,13 +1,12 @@
 import * as path from 'node:path';
 
-import { getVideoConfig } from '../config.js';
+import { VideoConfigComplete, getVideoConfig } from '../config.js';
 import { isRemote } from './utils.js';
 
-import type { ProviderConfig } from '../config.js';
+type ProviderConfig = VideoConfigComplete['provider']
 
 export async function createAssetKey(filePathOrURL: string, provider: keyof ProviderConfig) {
-  const { folder, providerConfig } = await getVideoConfig();
-  const config = providerConfig[provider];
+  const { folder, providerConfig: config } = await getVideoConfig();
   const { generateAssetKey = defaultGenerateAssetKey } = config ?? {};
   return generateAssetKey(filePathOrURL, folder);
 }

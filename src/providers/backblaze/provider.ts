@@ -32,8 +32,7 @@ let bucketName: string;
 let endpoint: string;
 
 async function initS3() {
-  const { providerConfig } = await getVideoConfig();
-  const backblazeConfig = providerConfig.backblaze;
+  const { providerConfig: backblazeConfig } = await getVideoConfig<'backblaze'>();
   bucketName = backblazeConfig?.bucket ?? '';
   endpoint = backblazeConfig?.endpoint ?? '';
 
