@@ -72,7 +72,7 @@ export default async function updateNextConfigFile(parentDir: string = './', vid
     }
 
     let code =
-`const { withNextVideo } = require('${path.join(PACKAGE_NAME, 'process')}')
+`const { withNextVideo } = require('${path.posix.join(PACKAGE_NAME, 'process')}')
 
 ${generateCode(mod).code}
 `;
@@ -87,7 +87,7 @@ ${generateCode(mod).code}
     const mod = await loadFile(configPath);
 
     mod.imports.$add({
-      from: path.join(PACKAGE_NAME, 'process'),
+      from: path.posix.join(PACKAGE_NAME, 'process'),
       imported: 'withNextVideo',
       local: 'withNextVideo',
     });
