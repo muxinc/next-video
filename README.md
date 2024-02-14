@@ -230,7 +230,7 @@ const nextConfig = {};
 module.exports = withNextVideo(nextConfig, {
   provider: 'backblaze',
   providerConfig: {
-    backblaze: { endpoint: 'https://s3.us-west-000.backblazeb2.com' }
+    endpoint: 'https://s3.us-west-000.backblazeb2.com',
   }
 });
 ```
