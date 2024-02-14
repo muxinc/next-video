@@ -1,3 +1,12 @@
+## [0.14.2](https://github.com/muxinc/next-video/compare/v0.14.1...v0.14.2) (2024-02-14)
+
+
+### Bug Fixes
+
+* use posix path in generated JS modules ([#174](https://github.com/muxinc/next-video/issues/174)) ([7a68921](https://github.com/muxinc/next-video/commit/7a68921a35b63f8e51fae5ad7a4362e76723cc86))
+
+
+
 ## [0.14.1](https://github.com/muxinc/next-video/compare/v0.14.0...v0.14.1) (2024-02-08)
 
 
