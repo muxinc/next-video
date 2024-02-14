@@ -12,43 +12,60 @@ export type VideoConfigComplete = {
   /** The route of the video API request for string video source URLs. */
   path: string;
 
-  /* The default provider that will deliver your video. */
-  provider: keyof ProviderConfig;
-
-  /* Config by provider. */
-  providerConfig: ProviderConfig;
-
   /* An optional function to generate the local asset path for remote sources. */
   remoteSourceAssetPath?: (url: string) => string;
+} & (
+  | { 
+    /* The default provider that will deliver your video. */
+    provider: 'mux'; 
+    /* Config by provider. */
+    providerConfig: MuxProviderConfig
+   }
+  | { 
+    /* The default provider that will deliver your video. */
+    provider: 'vercel-blob'; 
+    /* Config by provider. */
+    providerConfig: VercelBlobProviderConfig
+   }
+  | { 
+    /* The default provider that will deliver your video. */
+    provider: 'backblaze'; 
+    /* Config by provider. */
+    providerConfig: BackblazeProviderConfig
+   }
+  | { 
+    /* The default provider that will deliver your video. */
+    provider: 'amazon-s3'; 
+    /* Config by provider. */
+    providerConfig: AmazonS3ProviderConfig
+   }
+);
+
+type MuxProviderConfig = {
+  generateAssetKey: undefined;
 };
 
-export type ProviderConfig = {
-  mux?: {
-    generateAssetKey: undefined;
-  };
+type VercelBlobProviderConfig = {
+  /* An optional function to generate the bucket asset key. */
+  generateAssetKey?: (filePathOrURL: string, folder: string) => string;
+};
 
-  'vercel-blob'?: {
-    /* An optional function to generate the bucket asset key. */
-    generateAssetKey?: (filePathOrURL: string, folder: string) => string;
-  };
+type BackblazeProviderConfig = {
+  endpoint: string;
+  bucket?: string;
+  accessKeyId?: string;
+  secretAccessKey?: string;
+  /* An optional function to generate the bucket asset key. */
+  generateAssetKey?: (filePathOrURL: string, folder: string) => string;
+};
 
-  backblaze?: {
-    endpoint: string;
-    bucket?: string;
-    accessKeyId?: string;
-    secretAccessKey?: string;
-    /* An optional function to generate the bucket asset key. */
-    generateAssetKey?: (filePathOrURL: string, folder: string) => string;
-  };
-
-  'amazon-s3'?: {
-    endpoint: string;
-    bucket?: string;
-    accessKeyId?: string;
-    secretAccessKey?: string;
-    /* An optional function to generate the bucket asset key. */
-    generateAssetKey?: (filePathOrURL: string, folder: string) => string;
-  };
+type AmazonS3ProviderConfig = {
+  endpoint: string;
+  bucket?: string;
+  accessKeyId?: string;
+  secretAccessKey?: string;
+  /* An optional function to generate the bucket asset key. */
+  generateAssetKey?: (filePathOrURL: string, folder: string) => string;
 };
 
 export type VideoConfig = Partial<VideoConfigComplete>;
