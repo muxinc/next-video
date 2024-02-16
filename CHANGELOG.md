@@ -1,3 +1,12 @@
+## [0.14.3](https://github.com/muxinc/next-video/compare/v0.14.2...v0.14.3) (2024-02-16)
+
+
+### Bug Fixes
+
+* upgrade mux-player-react 2.3.3 ([#182](https://github.com/muxinc/next-video/issues/182)) ([f4a3b9d](https://github.com/muxinc/next-video/commit/f4a3b9d6b7cc5c95d4b4b7f4f40481e4c4884019))
+
+
+
 ## [0.14.2](https://github.com/muxinc/next-video/compare/v0.14.1...v0.14.2) (2024-02-14)
 
 
