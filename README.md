@@ -181,6 +181,24 @@ export default function Page() {
 }
 ```
 
+### Custom poster and blurDataURL
+
+You can add a custom poster and blurDataURL to the video by passing them as props.
+
+```tsx
+import Video from 'next-video';
+import awesomeVideo from '/videos/awesome-video.mp4';
+import awesomePoster from '/images/awesome-poster.jpg';
+
+export default function Page() {
+  return <Video 
+    src={awesomeVideo} 
+    poster={awesomePoster.src} 
+    blurDataURL={awesomePoster.blurDataURL} 
+  />;
+}
+```
+
 ### Custom Player
 
 You can customize the player by passing a custom player component to the `as` prop.  
