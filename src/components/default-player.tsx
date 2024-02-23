@@ -1,4 +1,4 @@
-import { forwardRef, Suspense, lazy } from 'react';
+import { forwardRef, Suspense, lazy, Children, isValidElement } from 'react';
 import { getPlaybackId, getPosterURLFromPlaybackId } from '../providers/mux/transformer.js';
 
 import type { MuxPlayerProps, MuxPlayerRefAttributes } from '@mux/mux-player-react';
@@ -20,6 +20,16 @@ export const DefaultPlayer = forwardRef<DefaultPlayerRefAttributes | null, Defau
     blurDataURL,
     ...rest
   } = allProps;
+
+  const slottedPoster = Children.toArray(children).find((child) => {
+    return typeof child === 'object' && 'type' in child && child.props.slot === 'poster';
+  });
+
+  // If there's a slotted poster image (e.g. next/image) remove the default player poster and blurDataURL.
+  if (isValidElement(slottedPoster)) {
+    poster = '';
+    blurDataURL = undefined;
+  }
 
   const props: MuxPlayerProps = rest;
   const imgStyleProps: React.CSSProperties = {};

@@ -188,7 +188,7 @@ You can add a custom poster and blurDataURL to the video by passing them as prop
 ```tsx
 import Video from 'next-video';
 import awesomeVideo from '/videos/awesome-video.mp4';
-import awesomePoster from '/images/awesome-poster.jpg';
+import awesomePoster from '../public/images/awesome-poster.jpg';
 
 export default function Page() {
   return <Video 
@@ -198,6 +198,43 @@ export default function Page() {
   />;
 }
 ```
+
+This is a good solution but it will not provide the same level of optimization 
+as the automatic poster and blurDataURL by the default provider.
+
+To get the same level of optimization you can use a slotted poster element.
+
+
+### Slotted poster image element
+
+Add a slotted poster image element 
+(like [`next/image`](https://nextjs.org/docs/app/api-reference/components/image)) 
+to the video by passing it as a child with a `slot="poster"` attribute.
+
+Now your image will get all the benefits of the used image component 
+and it will be nicely placed behind the video player controls.
+
+
+```tsx
+import Image from 'next/image';
+import Video from 'next-video';
+import awesomeVideo from '/videos/awesome-video.mp4';
+import awesomePoster from '../public/images/awesome-poster.jpg';
+
+export default function Page() {
+  return (
+    <Video src={awesomeVideo}>
+      <Image 
+        slot="poster" 
+        src={awesomePoster}
+        placeholder="blur"
+        alt="Some peeps doing something awesome"
+      />
+    </Video>
+  );
+}
+```
+
 
 ### Custom Player
 
