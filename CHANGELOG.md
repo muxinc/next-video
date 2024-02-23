@@ -1,3 +1,17 @@
+# [0.15.0](https://github.com/muxinc/next-video/compare/v0.14.3...v0.15.0) (2024-02-23)
+
+
+### Bug Fixes
+
+* ignore unneeded Webpack warning ([#187](https://github.com/muxinc/next-video/issues/187)) ([39e907b](https://github.com/muxinc/next-video/commit/39e907b95048d2554e882a6d8f7cfd07d5f9fe27)), closes [#125](https://github.com/muxinc/next-video/issues/125)
+
+
+### Features
+
+* support slotted poster img (e.g. next/image) ([#189](https://github.com/muxinc/next-video/issues/189)) ([3673bf0](https://github.com/muxinc/next-video/commit/3673bf0f3cc923fd00294cb2c045aa2ff3dbcca2))
+
+
+
 ## [0.14.3](https://github.com/muxinc/next-video/compare/v0.14.2...v0.14.3) (2024-02-16)
 
 
