@@ -1,0 +1,193 @@
+@import 'open-props/style';
+@import 'open-props/normalize';
+@import 'open-props/normalize/light';
+@import 'open-props/normalize/dark';
+@import 'open-props/switch/light';
+@import 'open-props/switch/dark';
+@import 'open-props/buttons';
+@import "open-props/colors-hsl";
+
+:root {
+  --font-sans: var(--sans);
+  --font-mono: var(--mono);
+  --mux-pink: #FA50B5;
+}
+
+[data-theme="light"] {
+  --nav-icon: var(--gray-7);
+  --nav-icon-hover: var(--gray-9);
+  --main-bg: #fff;
+  --surface-1: #FAFAF9;
+}
+
+[data-theme="dark"] {
+  --nav-icon: var(--gray-5);
+  --nav-icon-hover: var(--gray-2);
+  --main-bg: #323232;
+  --surface-1: #383838;
+}
+
+body {
+  display: grid;
+  grid-template:
+    "header header" auto
+    "sidebar1 sidebar1" auto
+    "content content" 1fr
+    "footer footer" auto;
+}
+
+header {
+  grid-area: header;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--size-2);
+  padding: var(--size-4);
+  border-bottom: 1px solid var(--surface-3);
+}
+
+aside {
+  grid-area: sidebar1;
+  padding: var(--size-4) 0;
+  border-right: 1px solid var(--surface-3);
+}
+
+main {
+  grid-area: content;
+  padding: var(--size-4);
+  background-color: var(--main-bg);
+}
+
+@media (width >= 768px) {
+  body {
+    grid-template:
+      "header header" auto
+      "sidebar1 content" 1fr
+      "footer footer" auto / 290px auto;
+  }
+  aside {
+    padding: var(--size-8) var(--size-6);
+  }
+  main {
+    padding: var(--size-8);
+  }
+}
+
+
+aside nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  line-height: 1.25;
+}
+
+aside nav a {
+  display: flex;
+  padding: .375rem var(--size-4);
+  margin: 0;
+  color: var(--text-1);
+  font-weight: 700;
+  border-radius: 100vh;
+}
+
+aside nav a:hover {
+  background-color: var(--surface-2);
+  text-decoration: none;
+}
+
+footer {
+  grid-area: footer;
+}
+
+.logo {
+  font-size: var(--font-size-3);
+  color: var(--text-1);
+}
+
+.logo code {
+  color: var(--surface-1);
+  background-color: var(--mux-pink);
+  padding: 0 var(--size-2);
+  margin-right: var(--size-2);
+}
+
+.logo:hover {
+  text-decoration: none;
+}
+
+.logo:hover code {
+  background-color: hsl(var(--pink-5-hsl) / 100%);
+}
+
+.logo span {
+  font-size: var(--font-size-3);
+}
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--size-4);
+}
+
+.github-icon {
+  fill: var(--nav-icon);
+  stroke: none;
+}
+
+.github-icon:hover > .github-icon {
+  fill: var(--nav-icon-hover);
+}
+
+.theme-toggle {
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+
+#moon, #sun {
+  fill: var(--nav-icon);
+  stroke: none;
+}
+
+#moon:hover, #sun:hover {
+  fill: var(--nav-icon-hover);
+}
+
+#sun {
+  transition: transform 0.5s var(--ease-4);
+  transform-origin: center center;
+}
+
+#sun-beams {
+  --_opacity-dur: 0.15s;
+  stroke: var(--nav-icon);
+  stroke-width: 2px;
+  transform-origin: center center;
+  transition: transform 0.5s var(--ease-elastic-out-4), opacity var(--_opacity-dur) var(--ease-3);
+}
+
+#sun-beams:hover {
+  stroke: var(--nav-icon-hover);
+}
+
+#moon > circle {
+  transition: transform 0.5s var(--ease-out-3);
+}
+
+[data-theme="light"] #sun {
+  transform: scale(0.5);
+}
+
+[data-theme="light"] #sun-beams {
+  transform: rotateZ(0.25turn);
+  --_opacity-dur: 0.5s;
+}
+
+[data-theme="dark"] #moon > circle {
+  transform: translateX(-20px);
+}
+
+[data-theme="dark"] #sun-beams {
+  opacity: 0;
+}
