@@ -1,13 +1,6 @@
-'use client';
-
-import { useTheme } from 'next-themes';
-
 export default function Nav() {
-  const { theme, setTheme } = useTheme()
-
   return <nav>
     <button
-      onClick={() => setTheme(theme === "light" ? "dark" : "light")}
       className="theme-toggle"
       id="theme-toggle"
       title="Toggles light & dark"

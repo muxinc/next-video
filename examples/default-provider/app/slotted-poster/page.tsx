@@ -6,7 +6,7 @@ import getStartedPoster from '/images/get-started-poster.jpg';
 
 export const metadata: Metadata = {
   title: 'next-video - Slotted poster image',
-}
+};
 
 export default function Page() {
   return (
