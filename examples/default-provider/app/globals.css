@@ -31,8 +31,9 @@ body {
   display: grid;
   grid-template:
     "header header" auto
-    "sidebar1 content" 1fr
-    "footer footer" auto / 290px auto;
+    "sidebar1 sidebar1" auto
+    "content content" 1fr
+    "footer footer" auto;
 }
 
 header {
@@ -47,9 +48,31 @@ header {
 
 aside {
   grid-area: sidebar1;
-  padding: var(--size-8) var(--size-6);
+  padding: var(--size-4) 0;
   border-right: 1px solid var(--surface-3);
 }
+
+main {
+  grid-area: content;
+  padding: var(--size-4);
+  background-color: var(--main-bg);
+}
+
+@media (width >= 768px) {
+  body {
+    grid-template:
+      "header header" auto
+      "sidebar1 content" 1fr
+      "footer footer" auto / 290px auto;
+  }
+  aside {
+    padding: var(--size-8) var(--size-6);
+  }
+  main {
+    padding: var(--size-8);
+  }
+}
+
 
 aside nav ul {
   list-style: none;
@@ -70,12 +93,6 @@ aside nav a {
 aside nav a:hover {
   background-color: var(--surface-2);
   text-decoration: none;
-}
-
-main {
-  grid-area: content;
-  padding: var(--size-8);
-  background-color: var(--main-bg);
 }
 
 footer {
