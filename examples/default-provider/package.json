@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "next": "14.1.0",
-    "next-video": "^0.15.0",
+    "next-video": "file:../..",
     "open-props": "^1.6.19",
     "react": "^18",
     "react-dom": "^18"

@@ -94,9 +94,7 @@
     "chalk": "^4.1.2",
     "chokidar": "^3.5.3",
     "magicast": "^0.3.0",
-    "sharp": "^0.32.6",
     "symlink-dir": "^5.2.0",
-    "thumbhash": "^0.1.1",
     "undici": "^5.25.4",
     "yargs": "^17.7.2"
   },

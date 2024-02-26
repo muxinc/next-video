@@ -7,7 +7,6 @@ import fs from 'node:fs/promises';
 import chalk from 'chalk';
 import Mux from '@mux/mux-node';
 import { fetch as uFetch } from 'undici';
-import sharp from 'sharp';
 
 import { updateAsset, Asset } from '../../assets.js';
 import log from '../../utils/logger.js';
@@ -67,7 +66,7 @@ async function pollForAssetReady(filePath: string, asset: Asset) {
   if (muxAsset.status === 'ready') {
     let blurDataURL;
     try {
-      blurDataURL = await createThumbHash(`https://image.mux.com/${playbackId}/thumbnail.png?width=100&height=100`);
+      blurDataURL = await createThumbHash(`https://image.mux.com/${playbackId}/thumbnail.webp?width=16&height=16`);
     } catch (e) {
       log.error('Error creating a thumbnail hash.');
     }
@@ -253,14 +252,6 @@ export async function uploadRequestedFile(asset: Asset) {
 export async function createThumbHash(imgUrl: string) {
   const response = await uFetch(imgUrl);
   const buffer = await response.arrayBuffer();
-
-  const { data, info } = await sharp(buffer)
-    .raw().ensureAlpha().toBuffer({ resolveWithObject: true });
-
-  // thumbhash is ESM only so dynamically import it.
-  const { rgbaToThumbHash, thumbHashToDataURL } = await import('thumbhash');
-
-  const hash = rgbaToThumbHash(info.width, info.height, data);
-
-  return thumbHashToDataURL(hash);
+  const base64String = btoa(String.fromCharCode(...new Uint8Array(buffer)));
+  return `data:image/webp;base64,${base64String}`;
 }
