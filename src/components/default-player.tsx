@@ -63,7 +63,12 @@ export const DefaultPlayer = forwardRef<DefaultPlayerRefAttributes | null, Defau
     const showCustomBlur = isCustomPoster && blurDataURL !== asset?.blurDataURL;
 
     if (showGeneratedBlur || showCustomBlur) {
-      imgStyleProps.backgroundImage = `url('${blurDataURL}')`;
+      imgStyleProps.color = 'transparent';
+      imgStyleProps.backgroundSize = 'cover';
+      imgStyleProps.backgroundPosition = 'center';
+      imgStyleProps.backgroundRepeat = 'no-repeat';
+      imgStyleProps.backgroundImage =
+        `url('data:image/svg+xml;charset=utf-8,${svgBlurImage(blurDataURL)}')`;
     }
   }
 
@@ -97,3 +102,8 @@ export const DefaultPlayer = forwardRef<DefaultPlayerRefAttributes | null, Defau
     </Suspense>
   );
 });
+
+function svgBlurImage(blurDataURL: string) {
+  const svg = /*html*/`<svg xmlns="http://www.w3.org/2000/svg"><filter id="b" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="20"/><feComponentTransfer><feFuncA type="discrete" tableValues="1 1"/></feComponentTransfer></filter><g filter="url(#b)"><image width="100%" height="100%" href="${blurDataURL}"/></g></svg>`;
+  return svg.replace(/#/g, '%23');
+}
