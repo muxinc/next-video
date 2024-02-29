@@ -25,25 +25,12 @@ export default function Page() {
 
 ## Setup
 
-### Install the package
+### Automatic Setup
+
+In the root of your Next.js project, run:
 
 ```bash
-cd your-next-app
-
-# If your project is using NPM (the default for Next.js)
-npm install next-video
-
-# If your project is using Yarn
-yarn add next-video
-
-# If your project is using pnpm
-pnpm add next-video
-```
-
-### Run the init wizard
-
-```bash
-npx next-video init
+npx -y next-video init
 ```
 
 This will (with prompting):
@@ -53,7 +40,7 @@ This will (with prompting):
 - if you're using TypeScript, add types for your video file imports
 - create a `/videos` directory in your project which is where you will put all video source files.
 
-It will also add a .gitignore file to the `/videos` directory that ignores video files. Videos, particularly any of reasonable size, shouldn't be stored/tracked by git. Alternatively, if you'd like to store the original files you can remove the added gitignore lines and install [git-lfs](https://git-lfs.github.com/).
+It will also update your `.gitignore` file to ignore video files in the `/videos` directory. Videos, particularly any of reasonable size, shouldn't be stored/tracked by git. Alternatively, if you'd like to store the original files you can remove the added gitignore lines and install [git-lfs](https://git-lfs.github.com/).
 
 ### Remote storage and optimization
 
@@ -72,6 +59,21 @@ MUX_TOKEN_SECRET=[YOUR_TOKEN_SECRET]
 ### OPTIONAL Manual Setup
 
 If you choose to do any of the init steps manually.
+
+#### Install the package
+
+```bash
+cd your-next-app
+
+# If your project is using NPM (the default for Next.js)
+npm install next-video
+
+# If your project is using Yarn
+yarn add next-video
+
+# If your project is using pnpm
+pnpm add next-video
+```
 
 #### Add Next Video to `next.config.js`
 
