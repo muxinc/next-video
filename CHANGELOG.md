@@ -1,3 +1,12 @@
+# [0.16.0](https://github.com/muxinc/next-video/compare/v0.15.0...v0.16.0) (2024-03-07)
+
+
+### Features
+
+* replace thumbhash/sharp w/ tiny base64 webp ([#192](https://github.com/muxinc/next-video/issues/192)) ([e6daa24](https://github.com/muxinc/next-video/commit/e6daa24c9ec8b40082f2a553833b768b952f4ff2))
+
+
+
 # [0.15.0](https://github.com/muxinc/next-video/compare/v0.14.3...v0.15.0) (2024-02-23)
 
 
