@@ -38,8 +38,7 @@ async function handleRequest(url?: string | null) {
   let asset;
   try {
     asset = await getAsset(url);
-  } catch (err) {
-    console.error(err);
+  } catch {
     // todo: does this require auth?
     asset = await createAsset(url);
 
