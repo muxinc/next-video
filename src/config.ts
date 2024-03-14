@@ -72,8 +72,9 @@ export async function getVideoConfig(): Promise<VideoConfigComplete> {
   } catch (err) {
     try {
       nextConfig = await importConfig('next.config.mjs');
-    } catch {
+    } catch (err) {
       console.error('Failed to load next.config.js or next.config.mjs');
+      console.error(err);
     }
   }
 
