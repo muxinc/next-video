@@ -75,6 +75,7 @@
     "@types/react": "^18.2.27",
     "@types/yargs": "^17.0.28",
     "c8": "^8.0.1",
+    "drizzle-kit": "^0.20.14",
     "esbuild": "^0.19.5",
     "glob": "^10.3.10",
     "next": "^13.5.4",
@@ -86,6 +87,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "~3.437.0",
     "@inquirer/prompts": "^3.2.0",
+    "@libsql/client": "^0.5.6",
     "@mux/mux-node": "8.0.0",
     "@mux/mux-player-react": "2.3.3",
     "@next/env": "^13.5.4",
@@ -93,6 +95,7 @@
     "@vercel/blob": "^0.14.1",
     "chalk": "^4.1.2",
     "chokidar": "^3.5.3",
+    "drizzle-orm": "^0.30.2",
     "magicast": "^0.3.0",
     "symlink-dir": "^5.2.0",
     "undici": "^5.25.4",
