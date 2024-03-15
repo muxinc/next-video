@@ -38,7 +38,15 @@ export async function withNextVideo(nextConfig: any, videoConfig?: VideoConfig) 
     });
   }
 
+  const experimental = { ...nextConfig.experimental };
+
+  experimental.outputFileTracingIncludes = {
+    ...experimental.outputFileTracingIncludes,
+    [path]: [`./${folder}/**/*.json`],
+  };
+
   return Object.assign({}, nextConfig, {
+    experimental,
     serverRuntimeConfig: {
       ...nextConfig.serverRuntimeConfig,
       nextVideo: videoConfigComplete,

@@ -49,6 +49,9 @@ export default async function RootLayout({
               <li>
                 <Link href="/slotted-poster">Slotted Poster</Link>
               </li>
+              <li>
+                <Link href="/string-source">String video source</Link>
+              </li>
             </ul>
           </nav>
         </aside>
