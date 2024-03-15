@@ -1,3 +1,12 @@
+## [0.16.1](https://github.com/muxinc/next-video/compare/v0.16.0...v0.16.1) (2024-03-15)
+
+
+### Bug Fixes
+
+* remote string source ([#203](https://github.com/muxinc/next-video/issues/203)) ([4d564ce](https://github.com/muxinc/next-video/commit/4d564ce06d3e6007a9b6305e8a355e00110ca38c)), closes [#201](https://github.com/muxinc/next-video/issues/201)
+
+
+
 # [0.16.0](https://github.com/muxinc/next-video/compare/v0.15.0...v0.16.0) (2024-03-07)
 
 
