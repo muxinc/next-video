@@ -1,3 +1,12 @@
+## [0.16.2](https://github.com/muxinc/next-video/compare/v0.16.1...v0.16.2) (2024-03-18)
+
+
+### Bug Fixes
+
+* support Node 16 get files recursively ([#205](https://github.com/muxinc/next-video/issues/205)) ([b80904d](https://github.com/muxinc/next-video/commit/b80904d9c5edf736e070df24e1d0342f933872ad)), closes [#196](https://github.com/muxinc/next-video/issues/196)
+
+
+
 ## [0.16.1](https://github.com/muxinc/next-video/compare/v0.16.0...v0.16.1) (2024-03-15)
 
 
