@@ -54,17 +54,9 @@ export async function handler(argv: Arguments) {
   const directoryPath = path.join(cwd(), argv.dir as string);
 
   try {
-    const dirents = await readdir(directoryPath, {
-      recursive: true,
-      withFileTypes: true,
-    });
-
     // Filter out directories and get relative file paths.
-    const files = dirents
-      .filter((dirent) => dirent.isFile())
-      .map((dirent) =>
-        path.join(path.relative(directoryPath, dirent.path), dirent.name)
-      );
+    const files = (await getFiles(directoryPath))
+      .map((file) => path.relative(directoryPath, file));
 
     const jsonFiles = files.filter((file) => file.endsWith('.json'));
     const otherFiles = files.filter(
@@ -154,4 +146,14 @@ export async function handler(argv: Arguments) {
 
     log.error('An unknown error occurred', err);
   }
+}
+
+async function getFiles(dir: string): Promise<string[]> {
+  const dirents = await readdir(dir, { withFileTypes: true });
+
+  const files = await Promise.all(dirents.map((dirent) => {
+    const res = path.resolve(dir, dirent.name);
+    return dirent.isDirectory() ? getFiles(res) : res;
+  }));
+  return files.flat();
 }
