@@ -33,7 +33,6 @@ export function createTables(sqliteTable: SQLiteTableFn) {
     blurDataURL: text('blur_data_url'),
     size: integer('size'),
     error: text('error'),
-    externalIds: text('external_ids', {mode: 'json'}),
     createdAt: integer('created_at').default(Date.now()).notNull(),
     updatedAt: integer('updated_at').default(Date.now()).notNull(),
   })
