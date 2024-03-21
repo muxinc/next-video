@@ -6,7 +6,6 @@ export const config = JSON.parse(
     '{}'
 );
 
-const MUX_VIDEO_DOMAIN = 'mux.com';
 const DEFAULT_POLLING_INTERVAL = 5000;
 const FILES_FOLDER = `${config.folder ?? 'videos'}/`;
 

@@ -68,7 +68,6 @@ const NextVideo = forwardRef((props: VideoProps, forwardedRef) => {
       <style>{
         /* css */`
         .next-video-container {
-          display: grid;
           position: relative;
           width: 100%;
           aspect-ratio: 16 / 9;

@@ -89,19 +89,18 @@ export const BackgroundPlayer = forwardRef((allProps: BackgroundPlayerProps, for
         .next-video-bg {
           aspect-ratio: initial;
           height: 100%;
-          place-items: center;
         }
 
         .next-video-bg-poster,
-        .next-video-bg-text,
-        .next-video-bg [data-next-video] {
-          position: relative;
-          grid-area: 1 / 1;
+        .next-video-bg-text {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
         }
 
         .next-video-bg-poster {
-          width: 100%;
-          height: 100%;
           object-fit: cover;
           pointer-events: none;
         }
@@ -115,6 +114,8 @@ export const BackgroundPlayer = forwardRef((allProps: BackgroundPlayerProps, for
         }
 
         .next-video-bg-text {
+          display: grid;
+          place-content: center;
           padding: 5% 5% 10%;
         }
         `
