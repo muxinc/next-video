@@ -1,19 +1,19 @@
 'use client';
 
-import React, { forwardRef, useState } from 'react';
-import { DefaultPlayer } from './default-player.js';
+import { forwardRef, useState } from 'react';
+import { DefaultPlayer } from './players/default-player.js';
 import { Alert } from './alert.js';
 import { createVideoRequest, defaultLoader } from './video-loader.js';
 import { config, camelCase, toSymlinkPath, usePolling, isReactComponent, getUrlExtension } from './utils.js';
 import * as transformers from '../providers/transformers.js';
 
-import type { DefaultPlayerRefAttributes, DefaultPlayerProps } from './default-player.js';
+import type { DefaultPlayerProps } from './players/default-player.js';
 import type { Asset } from '../assets.js';
 import type { VideoLoaderProps, VideoProps, VideoPropsInternal } from './types.js';
 
 const DEV_MODE = process.env.NODE_ENV === 'development';
 
-const NextVideo = forwardRef<DefaultPlayerRefAttributes | null, VideoProps>((props: VideoProps, forwardedRef) => {
+const NextVideo = forwardRef((props: VideoProps, forwardedRef) => {
   let {
     as: VideoPlayer = DefaultPlayer,
     loader = defaultLoader,
@@ -68,6 +68,7 @@ const NextVideo = forwardRef<DefaultPlayerRefAttributes | null, VideoProps>((pro
       <style>{
         /* css */`
         .next-video-container {
+          display: grid;
           position: relative;
           width: 100%;
           aspect-ratio: 16 / 9;

@@ -1,6 +1,6 @@
 import type { VideoConfig } from '../config.js';
 import type { FunctionComponent } from 'react';
-import type { DefaultPlayerProps } from './default-player.js';
+import type { DefaultPlayerProps } from './players/default-player.js';
 import type { Asset } from '../assets.js';
 import { StaticImageData } from 'next/image.js';
 

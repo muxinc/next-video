@@ -11,7 +11,7 @@ type PosterProps = {
   customDomain?: string;
   thumbnailTime?: number;
   token?: string;
-  width?: number;
+  width?: number | string;
 }
 
 const MUX_VIDEO_DOMAIN = 'mux.com';
