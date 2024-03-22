@@ -10,7 +10,9 @@ export default function Page() {
   return (
     <>
       <main>
-        <Video src={getStarted} style={{ maxWidth: 800 }} />
+        <Video src={getStarted} style={{ maxWidth: 800 }}>
+          <track kind="captions" src="/get-started.vtt" srcLang="en" label="English" default />
+        </Video>
       </main>
     </>
   );
