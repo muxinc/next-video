@@ -314,7 +314,7 @@ Supported providers with their required environment variables:
 | Adapt to slow networks (HLS) | ✅            | -           | -         | -         |
 | Automatic placeholder poster | ✅            | -           | -         | -         |
 | Timeline hover thumbnails    | ✅            | -           | -         | -         |
-| Stream any soure format      | ✅            | *           | *         | *         |
+| Stream any source format     | ✅            | *           | *         | *         |
 | AI captions & subtitles      | ✅            | -           | -         | -         |
 | Video analytics              | ✅            | -           | -         | -         |
 | Pricing                      | Minutes-based | GB-based    | GB-based  | GB-based  |
