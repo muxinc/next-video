@@ -1,3 +1,16 @@
+// Escape hatch for video files in a custom folder with URL params.
+declare module '*&next-video' {
+  const content: import('../dist/assets').Asset;
+
+  export default content;
+}
+
+declare module '/videos/*' {
+  const content: import('../dist/assets').Asset;
+
+  export default content;
+}
+
 declare module '*.mp4' {
   const content: import('../dist/assets').Asset;
 

@@ -101,7 +101,7 @@ export interface VideoPropsInternal extends VideoProps {
   /**
    * A custom function to transform the asset object (src and poster).
    */
-  transform: (asset: Asset) => Asset;
+  transform: (asset: Asset, props?: Record<string, any>) => Asset;
 }
 
 export interface PlayerProps {

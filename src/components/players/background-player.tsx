@@ -21,7 +21,6 @@ export const BackgroundPlayer = forwardRef((allProps: BackgroundPlayerProps, for
     blurDataURL,
     onPlaying,
     onLoadStart,
-    thumbnailTime,
     ...rest
   } = allProps;
 
@@ -35,7 +34,7 @@ export const BackgroundPlayer = forwardRef((allProps: BackgroundPlayerProps, for
     blurDataURL = undefined;
   }
 
-  const props = rest as MuxVideoProps;
+  const props = rest as MuxVideoProps & { thumbnailTime?: number };
   const imgStyleProps: React.CSSProperties = {};
   const playbackId = asset ? getPlaybackId(asset) : undefined;
 
@@ -52,12 +51,12 @@ export const BackgroundPlayer = forwardRef((allProps: BackgroundPlayerProps, for
       if (!isCustomPoster) {
         // If it's not a custom poster URL, optimize with a srcset.
         srcSet =
-          `${getPosterURLFromPlaybackId(playbackId, { ...props, thumbnailTime, width: 480 })} 480w,` +
-          `${getPosterURLFromPlaybackId(playbackId, { ...props, thumbnailTime, width: 640 })} 640w,` +
-          `${getPosterURLFromPlaybackId(playbackId, { ...props, thumbnailTime, width: 960 })} 960w,` +
-          `${getPosterURLFromPlaybackId(playbackId, { ...props, thumbnailTime, width: 1280 })} 1280w,` +
-          `${getPosterURLFromPlaybackId(playbackId, { ...props, thumbnailTime, width: 1600 })} 1600w,` +
-          `${getPosterURLFromPlaybackId(playbackId, { ...props, thumbnailTime })} 1920w`;
+          `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 480 })} 480w,` +
+          `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 640 })} 640w,` +
+          `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 960 })} 960w,` +
+          `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 1280 })} 1280w,` +
+          `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 1600 })} 1600w,` +
+          `${getPosterURLFromPlaybackId(playbackId, { ...props })} 1920w`;
       }
     }
   }
@@ -75,10 +74,8 @@ export const BackgroundPlayer = forwardRef((allProps: BackgroundPlayerProps, for
     }
   }
 
-  let videoPoster;
-  if (poster) {
-    videoPoster = '';
-  }
+  // Remove props that are not supported by MuxVideo.
+  delete props.thumbnailTime
 
   const [posterHidden, setPosterHidden] = useState(false);
 
@@ -123,7 +120,6 @@ export const BackgroundPlayer = forwardRef((allProps: BackgroundPlayerProps, for
       <MuxVideo
         ref={forwardedRef}
         style={{ ...style }}
-        poster={videoPoster}
         onPlaying={(event) => {
           onPlaying?.(event as any);
           setPosterHidden(true);

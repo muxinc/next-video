@@ -34,6 +34,10 @@ export interface Asset {
   externalIds?: {
     [key: string]: string; // { uploadId, playbackId, assetId }
   };
+
+  // Allow any other properties to be added to the asset so properties like
+  // `thumbnailTime` can be added to the asset after the client-side transform.
+  [x: string]: unknown;
 }
 
 export interface AssetSource {

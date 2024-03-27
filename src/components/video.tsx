@@ -144,11 +144,12 @@ export function getVideoProps(allProps: VideoPropsInternal, state: { asset?: Ass
     if (asset.status === 'ready') {
       props.blurDataURL ??= asset.blurDataURL;
 
-      const transformedAsset = transform(asset);
+      const transformedAsset = transform(asset, props);
       if (transformedAsset) {
         // src can't be overridden by the user.
         props.src = transformedAsset.sources?.[0]?.src;
         props.poster ??= transformedAsset.poster;
+        props.thumbnailTime ??= transformedAsset.thumbnailTime as number;
       }
     } else {
       props.src = toSymlinkPath(asset.originalFilePath);
@@ -158,11 +159,11 @@ export function getVideoProps(allProps: VideoPropsInternal, state: { asset?: Ass
   return props;
 }
 
-function defaultTransformer(asset: Asset) {
+function defaultTransformer(asset: Asset, props: Record<string, any>) {
   const provider = asset.provider ?? config.provider;
   for (let [key, transformer] of Object.entries(transformers)) {
     if (key === camelCase(provider)) {
-      return transformer.transform(asset);
+      return transformer.transform(asset, props);
     }
   }
 }

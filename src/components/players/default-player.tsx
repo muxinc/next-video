@@ -54,7 +54,7 @@ export const DefaultPlayer = forwardRef((allProps: DefaultPlayerProps, forwarded
           `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 960 })} 960w,` +
           `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 1280 })} 1280w,` +
           `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 1600 })} 1600w,` +
-          `${poster} 1920w`;
+          `${getPosterURLFromPlaybackId(playbackId, { ...props, })} 1920w`;
       }
     }
   }
