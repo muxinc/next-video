@@ -47,4 +47,41 @@ describe('withNextVideo', () => {
 
     assert(typeof result.webpack === 'function');
   });
+
+  it('should handle videoConfig being passed', async () => {
+    const nextConfig = {};
+
+    const result = await withNextVideo(nextConfig, {
+      path: '/api/video-files',
+      folder: 'video-files',
+      provider: 'vercel-blob',
+    });
+
+    assert.deepEqual(result.serverRuntimeConfig.nextVideo, {
+      path: '/api/video-files',
+      folder: 'video-files',
+      provider: 'vercel-blob',
+      providerConfig: {},
+    });
+  });
+
+  it('should change the webpack config', async () => {
+    const nextConfig = {};
+    const result = await withNextVideo(nextConfig);
+    const config = {
+      externals: [],
+      experiments: {},
+      module: {
+        rules: [],
+      },
+    };
+    const options = {
+      defaultLoaders: true,
+    };
+    const webpackConfig = result.webpack(config, options);
+
+    assert.equal(webpackConfig.externals[0].sharp, 'commonjs sharp');
+    assert.equal(webpackConfig.module.rules.length, 2);
+    assert.deepEqual(webpackConfig.infrastructureLogging, { level: 'error' });
+  });
 });
