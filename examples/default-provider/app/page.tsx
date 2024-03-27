@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import Video from 'next-video';
-import getStarted from '/videos/get-started.mp4';
+import getStarted from '/videos/get-started.mp4?thumbnailTime=35';
 
 export const metadata: Metadata = {
   title: 'next-video - Basic example',

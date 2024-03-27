@@ -4,15 +4,15 @@ type Props = {
   customDomain?: string;
   thumbnailTime?: number;
   startTime?: number;
-  tokens?: { thumbnail?: string }
+  tokens?: { thumbnail?: string };
 };
 
 type PosterProps = {
   customDomain?: string;
   thumbnailTime?: number;
   token?: string;
-  width?: number;
-}
+  width?: number | string;
+};
 
 const MUX_VIDEO_DOMAIN = 'mux.com';
 
@@ -20,19 +20,26 @@ export function transform(asset: Asset, props?: Props) {
   const playbackId = getPlaybackId(asset);
   if (!playbackId) return asset;
 
-  return {
+  const thumbnailTime =
+    asset.providerMetadata?.mux?.thumbnailTime ?? props?.thumbnailTime ?? props?.startTime;
+
+  const transformedAsset: Asset = {
     ...asset,
 
-    sources: [
-      { src: `https://stream.mux.com/${playbackId}.m3u8`, type: 'application/x-mpegURL' }
-    ],
+    sources: [{ src: `https://stream.mux.com/${playbackId}.m3u8`, type: 'application/x-mpegURL' }],
 
     poster: getPosterURLFromPlaybackId(playbackId, {
+      thumbnailTime,
       customDomain: props?.customDomain,
-      thumbnailTime: props?.thumbnailTime ?? props?.startTime,
       token: props?.tokens?.thumbnail,
-    })
+    }),
   };
+
+  if (thumbnailTime >= 0) {
+    transformedAsset.thumbnailTime = thumbnailTime;
+  }
+
+  return transformedAsset;
 }
 
 export function getPlaybackId(asset: Asset): string | undefined {

@@ -1,19 +1,19 @@
 'use client';
 
-import React, { forwardRef, useState } from 'react';
-import { DefaultPlayer } from './default-player.js';
+import { forwardRef, useState } from 'react';
+import { DefaultPlayer } from './players/default-player.js';
 import { Alert } from './alert.js';
 import { createVideoRequest, defaultLoader } from './video-loader.js';
 import { config, camelCase, toSymlinkPath, usePolling, isReactComponent, getUrlExtension } from './utils.js';
 import * as transformers from '../providers/transformers.js';
 
-import type { DefaultPlayerRefAttributes, DefaultPlayerProps } from './default-player.js';
+import type { DefaultPlayerProps } from './players/default-player.js';
 import type { Asset } from '../assets.js';
 import type { VideoLoaderProps, VideoProps, VideoPropsInternal } from './types.js';
 
 const DEV_MODE = process.env.NODE_ENV === 'development';
 
-const NextVideo = forwardRef<DefaultPlayerRefAttributes | null, VideoProps>((props: VideoProps, forwardedRef) => {
+const NextVideo = forwardRef((props: VideoProps, forwardedRef) => {
   let {
     as: VideoPlayer = DefaultPlayer,
     loader = defaultLoader,
@@ -144,11 +144,12 @@ export function getVideoProps(allProps: VideoPropsInternal, state: { asset?: Ass
     if (asset.status === 'ready') {
       props.blurDataURL ??= asset.blurDataURL;
 
-      const transformedAsset = transform(asset);
+      const transformedAsset = transform(asset, props);
       if (transformedAsset) {
         // src can't be overridden by the user.
         props.src = transformedAsset.sources?.[0]?.src;
         props.poster ??= transformedAsset.poster;
+        props.thumbnailTime ??= transformedAsset.thumbnailTime as number;
       }
     } else {
       props.src = toSymlinkPath(asset.originalFilePath);
@@ -158,11 +159,11 @@ export function getVideoProps(allProps: VideoPropsInternal, state: { asset?: Ass
   return props;
 }
 
-function defaultTransformer(asset: Asset) {
+function defaultTransformer(asset: Asset, props: Record<string, any>) {
   const provider = asset.provider ?? config.provider;
   for (let [key, transformer] of Object.entries(transformers)) {
     if (key === camelCase(provider)) {
-      return transformer.transform(asset);
+      return transformer.transform(asset, props);
     }
   }
 }

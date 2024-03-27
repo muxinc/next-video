@@ -1,8 +1,9 @@
 import { forwardRef, Suspense, lazy, Children, isValidElement } from 'react';
-import { getPlaybackId, getPosterURLFromPlaybackId } from '../providers/mux/transformer.js';
+import { getPlaybackId, getPosterURLFromPlaybackId } from '../../providers/mux/transformer.js';
+import { svgBlurImage } from '../utils.js';
 
 import type { MuxPlayerProps, MuxPlayerRefAttributes } from '@mux/mux-player-react';
-import type { PlayerProps } from './types.js';
+import type { PlayerProps } from '../types.js';
 
 const MuxPlayer = lazy(() => import('@mux/mux-player-react'));
 
@@ -10,7 +11,7 @@ export type DefaultPlayerRefAttributes = MuxPlayerRefAttributes;
 
 export type DefaultPlayerProps = Omit<MuxPlayerProps, 'src'> & PlayerProps;
 
-export const DefaultPlayer = forwardRef<DefaultPlayerRefAttributes | null, DefaultPlayerProps>((allProps: DefaultPlayerProps, forwardedRef) => {
+export const DefaultPlayer = forwardRef((allProps: DefaultPlayerProps, forwardedRef: any) => {
   let {
     style,
     children,
@@ -53,7 +54,7 @@ export const DefaultPlayer = forwardRef<DefaultPlayerRefAttributes | null, Defau
           `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 960 })} 960w,` +
           `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 1280 })} 1280w,` +
           `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 1600 })} 1600w,` +
-          `${poster} 1920w`;
+          `${getPosterURLFromPlaybackId(playbackId, { ...props, })} 1920w`;
       }
     }
   }
@@ -81,6 +82,7 @@ export const DefaultPlayer = forwardRef<DefaultPlayerRefAttributes | null, Defau
         src={isCustomPoster ? poster : undefined}
         srcSet={srcSet}
         style={imgStyleProps}
+        decoding="async"
         aria-hidden="true"
       />
     </>
@@ -102,8 +104,3 @@ export const DefaultPlayer = forwardRef<DefaultPlayerRefAttributes | null, Defau
     </Suspense>
   );
 });
-
-function svgBlurImage(blurDataURL: string) {
-  const svg = /*html*/`<svg xmlns="http://www.w3.org/2000/svg"><filter id="b" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="20"/><feComponentTransfer><feFuncA type="discrete" tableValues="1 1"/></feComponentTransfer></filter><g filter="url(#b)"><image width="100%" height="100%" href="${blurDataURL}"/></g></svg>`;
-  return svg.replace(/#/g, '%23');
-}
