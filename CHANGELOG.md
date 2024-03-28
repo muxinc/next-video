@@ -1,3 +1,17 @@
+# [0.17.0](https://github.com/muxinc/next-video/compare/v0.16.2...v0.17.0) (2024-03-28)
+
+
+### Bug Fixes
+
+* add more test coverage + fix customDomain ([#213](https://github.com/muxinc/next-video/issues/213)) ([c3e7aa1](https://github.com/muxinc/next-video/commit/c3e7aa13f228f8fee861e0909f7e5dabee5c440e))
+
+
+### Features
+
+* add BackgroundVideo component ([#207](https://github.com/muxinc/next-video/issues/207)) ([cda7c06](https://github.com/muxinc/next-video/commit/cda7c06608beeec42d860404ad43690ce6c46cc9))
+
+
+
 ## [0.16.2](https://github.com/muxinc/next-video/compare/v0.16.1...v0.16.2) (2024-03-18)
 
 
