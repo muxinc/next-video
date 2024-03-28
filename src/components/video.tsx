@@ -11,9 +11,10 @@ import type { DefaultPlayerProps } from './players/default-player.js';
 import type { Asset } from '../assets.js';
 import type { VideoLoaderProps, VideoProps, VideoPropsInternal } from './types.js';
 
-const DEV_MODE = process.env.NODE_ENV === 'development';
-
 const NextVideo = forwardRef((props: VideoProps, forwardedRef) => {
+  // Keep in component so we can emulate the DEV_MODE.
+  const DEV_MODE = process.env.NODE_ENV === 'development';
+
   let {
     as: VideoPlayer = DefaultPlayer,
     loader = defaultLoader,

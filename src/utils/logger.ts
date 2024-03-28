@@ -1,3 +1,4 @@
+/* c8 ignore start */
 import chalk from 'chalk';
 
 type logType = 'log' | 'error';
@@ -47,3 +48,4 @@ export default {
   space,
   label,
 };
+/* c8 ignore stop */

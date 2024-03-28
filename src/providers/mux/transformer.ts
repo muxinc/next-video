@@ -26,7 +26,10 @@ export function transform(asset: Asset, props?: Props) {
   const transformedAsset: Asset = {
     ...asset,
 
-    sources: [{ src: `https://stream.mux.com/${playbackId}.m3u8`, type: 'application/x-mpegURL' }],
+    sources: [{
+      src: `https://stream.${props?.customDomain ?? MUX_VIDEO_DOMAIN}/${playbackId}.m3u8`,
+      type: 'application/x-mpegURL'
+    }],
 
     poster: getPosterURLFromPlaybackId(playbackId, {
       thumbnailTime,
