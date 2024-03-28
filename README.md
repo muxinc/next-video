@@ -16,10 +16,10 @@ Next video is a react component for adding video to your [next.js](https://githu
 
 ```tsx
 import Video from 'next-video';
-import myVideo from '/videos/my-video.mp4';
+import getStarted from '/videos/get-started.mp4';
 
 export default function Page() {
-  return <Video src={myVideo} />;
+  return <Video src={getStarted} />;
 }
 ```
 
@@ -56,9 +56,10 @@ MUX_TOKEN_ID=[YOUR_TOKEN_ID]
 MUX_TOKEN_SECRET=[YOUR_TOKEN_SECRET]
 ```
 
-### OPTIONAL Manual Setup
+### Manual Setup
 
-If you choose to do any of the init steps manually.
+<details>
+<summary><strong>Click to see the manual init steps.</strong></summary>
 
 #### Install the package
 
@@ -104,10 +105,11 @@ Then add that file to the `include` array in `tsconfig.json`.
   // ...
 }
 ```
+</details>
 
 ## Usage
 
-### Local videos
+### Local videos ([Demo](https://next-video-demo.vercel.app/))
 
 Add videos locally to the `/videos` directory then run `npx next-video sync`. The videos will be automatically uploaded to remote storage and optimized. You'll notice `/videos/[file-name].json` files are also created. These are used to map your local video files to the new, remote-hosted video assets. These json files must be checked into git.
 
@@ -119,9 +121,9 @@ You can also add `next-video sync -w` to the dev script to automatically sync vi
 
 ```js
 // package.json
-  "scripts": {
-    "dev": "next dev & npx next-video sync -w",
-  },
+"scripts": {
+  "dev": "next dev & npx next-video sync -w",
+},
 ```
 
 Now you can use the `<Video>` component in your application. Let's say you've added a file called `awesome-video.mp4` to `/videos`
@@ -153,7 +155,8 @@ export default function Page() {
 
 If the hosted video is a single file like an MP4, the file will be automatically optimized for better deliverability and compatibility.
 
-#### Alternative
+<details>
+<summary><strong>Remote videos with string source URL</strong></summary>
 
 In some cases you might not have the remote video URL's available at the time of import.
 
@@ -182,6 +185,7 @@ export default function Page() {
   return <Video src="https://www.mydomain.com/remote-video.mp4" />;
 }
 ```
+</details>
 
 ### Custom poster and blurDataURL
 
@@ -207,7 +211,7 @@ as the automatic poster and blurDataURL by the default provider.
 To get the same level of optimization you can use a slotted poster element.
 
 
-### Slotted poster image element
+### Slotted poster image element ([Demo](https://next-video-demo.vercel.app/slotted-poster))
 
 Add a slotted poster image element 
 (like [`next/image`](https://nextjs.org/docs/app/api-reference/components/image)) 
@@ -270,6 +274,37 @@ export function ReactPlayerAsVideo(props) {
 }
 ```
 
+### Background Video ([Demo](https://next-video-demo.vercel.app/background-video))
+
+You can use a `<BackgroundVideo>` component to add a video as a background with
+no player controls. This saves about 50% of the JS player size and is optimized 
+for background video usage.
+
+The `<BackgroundVideo>` component is a custom player like you saw in the previous section.
+
+The `thumbnailTime` query parameter in the example below is used to generate
+a poster image and blur up image at the specified time in the video
+(limited to usage with the `mux` provider).
+
+```tsx
+import BackgroundVideo from 'next-video/background-video';
+import getStarted from '/videos/country-clouds.mp4?thumbnailTime=0';
+
+export default function Page() {
+  return (
+    <BackgroundVideo src={getStarted}>
+      <h1>next-video</h1>
+      <p>
+        A React component for adding video to your Next.js application.
+        It extends both the video element and your Next app with features
+        for automatic video optimization.
+      </p>
+    </BackgroundVideo>
+  );
+}
+```
+
+
 ### Hosting & Processing Providers
 
 You can choose between different providers for video processing and hosting.
@@ -300,7 +335,6 @@ Supported providers with their required environment variables:
 | [`vercel-blob`](https://vercel.com/docs/storage/vercel-blob) | `BLOB_READ_WRITE_TOKEN`                                     |                                    | [Pricing](https://vercel.com/docs/storage/vercel-blob/usage-and-pricing) |
 | [`backblaze`](https://www.backblaze.com/cloud-storage)       | `BACKBLAZE_ACCESS_KEY_ID`<br/>`BACKBLAZE_SECRET_ACCESS_KEY` | `endpoint`<br/>`bucket` (optional) | [Pricing](https://www.backblaze.com/cloud-storage/pricing)               |
 | [`amazon-s3`](https://aws.amazon.com/s3)                     | `AWS_ACCESS_KEY_ID`<br/>`AWS_SECRET_ACCESS_KEY`             | `endpoint`<br/>`bucket` (optional) | [Pricing](https://aws.amazon.com/s3/pricing/)                            |
-| More coming...                                               |                                                             |                                    |                                                                          |
 
 
 #### Provider feature set
@@ -321,9 +355,11 @@ Supported providers with their required environment variables:
 
 *Web-compatible MP4 files required for hosting providers without video processing
 
+
 ## Required Permissions for Amazon S3
 
-If you're using Amazon S3 as the provider, you'll need to create a new IAM user with the following permissions:
+<details>
+<summary>If you're using Amazon S3 as the provider, you'll need to create a new IAM user with the following permissions:</summary>
 
 ```json
 {
@@ -354,6 +390,7 @@ If you're using Amazon S3 as the provider, you'll need to create a new IAM user 
   ]
 }
 ```
+</details>
 
 ## Roadmap
 
