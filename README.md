@@ -56,9 +56,10 @@ MUX_TOKEN_ID=[YOUR_TOKEN_ID]
 MUX_TOKEN_SECRET=[YOUR_TOKEN_SECRET]
 ```
 
-### OPTIONAL Manual Setup
+### Manual Setup
 
-If you choose to do any of the init steps manually.
+<details>
+<summary><strong>Click to see the manual init steps.</strong></summary>
 
 #### Install the package
 
@@ -104,6 +105,7 @@ Then add that file to the `include` array in `tsconfig.json`.
   // ...
 }
 ```
+</details>
 
 ## Usage
 
@@ -119,9 +121,9 @@ You can also add `next-video sync -w` to the dev script to automatically sync vi
 
 ```js
 // package.json
-  "scripts": {
-    "dev": "next dev & npx next-video sync -w",
-  },
+"scripts": {
+  "dev": "next dev & npx next-video sync -w",
+},
 ```
 
 Now you can use the `<Video>` component in your application. Let's say you've added a file called `awesome-video.mp4` to `/videos`
@@ -153,7 +155,8 @@ export default function Page() {
 
 If the hosted video is a single file like an MP4, the file will be automatically optimized for better deliverability and compatibility.
 
-#### Alternative
+<details>
+<summary><strong>Remote videos with string source URL</strong></summary>
 
 In some cases you might not have the remote video URL's available at the time of import.
 
@@ -182,6 +185,7 @@ export default function Page() {
   return <Video src="https://www.mydomain.com/remote-video.mp4" />;
 }
 ```
+</details>
 
 ### Custom poster and blurDataURL
 
@@ -321,9 +325,11 @@ Supported providers with their required environment variables:
 
 *Web-compatible MP4 files required for hosting providers without video processing
 
+
 ## Required Permissions for Amazon S3
 
-If you're using Amazon S3 as the provider, you'll need to create a new IAM user with the following permissions:
+<details>
+<summary>If you're using Amazon S3 as the provider, you'll need to create a new IAM user with the following permissions:</summary>
 
 ```json
 {
@@ -354,6 +360,7 @@ If you're using Amazon S3 as the provider, you'll need to create a new IAM user 
   ]
 }
 ```
+</details>
 
 ## Roadmap
 
