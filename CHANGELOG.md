@@ -1,3 +1,12 @@
+## [0.17.1](https://github.com/muxinc/next-video/compare/v0.17.0...v0.17.1) (2024-03-29)
+
+
+### Bug Fixes
+
+* upgrade mux elements & other libs ([#214](https://github.com/muxinc/next-video/issues/214)) ([299894e](https://github.com/muxinc/next-video/commit/299894e1a0ed6c31603065578a1333fa447dde56))
+
+
+
 # [0.17.0](https://github.com/muxinc/next-video/compare/v0.16.2...v0.17.0) (2024-03-28)
 
 
