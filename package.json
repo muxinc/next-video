@@ -86,11 +86,11 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "~3.437.0",
+    "@aws-sdk/client-s3": "~3.540.0",
     "@inquirer/prompts": "^3.2.0",
     "@mux/mux-node": "8.2.3",
-    "@mux/mux-player-react": "2.4.0",
-    "@mux/mux-video-react": "^0.8.4",
+    "@mux/mux-player-react": "2.4.1",
+    "@mux/mux-video-react": "^0.8.5",
     "@next/env": "^14.1.4",
     "@paralleldrive/cuid2": "^2.2.2",
     "@vercel/blob": "^0.22.1",
