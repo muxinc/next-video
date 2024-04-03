@@ -1,3 +1,13 @@
+## [0.17.2](https://github.com/muxinc/next-video/compare/v0.17.1...v0.17.2) (2024-04-03)
+
+
+### Bug Fixes
+
+* jose vulnerability ([#217](https://github.com/muxinc/next-video/issues/217)) ([07da878](https://github.com/muxinc/next-video/commit/07da87824b6826e8e0ac5b73331b55ceae74e0a0))
+* upgrade aws-sdk, Mux elements ([#221](https://github.com/muxinc/next-video/issues/221)) ([1edff74](https://github.com/muxinc/next-video/commit/1edff747ade8e9c1729550acca1cea03398cb5e2))
+
+
+
 ## [0.17.1](https://github.com/muxinc/next-video/compare/v0.17.0...v0.17.1) (2024-03-29)
 
 
