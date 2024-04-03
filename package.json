@@ -98,7 +98,7 @@
     "chokidar": "^3.6.0",
     "magicast": "^0.3.3",
     "symlink-dir": "^5.2.1",
-    "undici": "^6.11.1",
+    "undici": "^5.28.4",
     "yargs": "^17.7.2"
   },
   "prettier": {
