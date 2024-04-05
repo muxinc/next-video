@@ -1,3 +1,12 @@
+## [0.17.3](https://github.com/muxinc/next-video/compare/v0.17.2...v0.17.3) (2024-04-05)
+
+
+### Bug Fixes
+
+* ESM only import issue chalk v5, use v4 ([#225](https://github.com/muxinc/next-video/issues/225)) ([5abe73a](https://github.com/muxinc/next-video/commit/5abe73ab4da689c810b2473b90f700324228abe5))
+
+
+
 ## [0.17.2](https://github.com/muxinc/next-video/compare/v0.17.1...v0.17.2) (2024-04-03)
 
 
