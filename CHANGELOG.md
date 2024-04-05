@@ -1,3 +1,54 @@
+## [0.17.2](https://github.com/muxinc/next-video/compare/v0.17.1...v0.17.2) (2024-04-03)
+
+
+### Bug Fixes
+
+* jose vulnerability ([#217](https://github.com/muxinc/next-video/issues/217)) ([07da878](https://github.com/muxinc/next-video/commit/07da87824b6826e8e0ac5b73331b55ceae74e0a0))
+* upgrade aws-sdk, Mux elements ([#221](https://github.com/muxinc/next-video/issues/221)) ([1edff74](https://github.com/muxinc/next-video/commit/1edff747ade8e9c1729550acca1cea03398cb5e2))
+
+
+
+## [0.17.1](https://github.com/muxinc/next-video/compare/v0.17.0...v0.17.1) (2024-03-29)
+
+
+### Bug Fixes
+
+* upgrade mux elements & other libs ([#214](https://github.com/muxinc/next-video/issues/214)) ([299894e](https://github.com/muxinc/next-video/commit/299894e1a0ed6c31603065578a1333fa447dde56))
+
+
+
+# [0.17.0](https://github.com/muxinc/next-video/compare/v0.16.2...v0.17.0) (2024-03-28)
+
+
+### Bug Fixes
+
+* add more test coverage + fix customDomain ([#213](https://github.com/muxinc/next-video/issues/213)) ([c3e7aa1](https://github.com/muxinc/next-video/commit/c3e7aa13f228f8fee861e0909f7e5dabee5c440e))
+
+
+### Features
+
+* add BackgroundVideo component ([#207](https://github.com/muxinc/next-video/issues/207)) ([cda7c06](https://github.com/muxinc/next-video/commit/cda7c06608beeec42d860404ad43690ce6c46cc9))
+
+
+
+## [0.16.2](https://github.com/muxinc/next-video/compare/v0.16.1...v0.16.2) (2024-03-18)
+
+
+### Bug Fixes
+
+* support Node 16 get files recursively ([#205](https://github.com/muxinc/next-video/issues/205)) ([b80904d](https://github.com/muxinc/next-video/commit/b80904d9c5edf736e070df24e1d0342f933872ad)), closes [#196](https://github.com/muxinc/next-video/issues/196)
+
+
+
+## [0.16.1](https://github.com/muxinc/next-video/compare/v0.16.0...v0.16.1) (2024-03-15)
+
+
+### Bug Fixes
+
+* remote string source ([#203](https://github.com/muxinc/next-video/issues/203)) ([4d564ce](https://github.com/muxinc/next-video/commit/4d564ce06d3e6007a9b6305e8a355e00110ca38c)), closes [#201](https://github.com/muxinc/next-video/issues/201)
+
+
+
 # [0.16.0](https://github.com/muxinc/next-video/compare/v0.15.0...v0.16.0) (2024-03-07)
 
 

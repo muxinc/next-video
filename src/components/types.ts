@@ -1,6 +1,6 @@
 import type { VideoConfig } from '../config.js';
 import type { FunctionComponent } from 'react';
-import type { DefaultPlayerProps } from './default-player.js';
+import type { DefaultPlayerProps } from './players/default-player.js';
 import type { Asset } from '../assets.js';
 import { StaticImageData } from 'next/image.js';
 
@@ -101,7 +101,7 @@ export interface VideoPropsInternal extends VideoProps {
   /**
    * A custom function to transform the asset object (src and poster).
    */
-  transform: (asset: Asset) => Asset;
+  transform: (asset: Asset, props?: Record<string, any>) => Asset;
 }
 
 export interface PlayerProps {

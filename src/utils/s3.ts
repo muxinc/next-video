@@ -1,3 +1,4 @@
+/* c8 ignore start */
 import {
   S3Client,
   PutBucketCorsCommand,
@@ -62,3 +63,4 @@ export function putBucketCors(s3: S3Client, bucketName: string) {
     },
   }));
 }
+/* c8 ignore stop */

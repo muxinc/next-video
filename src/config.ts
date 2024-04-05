@@ -1,6 +1,9 @@
 import { env, cwd } from 'node:process';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import nextConfig from 'next/config.js'
+// @ts-ignore
+const getConfig = nextConfig.default;
 
 /**
  * Video configurations
@@ -65,15 +68,17 @@ export const videoConfigDefault: VideoConfigComplete = {
  * The video config is then stored as an environment variable __NEXT_VIDEO_OPTS.
  */
 export async function getVideoConfig(): Promise<VideoConfigComplete> {
-  let nextConfig;
+  let nextConfig = getConfig();
 
-  try {
-    nextConfig = await importConfig('next.config.js');
-  } catch (err) {
+  if (!nextConfig?.serverRuntimeConfig?.nextVideo) {
     try {
-      nextConfig = await importConfig('next.config.mjs');
-    } catch {
-      console.error('Failed to load next.config.js or next.config.mjs');
+      nextConfig = await importConfig('next.config.js');
+    } catch (err) {
+      try {
+        nextConfig = await importConfig('next.config.mjs');
+      } catch {
+        console.error('Failed to load next-video config.');
+      }
     }
   }
 

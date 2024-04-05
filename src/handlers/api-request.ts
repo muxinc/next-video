@@ -1,3 +1,4 @@
+/* c8 ignore start */
 import * as providers from '../providers/providers.js';
 import { camelCase } from '../utils/utils.js';
 import type { Asset } from '../assets.js';
@@ -10,3 +11,4 @@ export async function uploadRequestedFile(asset: Asset, config: HandlerConfig) {
     }
   }
 }
+/* c8 ignore stop */
