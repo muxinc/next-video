@@ -51,7 +51,10 @@ test('renders mux-player with string source', async () => {
 
   let count = 0;
 
-  mock.method(global, 'fetch', async () => {
+  const globalFetch = global.fetch;
+
+  // @ts-ignore
+  global.fetch = () => {
     return {
       ok: true,
       status: 200,
@@ -77,7 +80,7 @@ test('renders mux-player with string source', async () => {
         };
       }
     };
-  });
+  };
 
   const wrapper = create(<Video src="https://storage.googleapis.com/muxdemofiles/mux.mp4" />);
 
@@ -92,5 +95,5 @@ test('renders mux-player with string source', async () => {
     'https://stream.mux.com/jxEf6XiJs6JY017pSzpv8Hd6tTbdAOecHTq4FiFAn564.m3u8'
   );
 
-  mock.reset();
+  global.fetch = globalFetch;
 });
