@@ -1,3 +1,7 @@
+# [1.0.0](https://github.com/muxinc/next-video/compare/v0.17.3...v1.0.0) (2024-04-10)
+
+
+
 ## [0.17.3](https://github.com/muxinc/next-video/compare/v0.17.2...v0.17.3) (2024-04-05)
 
 
