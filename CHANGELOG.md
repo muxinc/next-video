@@ -1,3 +1,12 @@
+## [1.0.1](https://github.com/muxinc/next-video/compare/v1.0.0...v1.0.1) (2024-04-18)
+
+
+### Bug Fixes
+
+* upgrade Mux SDKs ([#238](https://github.com/muxinc/next-video/issues/238)) ([aab6adc](https://github.com/muxinc/next-video/commit/aab6adc0d25b95c1c75d78cbf26e014f05a8c66e))
+
+
+
 # [1.0.0](https://github.com/muxinc/next-video/compare/v0.17.3...v1.0.0) (2024-04-10)
 
 
