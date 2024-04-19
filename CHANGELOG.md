@@ -1,3 +1,12 @@
+## [1.0.2](https://github.com/muxinc/next-video/compare/v1.0.1...v1.0.2) (2024-04-19)
+
+
+### Bug Fixes
+
+* fix custom player types + add react-player example ([#242](https://github.com/muxinc/next-video/issues/242)) ([6895a1b](https://github.com/muxinc/next-video/commit/6895a1b30e49dc4c2b24b3aff59c88c04acfccfa))
+
+
+
 ## [1.0.1](https://github.com/muxinc/next-video/compare/v1.0.0...v1.0.1) (2024-04-18)
 
 
