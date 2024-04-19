@@ -242,7 +242,7 @@ export default function Page() {
 ```
 
 
-### Custom Player
+### Custom Player ([Demo](https://next-video-demo.vercel.app/custom-player))
 
 You can customize the player by passing a custom player component to the `as` prop.  
 The custom player component accepts the following props:
@@ -254,23 +254,32 @@ The custom player component accepts the following props:
 
 ```tsx
 import Video from 'next-video';
-import { ReactPlayerAsVideo } from './player';
+import ReactPlayer from './player';
 import awesomeVideo from '/videos/awesome-video.mp4';
 
 export default function Page() {
-  return <Video as={ReactPlayerAsVideo} src={awesomeVideo} />;
+  return <Video as={ReactPlayer} src={awesomeVideo} />;
 }
 ```
 
 ```tsx
-// player.js
+// player.tsx
+'use client';
+
+import type { PlayerProps } from 'next-video';
 import ReactPlayer from 'react-player';
 
-export function ReactPlayerAsVideo(props) {
-  let { asset, src, poster, blurDataURL, ...rest } = props;
+export default function Player(props: PlayerProps) {
+  let { asset, src, poster, blurDataURL, thumbnailTime, ...rest } = props;
   let config = { file: { attributes: { poster } } };
 
-  return <ReactPlayer url={src} config={config} {...rest} />;
+  return <ReactPlayer
+    url={src}
+    config={config}
+    width="100%"
+    height="100%"
+    {...rest}
+  />;
 }
 ```
 
