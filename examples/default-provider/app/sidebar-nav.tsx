@@ -12,10 +12,13 @@ export default function SidebarNav() {
         <Link className={`link ${pathname === '/' ? 'active' : ''}`} href="/">Basic example</Link>
       </li>
       <li>
-        <Link className={`link ${pathname === '/background-video' ? 'active' : ''}`} href="/background-video">Background Video</Link>
+        <Link className={`link ${pathname === '/background-video' ? 'active' : ''}`} href="/background-video">Background video</Link>
       </li>
       <li>
-        <Link className={`link ${pathname === '/slotted-poster' ? 'active' : ''}`} href="/slotted-poster">Slotted Poster</Link>
+        <Link className={`link ${pathname === '/custom-player' ? 'active' : ''}`} href="/custom-player">Custom player</Link>
+      </li>
+      <li>
+        <Link className={`link ${pathname === '/slotted-poster' ? 'active' : ''}`} href="/slotted-poster">Slotted poster</Link>
       </li>
       <li>
         <Link className={`link ${pathname === '/string-source' ? 'active' : ''}`} href="/string-source">String video source</Link>
