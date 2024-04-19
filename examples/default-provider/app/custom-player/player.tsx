@@ -1,10 +1,9 @@
 'use client';
 
-import ReactPlayer from 'react-player';
+import ReactPlayer, { ReactPlayerProps } from 'react-player';
 
-export default function Player(props) {
+export default function Player(props: ReactPlayerProps) {
   let { asset, src, poster, blurDataURL, thumbnailTime, ...rest } = props;
-
   let config = { file: { attributes: { poster } } };
 
   return <ReactPlayer
