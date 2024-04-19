@@ -12,17 +12,8 @@ import { svgBlurImage } from '../utils.js';
 export type BackgroundPlayerProps = Omit<DefaultPlayerProps, 'src'>;
 
 export const BackgroundPlayer = forwardRef((allProps: BackgroundPlayerProps, forwardedRef: any) => {
-  let {
-    style,
-    children,
-    asset,
-    controls,
-    poster,
-    blurDataURL,
-    onPlaying,
-    onLoadStart,
-    ...rest
-  } = allProps;
+  let { style, children, asset, controls, poster, blurDataURL, onPlaying, onLoadStart, ...rest } =
+    allProps;
 
   const slottedPoster = Children.toArray(children).find((child) => {
     return typeof child === 'object' && 'type' in child && child.props.slot === 'poster';
@@ -75,7 +66,7 @@ export const BackgroundPlayer = forwardRef((allProps: BackgroundPlayerProps, for
   }
 
   // Remove props that are not supported by MuxVideo.
-  delete props.thumbnailTime
+  delete props.thumbnailTime;
 
   const [posterHidden, setPosterHidden] = useState(false);
 

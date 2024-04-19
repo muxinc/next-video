@@ -121,8 +121,18 @@ export interface PlayerProps {
   controls?: boolean;
 
   /**
+   * The poster image for the video.
+   */
+  poster?: StaticImageData | string;
+
+  /**
    * Set a manual data URL to be used as a placeholder image before the poster image successfully loads.
    * For imported videos this will be automatically generated.
    */
   blurDataURL?: string;
+
+  /**
+   * The thumbnail time in seconds to use for the video poster image.
+   */
+  thumbnailTime?: number;
 }

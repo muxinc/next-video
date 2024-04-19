@@ -266,9 +266,10 @@ export default function Page() {
 // player.tsx
 'use client';
 
-import ReactPlayer, { ReactPlayerProps } from 'react-player';
+import type { PlayerProps } from 'next-video';
+import ReactPlayer from 'react-player';
 
-export default function Player(props: ReactPlayerProps) {
+export default function Player(props: PlayerProps) {
   let { asset, src, poster, blurDataURL, thumbnailTime, ...rest } = props;
   let config = { file: { attributes: { poster } } };
 

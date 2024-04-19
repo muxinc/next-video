@@ -11,11 +11,7 @@ export default function Page() {
   return (
     <>
       <section>
-        <Video
-          as={ReactPlayer}
-          src={getStarted}
-          style={{ aspectRatio: '16 / 9' }}
-        />
+        <Video as={ReactPlayer} src={getStarted} />
       </section>
     </>
   );

@@ -4,12 +4,19 @@ import { forwardRef, useState } from 'react';
 import { DefaultPlayer } from './players/default-player.js';
 import { Alert } from './alert.js';
 import { createVideoRequest, defaultLoader } from './video-loader.js';
-import { config, camelCase, toSymlinkPath, usePolling, isReactComponent, getUrlExtension } from './utils.js';
 import * as transformers from '../providers/transformers.js';
+import {
+  config,
+  camelCase,
+  toSymlinkPath,
+  usePolling,
+  isReactComponent,
+  getUrlExtension,
+} from './utils.js';
 
 import type { DefaultPlayerProps } from './players/default-player.js';
 import type { Asset } from '../assets.js';
-import type { VideoLoaderProps, VideoProps, VideoPropsInternal } from './types.js';
+import type { VideoLoaderProps, VideoProps, VideoPropsInternal, PlayerProps } from './types.js';
 
 const NextVideo = forwardRef((props: VideoProps, forwardedRef) => {
   // Keep in component so we can emulate the DEV_MODE.
@@ -52,22 +59,16 @@ const NextVideo = forwardRef((props: VideoProps, forwardedRef) => {
 
   usePolling(request, needsPolling ? 1000 : null);
 
-  const videoProps = getVideoProps(
-    { ...props, transform, src } as VideoPropsInternal,
-    { asset }
-  );
+  const videoProps = getVideoProps({ ...props, transform, src } as VideoPropsInternal, { asset });
 
   if (!isReactComponent(VideoPlayer)) {
     console.warn('The `as` property is not a valid component:', VideoPlayer);
   }
 
   return (
-    <div
-      className={`${className ? `${className} ` : ''}next-video-container`}
-      style={style}
-    >
+    <div className={`${className ? `${className} ` : ''}next-video-container`} style={style}>
       <style>{
-        /* css */`
+        /* css */ `
         .next-video-container {
           position: relative;
           width: 100%;
@@ -102,10 +103,9 @@ const NextVideo = forwardRef((props: VideoProps, forwardedRef) => {
         {...videoProps}
       ></VideoPlayer>
 
-      {DEV_MODE && <Alert
-        hidden={Boolean(playing || !status || status === 'ready')}
-        status={status}
-      />}
+      {DEV_MODE && (
+        <Alert hidden={Boolean(playing || !status || status === 'ready')} status={status} />
+      )}
     </div>
   );
 });
@@ -130,7 +130,7 @@ export function getVideoProps(allProps: VideoPropsInternal, state: { asset?: Ass
     src: src as string | undefined,
     controls,
     blurDataURL,
-    ...rest
+    ...rest,
   };
 
   // Handle StaticImageData which are image imports that resolve to an object.
@@ -171,8 +171,4 @@ function defaultTransformer(asset: Asset, props: Record<string, any>) {
 
 export default NextVideo;
 
-export type {
-  VideoLoaderProps,
-  VideoProps,
-  DefaultPlayerProps,
-};
+export type { VideoLoaderProps, VideoProps, DefaultPlayerProps, PlayerProps };
