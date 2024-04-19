@@ -68,7 +68,7 @@ const NextVideo = forwardRef((props: VideoProps, forwardedRef) => {
   return (
     <div className={`${className ? `${className} ` : ''}next-video-container`} style={style}>
       <style>{
-        /* css */ `
+        /* css */`
         .next-video-container {
           position: relative;
           width: 100%;
@@ -76,11 +76,10 @@ const NextVideo = forwardRef((props: VideoProps, forwardedRef) => {
         }
 
         [data-next-video] {
+          display: block;
           position: relative;
           width: 100%;
           height: 100%;
-          display: inline-block;
-          line-height: 0;
         }
 
         [data-next-video] img {
