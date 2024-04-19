@@ -11,8 +11,8 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <>
-      <main>
-        <Video src={getStarted} style={{ maxWidth: 800 }}>
+      <section>
+        <Video src={getStarted}>
           <Image
             slot="poster"
             src={getStartedPoster}
@@ -23,7 +23,7 @@ export default function Page() {
             priority
           />
         </Video>
-      </main>
+      </section>
     </>
   );
 }

@@ -8,12 +8,9 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <>
-      <main>
-        <Video
-          src="https://storage.googleapis.com/muxdemofiles/mux.mp4"
-          style={{ maxWidth: 800 }}
-        />
-      </main>
+      <section>
+        <Video src="https://storage.googleapis.com/muxdemofiles/mux.mp4" />
+      </section>
     </>
   );
 }

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <>
-      <main>
+      <section>
         <BackgroundVideo src={getStarted} disableTracking>
           <h1>next-video</h1>
           <p>
@@ -18,7 +18,7 @@ export default function Page() {
             for automatic video optimization.
           </p>
         </BackgroundVideo>
-      </main>
+      </section>
     </>
   );
 }
