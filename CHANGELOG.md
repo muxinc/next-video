@@ -1,3 +1,12 @@
+## [1.0.4](https://github.com/muxinc/next-video/compare/v1.0.3...v1.0.4) (2024-04-20)
+
+
+### Bug Fixes
+
+* sizing issue w/ bg video which made the ([#244](https://github.com/muxinc/next-video/issues/244)) ([bd0471c](https://github.com/muxinc/next-video/commit/bd0471c26724c49b146db685f2f60b102bd59d0b))
+
+
+
 ## [1.0.3](https://github.com/muxinc/next-video/compare/v1.0.2...v1.0.3) (2024-04-19)
 
 
