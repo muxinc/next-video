@@ -10,7 +10,11 @@ export default function Page() {
   return (
     <>
       <section>
-        <BackgroundVideo src={countryClouds} disableTracking>
+        <BackgroundVideo
+          src={countryClouds}
+          disableTracking
+          style={{ aspectRatio: 1.9 }}
+        >
           <h1>next-video</h1>
           <p>
             A React component for adding video to your Next.js application.

@@ -87,6 +87,8 @@ export const BackgroundPlayer = forwardRef((allProps: BackgroundPlayerProps, for
         }
 
         .next-video-bg-poster {
+          width: 100%;
+          height: 100%;
           position: relative;
           object-fit: cover;
           pointer-events: none;
