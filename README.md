@@ -1,6 +1,7 @@
 # `next-video`
 
-[![npm version](https://img.shields.io/npm/v/next-video?style=flat-square&color=success)](http://npmjs.org/next-video) 
+[![npm version](https://img.shields.io/npm/v/next-video?style=flat-square&color=informational)](http://npmjs.org/next-video) 
+[![NPM Downloads](https://img.shields.io/npm/dm/next-video?style=flat-square&color=informational&label=npm)](https://www.npmjs.com/package/next-video) 
 [![size](https://img.shields.io/bundlephobia/minzip/next-video?label=size&style=flat-square)](https://bundlephobia.com/result?p=next-video) 
 
 Next video is a react component for adding video to your [next.js](https://github.com/vercel/next.js) application. It extends both the `<video>` element and your Next app with features for automatic video optimization.
