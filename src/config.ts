@@ -1,7 +1,8 @@
-import { env, cwd } from 'node:process';
+import { cwd } from 'node:process';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import nextConfig from 'next/config.js'
+import nextConfig from 'next/config.js';
+import type { NextConfig } from 'next';
 // @ts-ignore
 const getConfig = nextConfig.default;
 
@@ -68,7 +69,7 @@ export const videoConfigDefault: VideoConfigComplete = {
  * The video config is then stored as an environment variable __NEXT_VIDEO_OPTS.
  */
 export async function getVideoConfig(): Promise<VideoConfigComplete> {
-  let nextConfig = getConfig();
+  let nextConfig: NextConfig | undefined = getConfig();
 
   if (!nextConfig?.serverRuntimeConfig?.nextVideo) {
     try {
@@ -88,5 +89,12 @@ export async function getVideoConfig(): Promise<VideoConfigComplete> {
 async function importConfig(file: string) {
   const absFilePath = path.resolve(cwd(), file);
   const fileUrl = pathToFileURL(absFilePath).href;
-  return (await import(/* webpackIgnore: true */ fileUrl))?.default;
+
+  const mod = await import(/* webpackIgnore: true */ fileUrl);
+  const config: (() => NextConfig) | NextConfig | undefined = mod?.default;
+
+  if (typeof config === 'function') {
+    return config();
+  }
+  return config;
 }
