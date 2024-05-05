@@ -1,3 +1,12 @@
+## [1.0.6](https://github.com/muxinc/next-video/compare/v1.0.5...v1.0.6) (2024-05-05)
+
+
+### Bug Fixes
+
+* mux-video prop + upgrades ([#253](https://github.com/muxinc/next-video/issues/253)) ([2557317](https://github.com/muxinc/next-video/commit/2557317eb2beb654297ef014a23f6da7f1263838)), closes [#245](https://github.com/muxinc/next-video/issues/245)
+
+
+
 ## [1.0.5](https://github.com/muxinc/next-video/compare/v1.0.4...v1.0.5) (2024-05-05)
 
 
