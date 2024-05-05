@@ -1,3 +1,12 @@
+## [1.0.5](https://github.com/muxinc/next-video/compare/v1.0.4...v1.0.5) (2024-05-05)
+
+
+### Bug Fixes
+
+* async function as next config ([#252](https://github.com/muxinc/next-video/issues/252)) ([a8db824](https://github.com/muxinc/next-video/commit/a8db8244a3aa0f7ce220ebf97f0050d3569d4233)), closes [#251](https://github.com/muxinc/next-video/issues/251)
+
+
+
 ## [1.0.4](https://github.com/muxinc/next-video/compare/v1.0.3...v1.0.4) (2024-04-20)
 
 
