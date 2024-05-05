@@ -13,6 +13,7 @@ export default function Page() {
         <BackgroundVideo
           src={countryClouds}
           disableTracking
+          maxResolution='720p'
           style={{ aspectRatio: 1.9 }}
         >
           <h1>next-video</h1>
