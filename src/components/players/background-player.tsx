@@ -84,6 +84,7 @@ export const BackgroundPlayer = forwardRef((allProps: BackgroundPlayerProps, for
         .next-video-bg-poster,
         .next-video-bg-text {
           grid-area: 1 / 1;
+          min-height: 0;
         }
 
         .next-video-bg-poster {
