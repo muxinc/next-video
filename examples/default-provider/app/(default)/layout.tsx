@@ -4,9 +4,9 @@ import * as fs from 'node:fs/promises';
 
 import type { Metadata } from 'next';
 import { DM_Sans, JetBrains_Mono } from 'next/font/google';
-import Nav from './nav';
-import SidebarNav from './sidebar-nav';
-import './globals.css';
+import Nav from '../nav';
+import SidebarNav from '../sidebar-nav';
+import '../globals.css';
 
 const dmSans = DM_Sans({ subsets: ['latin'], variable: '--sans' });
 const jetBrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--mono' });
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 };
 
 const fileDir = dirname(fileURLToPath(import.meta.url));
-const themeScript = await fs.readFile(`${fileDir}/theme-toggle.js`, 'utf-8');
+const themeScript = await fs.readFile(`${fileDir}/../theme-toggle.js`, 'utf-8');
 
 export default async function RootLayout({
   children,
