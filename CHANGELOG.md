@@ -1,3 +1,12 @@
+## [1.0.7](https://github.com/muxinc/next-video/compare/v1.0.6...v1.0.7) (2024-05-30)
+
+
+### Bug Fixes
+
+* svg blur image aspect ratio ([#259](https://github.com/muxinc/next-video/issues/259)) ([1efddd1](https://github.com/muxinc/next-video/commit/1efddd18512027e15a07140c468a5603c77ee63f))
+
+
+
 ## [1.0.6](https://github.com/muxinc/next-video/compare/v1.0.5...v1.0.6) (2024-05-05)
 
 
