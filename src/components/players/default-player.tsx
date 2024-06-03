@@ -1,3 +1,5 @@
+'use client';
+
 import { forwardRef, Suspense, lazy, Children, isValidElement } from 'react';
 import { getPlaybackId, getPosterURLFromPlaybackId } from '../../providers/mux/transformer.js';
 import { svgBlurImage } from '../utils.js';
@@ -11,7 +13,7 @@ export type DefaultPlayerRefAttributes = MuxPlayerRefAttributes;
 
 export type DefaultPlayerProps = Omit<MuxPlayerProps, 'src'> & PlayerProps;
 
-export const DefaultPlayer = forwardRef((allProps: DefaultPlayerProps, forwardedRef: any) => {
+const DefaultPlayer = forwardRef((allProps: DefaultPlayerProps, forwardedRef: any) => {
   let {
     style,
     children,
@@ -64,6 +66,8 @@ export const DefaultPlayer = forwardRef((allProps: DefaultPlayerProps, forwarded
     const showCustomBlur = isCustomPoster && blurDataURL !== asset?.blurDataURL;
 
     if (showGeneratedBlur || showCustomBlur) {
+      imgStyleProps.width = '100%';
+      imgStyleProps.height = '100%';
       imgStyleProps.color = 'transparent';
       imgStyleProps.backgroundSize = 'cover';
       imgStyleProps.backgroundPosition = 'center';
@@ -104,3 +108,5 @@ export const DefaultPlayer = forwardRef((allProps: DefaultPlayerProps, forwarded
     </Suspense>
   );
 });
+
+export default DefaultPlayer;

@@ -1,7 +1,7 @@
 'use client';
 
 import { forwardRef, useState } from 'react';
-import { DefaultPlayer } from './players/default-player.js';
+import DefaultPlayer from './players/default-player.js';
 import { Alert } from './alert.js';
 import { createVideoRequest, defaultLoader } from './video-loader.js';
 import * as transformers from '../providers/transformers.js';
@@ -85,9 +85,6 @@ const NextVideo = forwardRef((props: VideoProps, forwardedRef) => {
         [data-next-video] img {
           object-fit: var(--media-object-fit, contain);
           object-position: var(--media-object-position, center);
-          background: center / var(--media-object-fit, contain) no-repeat transparent;
-          width: 100%;
-          height: 100%;
         }
         `
       }</style>

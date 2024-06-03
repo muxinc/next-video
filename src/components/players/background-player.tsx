@@ -9,11 +9,21 @@ import MuxVideo from '@mux/mux-video-react';
 import { getPlaybackId, getPosterURLFromPlaybackId } from '../../providers/mux/transformer.js';
 import { svgBlurImage } from '../utils.js';
 
-export type BackgroundPlayerProps = Omit<DefaultPlayerProps, 'src'>;
+export type BackgroundPlayerProps = DefaultPlayerProps;
 
-export const BackgroundPlayer = forwardRef((allProps: BackgroundPlayerProps, forwardedRef: any) => {
-  let { style, children, asset, controls, poster, blurDataURL, onPlaying, onLoadStart, ...rest } =
-    allProps;
+const BackgroundPlayer = forwardRef((allProps: BackgroundPlayerProps, forwardedRef: any) => {
+  let {
+    style,
+    className,
+    children,
+    asset,
+    controls,
+    poster,
+    blurDataURL,
+    onPlaying,
+    onLoadStart,
+    ...rest
+  } = allProps;
 
   const slottedPoster = Children.toArray(children).find((child) => {
     return typeof child === 'object' && 'type' in child && child.props.slot === 'poster';
@@ -57,6 +67,8 @@ export const BackgroundPlayer = forwardRef((allProps: BackgroundPlayerProps, for
     const showCustomBlur = isCustomPoster && blurDataURL !== asset?.blurDataURL;
 
     if (showGeneratedBlur || showCustomBlur) {
+      imgStyleProps.width = '100%';
+      imgStyleProps.height = '100%';
       imgStyleProps.color = 'transparent';
       imgStyleProps.backgroundSize = 'cover';
       imgStyleProps.backgroundPosition = 'center';
@@ -75,12 +87,12 @@ export const BackgroundPlayer = forwardRef((allProps: BackgroundPlayerProps, for
       <style>{
         /* css */`
         .next-video-bg {
-          aspect-ratio: initial;
+          width: 100%;
           height: 100%;
           display: grid;
         }
 
-        .next-video-bg [data-next-video],
+        .next-video-bg-video,
         .next-video-bg-poster,
         .next-video-bg-text {
           grid-area: 1 / 1;
@@ -88,8 +100,6 @@ export const BackgroundPlayer = forwardRef((allProps: BackgroundPlayerProps, for
         }
 
         .next-video-bg-poster {
-          width: 100%;
-          height: 100%;
           position: relative;
           object-fit: cover;
           pointer-events: none;
@@ -100,7 +110,7 @@ export const BackgroundPlayer = forwardRef((allProps: BackgroundPlayerProps, for
           opacity: 0;
         }
 
-        .next-video-bg [data-next-video] {
+        .next-video-bg-video {
           object-fit: cover;
         }
 
@@ -112,34 +122,38 @@ export const BackgroundPlayer = forwardRef((allProps: BackgroundPlayerProps, for
         }
         `
       }</style>
-      <MuxVideo
-        ref={forwardedRef}
-        style={{ ...style }}
-        onPlaying={(event) => {
-          onPlaying?.(event as any);
-          setPosterHidden(true);
-        }}
-        onLoadStart={(event) => {
-          onLoadStart?.(event as any);
-          setPosterHidden(false);
-        }}
-        muted={true}
-        autoPlay={true}
-        loop={true}
-        {...props}
-      />
-      {poster && (
-        <img
-          className="next-video-bg-poster"
-          src={isCustomPoster ? poster : undefined}
-          srcSet={srcSet}
-          style={imgStyleProps}
-          hidden={posterHidden}
-          decoding="async"
-          aria-hidden="true"
+      <div className={`${className ? `${className} ` : ''}next-video-bg`} style={{ ...style }}>
+        <MuxVideo
+          ref={forwardedRef}
+          className="next-video-bg-video"
+          onPlaying={(event) => {
+            onPlaying?.(event as any);
+            setPosterHidden(true);
+          }}
+          onLoadStart={(event) => {
+            onLoadStart?.(event as any);
+            setPosterHidden(false);
+          }}
+          muted={true}
+          autoPlay={true}
+          loop={true}
+          {...props}
         />
-      )}
-      <div className="next-video-bg-text">{children}</div>
+        {poster && (
+          <img
+            className="next-video-bg-poster"
+            src={isCustomPoster ? poster : undefined}
+            srcSet={srcSet}
+            style={imgStyleProps}
+            hidden={posterHidden}
+            decoding="async"
+            aria-hidden="true"
+          />
+        )}
+        <div className="next-video-bg-text">{children}</div>
+      </div>
     </>
   );
 });
+
+export default BackgroundPlayer;
