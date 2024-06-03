@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import Player from 'next-video/background-player';
+import Player from 'next-video/player';
 
 export const metadata: Metadata = {
   title: 'next-video - Player only',
