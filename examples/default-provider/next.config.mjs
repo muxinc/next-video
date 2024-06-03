@@ -1,10 +1,13 @@
 import { withNextVideo } from 'next-video/process';
-/** @type {import('next').NextConfig} */
-const nextConfig = {};
 
-export default async function config() {
-  return withNextVideo(nextConfig);
-}
+/** @type {import('next').NextConfig} */
+const nextConfig = (phase, { defaultConfig }) => {
+  return {
+    ...defaultConfig,
+  };
+};
+
+export default withNextVideo(nextConfig);
 
 // Amazon S3 example
 // export default withNextVideo(nextConfig, {

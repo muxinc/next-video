@@ -6,30 +6,33 @@ import { fileURLToPath } from 'node:url';
 import { videoConfigDefault } from './config.js';
 import type { VideoConfig } from './config.js';
 
-export async function withNextVideo(nextConfig: any, videoConfig?: VideoConfig) {
-  if (typeof nextConfig === 'function') {
-    return async (...args: any[]) => {
-      const nextConfigResult = await Promise.resolve(nextConfig(...args));
-      return withNextVideo(nextConfigResult, videoConfig);
-    };
-  }
-
+export function withNextVideo(nextConfig: any, videoConfig?: VideoConfig) {
   const videoConfigComplete = Object.assign({}, videoConfigDefault, videoConfig);
   const { path, folder, provider } = videoConfigComplete;
+
+  // env vars have to be set before the async function return!!
 
   // Don't use `process.env` here because Next.js replaces public env vars during build.
   env['NEXT_PUBLIC_VIDEO_OPTS'] = JSON.stringify({ path, provider });
   env['__NEXT_VIDEO_OPTS'] = JSON.stringify(videoConfigComplete);
 
-  // We should probably switch to using `phase` here, just a bit concerned about backwards compatibility.
-  if (process.argv[2] === 'dev') {
+  if (process.env.NODE_ENV === 'development') {
     // Don't use `process.env` here because Next.js replaces public env vars during build.
     env['NEXT_PUBLIC_DEV_VIDEO_OPTS'] = JSON.stringify({ path, folder, provider });
+  }
 
+  if (typeof nextConfig === 'function') {
+    return async (...args: any[]) => {
+      const nextConfigResult = await nextConfig(...args);
+      return withNextVideo(nextConfigResult, videoConfig);
+    };
+  }
+
+  if (process.env.NODE_ENV === 'development') {
     const VIDEOS_PATH = join(process.cwd(), folder);
     const TMP_PUBLIC_VIDEOS_PATH = join(process.cwd(), 'public', `_next-video`);
 
-    await symlinkDir(VIDEOS_PATH, TMP_PUBLIC_VIDEOS_PATH);
+    symlinkDir(VIDEOS_PATH, TMP_PUBLIC_VIDEOS_PATH);
 
     process.on('exit', async () => {
       await fs.unlink(TMP_PUBLIC_VIDEOS_PATH);
