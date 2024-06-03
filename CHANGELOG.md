@@ -1,3 +1,12 @@
+# [1.1.0](https://github.com/muxinc/next-video/compare/v1.0.7...v1.1.0) (2024-06-03)
+
+
+### Features
+
+* add player only export ([#261](https://github.com/muxinc/next-video/issues/261)) ([df46b46](https://github.com/muxinc/next-video/commit/df46b461b850a8cd924f77ea698bd9c30b5b05fc)), closes [#250](https://github.com/muxinc/next-video/issues/250)
+
+
+
 ## [1.0.7](https://github.com/muxinc/next-video/compare/v1.0.6...v1.0.7) (2024-05-30)
 
 
