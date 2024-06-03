@@ -23,6 +23,9 @@ export default function SidebarNav() {
       <li>
         <Link className={`link ${pathname === '/string-source' ? 'active' : ''}`} href="/string-source">String video source</Link>
       </li>
+      <li>
+        <Link className={`link ${pathname === '/player-only' ? 'active' : ''}`} href="/player-only">Player only</Link>
+      </li>
     </ul>
   </nav>
 }

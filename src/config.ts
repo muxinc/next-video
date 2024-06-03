@@ -66,7 +66,7 @@ export const videoConfigDefault: VideoConfigComplete = {
 
 /**
  * The video config is set in `next.config.js` and passed to the `withNextVideo` function.
- * The video config is then stored as an environment variable __NEXT_VIDEO_OPTS.
+ * The video config is then stored in `serverRuntimeConfig`.
  */
 export async function getVideoConfig(): Promise<VideoConfigComplete> {
   let nextConfig: NextConfig | undefined = getConfig();
@@ -91,10 +91,13 @@ async function importConfig(file: string) {
   const fileUrl = pathToFileURL(absFilePath).href;
 
   const mod = await import(/* webpackIgnore: true */ fileUrl);
-  const config: (() => NextConfig) | NextConfig | undefined = mod?.default;
+  const config:
+    | ((phase: string | undefined, opts: any) => Promise<NextConfig>)
+    | NextConfig
+    | undefined = mod?.default;
 
   if (typeof config === 'function') {
-    return config();
+    return config(process.env.NEXT_PHASE, { defaultConfig: {} });
   }
   return config;
 }

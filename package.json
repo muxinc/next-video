@@ -23,12 +23,14 @@
   "main": "./dist/components/video.js",
   "exports": {
     ".": "./dist/components/video.js",
+    "./player": "./dist/components/players/default-player.js",
     "./process": {
       "import": "./dist/process.js",
       "require": "./dist/cjs/process.js",
       "default": "./dist/process.js"
     },
     "./background-video": "./dist/components/background-video.js",
+    "./background-player": "./dist/components/players/background-player.js",
     "./request-handler": "./dist/request-handler.js",
     "./video-types/*": "./video-types/*.d.ts",
     "./dist/cjs/*": "./dist/cjs/*",
