@@ -188,6 +188,24 @@ export default function Page() {
 ```
 </details>
 
+### Player only ([Demo](https://next-video-demo.vercel.app/player-only))
+
+Since [`v1.1.0`](https://github.com/muxinc/next-video/releases/tag/v1.1.0) you can import the player component directly and use it without any upload and processing features.
+
+```tsx
+import Player from 'next-video/player';
+// or
+import BackgroundPlayer from 'next-video/background-player';
+
+export default function Page() {
+  return <Player
+    src="https://www.mydomain.com/remote-video.mp4"
+    poster="https://www.mydomain.com/remote-poster.webp"
+    blurDataURL="data:image/webp;base64,UklGRlA..."
+  />;
+}
+```
+
 ### Custom poster and blurDataURL
 
 You can add a custom poster and blurDataURL to the video by passing them as props.
