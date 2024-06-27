@@ -1,3 +1,12 @@
+## [1.1.1](https://github.com/muxinc/next-video/compare/v1.1.0...v1.1.1) (2024-06-27)
+
+
+### Bug Fixes
+
+* upgrade Mux elements, Vercel blob, Next.js ([#268](https://github.com/muxinc/next-video/issues/268)) ([7c0e3ab](https://github.com/muxinc/next-video/commit/7c0e3abe8f1b2044246db7f2d1c28dc9da0fd89f))
+
+
+
 # [1.1.0](https://github.com/muxinc/next-video/compare/v1.0.7...v1.1.0) (2024-06-03)
 
 
