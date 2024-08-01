@@ -48,8 +48,7 @@ export interface AssetSource {
 export async function getAsset(filePath: string): Promise<Asset | undefined> {
   const { loadAsset } = await getVideoConfig();
   const assetConfigPath = await getAssetConfigPath(filePath);
-  const jsonAsset = await loadAsset(assetConfigPath);
-  const asset = JSON.parse(jsonAsset);
+  const asset = await loadAsset(assetConfigPath);
   return asset;
 }
 
@@ -107,7 +106,7 @@ export async function createAsset(
     }
   }
 
-  videoConfig.saveAsset(assetConfigPath, JSON.stringify(newAssetDetails));
+  videoConfig.saveAsset(assetConfigPath, newAssetDetails);
 
   return newAssetDetails;
 }
@@ -130,7 +129,7 @@ export async function updateAsset(
 
   newAssetDetails = transformAsset(transformers, newAssetDetails);
 
-  await saveAsset(assetConfigPath, JSON.stringify(newAssetDetails));
+  await saveAsset(assetConfigPath, newAssetDetails);
 
   return newAssetDetails;
 }
