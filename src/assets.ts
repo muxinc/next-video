@@ -46,9 +46,10 @@ export interface AssetSource {
 }
 
 export async function getAsset(filePath: string): Promise<Asset | undefined> {
+  const { loadAsset } = await getVideoConfig();
   const assetConfigPath = await getAssetConfigPath(filePath);
-  const file = await readFile(assetConfigPath);
-  const asset = JSON.parse(file.toString());
+  const jsonAsset = await loadAsset(assetConfigPath);
+  const asset = JSON.parse(jsonAsset);
   return asset;
 }
 
@@ -106,18 +107,7 @@ export async function createAsset(
     }
   }
 
-  try {
-    await mkdir(path.dirname(assetConfigPath), { recursive: true });
-    await writeFile(assetConfigPath, JSON.stringify(newAssetDetails), {
-      flag: 'wx',
-    });
-  } catch (err: any) {
-    if (err.code === 'EEXIST') {
-      // The file already exists, and that's ok in this case. Ignore the error.
-      return;
-    }
-    throw err;
-  }
+  videoConfig.saveAsset(assetConfigPath, JSON.stringify(newAssetDetails));
 
   return newAssetDetails;
 }
