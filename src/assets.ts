@@ -118,6 +118,7 @@ export async function updateAsset(
 ) {
   const assetConfigPath = await getAssetConfigPath(filePath);
   const currentAsset = await getAsset(filePath);
+  const { saveAsset } = await getVideoConfig();
 
   if (!currentAsset) {
     throw new Error(`Asset not found: ${filePath}`);
@@ -129,7 +130,7 @@ export async function updateAsset(
 
   newAssetDetails = transformAsset(transformers, newAssetDetails);
 
-  await writeFile(assetConfigPath, JSON.stringify(newAssetDetails));
+  await saveAsset(assetConfigPath, JSON.stringify(newAssetDetails));
 
   return newAssetDetails;
 }
