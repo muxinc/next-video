@@ -1,3 +1,12 @@
+## [1.1.2](https://github.com/muxinc/next-video/compare/v1.1.1...v1.1.2) (2024-08-02)
+
+
+### Bug Fixes
+
+* JSX in SVG ([#283](https://github.com/muxinc/next-video/issues/283)) ([d6d6f0e](https://github.com/muxinc/next-video/commit/d6d6f0e1db09e2612b5222bbb178ae0d452326b6)), closes [#279](https://github.com/muxinc/next-video/issues/279)
+
+
+
 ## [1.1.1](https://github.com/muxinc/next-video/compare/v1.1.0...v1.1.1) (2024-06-27)
 
 
