@@ -26,6 +26,9 @@ export default function SidebarNav() {
       <li>
         <Link className={`link ${pathname === '/player-only' ? 'active' : ''}`} href="/player-only">Player only</Link>
       </li>
+      <li>
+        <Link className={`link ${pathname === '/source-tag' ? 'active' : ''}`} href="/source-tag">Source tag</Link>
+      </li>
     </ul>
   </nav>
 }
