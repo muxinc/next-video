@@ -1,3 +1,12 @@
+## [1.1.3](https://github.com/muxinc/next-video/compare/v1.1.2...v1.1.3) (2024-08-02)
+
+
+### Bug Fixes
+
+* add support for player-only <source> tag ([#284](https://github.com/muxinc/next-video/issues/284)) ([e1ed50f](https://github.com/muxinc/next-video/commit/e1ed50f4c81fa073f98f88382455db2b30de8587)), closes [#262](https://github.com/muxinc/next-video/issues/262)
+
+
+
 ## [1.1.2](https://github.com/muxinc/next-video/compare/v1.1.1...v1.1.2) (2024-08-02)
 
 
