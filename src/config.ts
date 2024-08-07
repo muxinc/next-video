@@ -1,8 +1,11 @@
 import { cwd } from 'node:process';
 import path from 'node:path';
+import { stat, readFile, writeFile, mkdir } from 'node:fs/promises';
+
 import { pathToFileURL } from 'node:url';
 import nextConfig from 'next/config.js';
 import type { NextConfig } from 'next';
+import { Asset } from './assets';
 // @ts-ignore
 const getConfig = nextConfig.default;
 
@@ -24,6 +27,9 @@ export type VideoConfigComplete = {
 
   /* An optional function to generate the local asset path for remote sources. */
   remoteSourceAssetPath?: (url: string) => string;
+
+  loadAsset: (path: string) => Promise<Asset>;
+  saveAsset: (path: string, asset: Asset) => Promise<void>;
 };
 
 export type ProviderConfig = {
@@ -62,6 +68,25 @@ export const videoConfigDefault: VideoConfigComplete = {
   path: '/api/video',
   provider: 'mux',
   providerConfig: {},
+  loadAsset: async (path) => {
+    const file = await readFile(path);
+    const asset = JSON.parse(file.toString());
+    return asset;
+  },
+  saveAsset: async (assetPath, asset) => {
+    try {
+      await mkdir(path.dirname(assetPath), { recursive: true });
+      await writeFile(assetPath, JSON.stringify(asset), {
+        flag: 'wx',
+      });
+    } catch (err: any) {
+      if (err.code === 'EEXIST') {
+        // The file already exists, and that's ok in this case. Ignore the error.
+        return;
+      }
+      throw err;
+    }
+  },
 };
 
 /**
