@@ -1,3 +1,12 @@
+## [1.1.4](https://github.com/muxinc/next-video/compare/v1.1.3...v1.1.4) (2024-08-07)
+
+
+### Bug Fixes
+
+* background player on iOS ([d228812](https://github.com/muxinc/next-video/commit/d228812c51119546c9bb8642d8a32283a6ee429e)), closes [#274](https://github.com/muxinc/next-video/issues/274)
+
+
+
 ## [1.1.3](https://github.com/muxinc/next-video/compare/v1.1.2...v1.1.3) (2024-08-02)
 
 
