@@ -363,7 +363,7 @@ Supported providers with their required environment variables:
 | [`vercel-blob`](https://vercel.com/docs/storage/vercel-blob) | `BLOB_READ_WRITE_TOKEN`                                     |                                    | [Pricing](https://vercel.com/docs/storage/vercel-blob/usage-and-pricing) |
 | [`backblaze`](https://www.backblaze.com/cloud-storage)       | `BACKBLAZE_ACCESS_KEY_ID`<br/>`BACKBLAZE_SECRET_ACCESS_KEY` | `endpoint`<br/>`bucket` (optional) | [Pricing](https://www.backblaze.com/cloud-storage/pricing)               |
 | [`amazon-s3`](https://aws.amazon.com/s3)                     | `AWS_ACCESS_KEY_ID`<br/>`AWS_SECRET_ACCESS_KEY`             | `endpoint`<br/>`bucket` (optional) | [Pricing](https://aws.amazon.com/s3/pricing/)                            |
-| [`cloudflare-r2`](https://developers.cloudflare.com/r2/)     | `R2_ACCESS_KEY_ID`<br/>`R2_SECRET_ACCESS_KEY`<br/>`R2_CF_API_TOKEN` (optional when `bucketUrlPublic` set) | `accountId`<br/>`bucket` (optional)<br/>`bucketUrlPublic` (optional when `R2_CF_API_TOKEN` set) | [Pricing](https://developers.cloudflare.com/r2/pricing/) |
+| [`cloudflare-r2`](https://developers.cloudflare.com/r2/)     | `R2_ACCESS_KEY_ID`<br/>`R2_SECRET_ACCESS_KEY`<br/>`R2_CF_API_TOKEN` (optional when `bucketUrlPublic` set) | `bucket` (optional)<br/>`bucketUrlPublic` (optional when `R2_CF_API_TOKEN` set) | [Pricing](https://developers.cloudflare.com/r2/pricing/) |
 
 
 #### Provider feature set

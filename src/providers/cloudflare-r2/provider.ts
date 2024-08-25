@@ -38,13 +38,10 @@ async function initR2() {
   const { providerConfig } = await getVideoConfig();
   const CloudflareR2Config = providerConfig['cloudflare-r2'];
 
-  accountId = CloudflareR2Config?.accountId ?? env.R2_ACCOUNT_ID ?? '';
   bucketName = CloudflareR2Config?.bucket ?? '';
   bucketUrlPublic = CloudflareR2Config?.bucketUrlPublic ?? '';
-
-  const jurisdiction = CloudflareR2Config?.jurisdiction ?? '';
-  const baseEndpoint = jurisdiction === '' ? 'r2.cloudflarestorage.com' : `${jurisdiction}.r2.cloudflarestorage.com`;
-  endpoint = `https://${accountId}.${baseEndpoint}`;
+  endpoint = CloudflareR2Config?.endpoint ?? '';
+  accountId = endpoint.split('.')[0].replace(/^https?:\/\//, '');
 
   s3 ??= new S3Client({
     endpoint,
