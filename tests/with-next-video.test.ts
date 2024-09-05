@@ -57,13 +57,19 @@ describe('withNextVideo', () => {
       provider: 'vercel-blob',
     });
 
-    assert.deepEqual(result.serverRuntimeConfig.nextVideo, {
+    const { saveAsset, loadAsset, ...config } = result.serverRuntimeConfig.nextVideo;
+
+    assert.deepEqual(config, {
       path: '/api/video-files',
       folder: 'video-files',
       provider: 'vercel-blob',
-      providerConfig: {},
+      providerConfig: {}
     });
+
+    assert.equal(typeof saveAsset, 'function');
+    assert.equal(typeof loadAsset, 'function');
   });
+
 
   it('should change the webpack config', async () => {
     const nextConfig = {};
