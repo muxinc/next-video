@@ -1,6 +1,6 @@
 import * as path from 'node:path';
 import { cwd } from 'node:process';
-import { stat } from 'node:fs/promises';
+import { stat, readFile, writeFile, mkdir } from 'node:fs/promises';
 import { getVideoConfig } from './config.js';
 import { deepMerge, camelCase, isRemote, toSafePath } from './utils/utils.js';
 import * as transformers from './providers/transformers.js';
@@ -46,10 +46,9 @@ export interface AssetSource {
 }
 
 export async function getAsset(filePath: string): Promise<Asset | undefined> {
-  const { loadAsset } = await getVideoConfig();
+  const videoConfig = await getVideoConfig();
   const assetConfigPath = await getAssetConfigPath(filePath);
-  const asset = await loadAsset(assetConfigPath);
-  return asset;
+  return videoConfig.loadAsset(assetConfigPath)
 }
 
 export async function getAssetConfigPath(filePath: string) {
@@ -106,7 +105,18 @@ export async function createAsset(
     }
   }
 
-  videoConfig.saveAsset(assetConfigPath, newAssetDetails);
+  try {
+    await mkdir(path.dirname(assetConfigPath), { recursive: true });
+    await writeFile(assetConfigPath, JSON.stringify(newAssetDetails), {
+      flag: 'wx',
+    });
+  } catch (err: any) {
+    if (err.code === 'EEXIST') {
+      // The file already exists, and that's ok in this case. Ignore the error.
+      return;
+    }
+    throw err;
+  }
 
   return newAssetDetails;
 }
@@ -117,7 +127,6 @@ export async function updateAsset(
 ) {
   const assetConfigPath = await getAssetConfigPath(filePath);
   const currentAsset = await getAsset(filePath);
-  const { saveAsset } = await getVideoConfig();
 
   if (!currentAsset) {
     throw new Error(`Asset not found: ${filePath}`);
@@ -129,7 +138,7 @@ export async function updateAsset(
 
   newAssetDetails = transformAsset(transformers, newAssetDetails);
 
-  await saveAsset(assetConfigPath, newAssetDetails);
+  await writeFile(assetConfigPath, JSON.stringify(newAssetDetails));
 
   return newAssetDetails;
 }
