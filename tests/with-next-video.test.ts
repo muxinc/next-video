@@ -52,12 +52,16 @@ describe('withNextVideo', () => {
   it('should handle videoConfig being passed', async () => {
     const nextConfig = {};
     const fakeLoadAsset = function (path: string): Promise<Asset | undefined> { return Promise.resolve(undefined) }
+    const fakeSaveAsset = function (path: string, asset: Asset): Promise<void> { return Promise.resolve() }
+    const fakeUpdateAsset = function (path: string, asset: Asset): Promise<void> { return Promise.resolve() }
 
     const result = await withNextVideo(nextConfig, {
       path: '/api/video-files',
       folder: 'video-files',
       provider: 'vercel-blob',
-      loadAsset: fakeLoadAsset
+      loadAsset: fakeLoadAsset,
+      saveAsset: fakeSaveAsset,
+      updateAsset: fakeUpdateAsset
     });
 
     const config = result.serverRuntimeConfig.nextVideo;
@@ -66,7 +70,9 @@ describe('withNextVideo', () => {
       folder: 'video-files',
       provider: 'vercel-blob',
       providerConfig: {},
-      loadAsset: fakeLoadAsset
+      loadAsset: fakeLoadAsset,
+      saveAsset: fakeSaveAsset,
+      updateAsset: fakeUpdateAsset
     });
   });
 

@@ -105,18 +105,7 @@ export async function createAsset(
     }
   }
 
-  try {
-    await mkdir(path.dirname(assetConfigPath), { recursive: true });
-    await writeFile(assetConfigPath, JSON.stringify(newAssetDetails), {
-      flag: 'wx',
-    });
-  } catch (err: any) {
-    if (err.code === 'EEXIST') {
-      // The file already exists, and that's ok in this case. Ignore the error.
-      return;
-    }
-    throw err;
-  }
+  await videoConfig.saveAsset(assetConfigPath, newAssetDetails)
 
   return newAssetDetails;
 }
@@ -125,6 +114,7 @@ export async function updateAsset(
   filePath: string,
   assetDetails: Partial<Asset>
 ) {
+  const videoConfig = await getVideoConfig();
   const assetConfigPath = await getAssetConfigPath(filePath);
   const currentAsset = await getAsset(filePath);
 
@@ -138,7 +128,7 @@ export async function updateAsset(
 
   newAssetDetails = transformAsset(transformers, newAssetDetails);
 
-  await writeFile(assetConfigPath, JSON.stringify(newAssetDetails));
+  await videoConfig.updateAsset(assetConfigPath, newAssetDetails)
 
   return newAssetDetails;
 }
