@@ -1,3 +1,12 @@
+# [1.2.0](https://github.com/muxinc/next-video/compare/v1.1.4...v1.2.0) (2024-09-17)
+
+
+### Features
+
+* Allow assets to be saved in different locations ([#281](https://github.com/muxinc/next-video/issues/281)) ([2cf822c](https://github.com/muxinc/next-video/commit/2cf822cc01ac5ec4e89a530b11436d08d02772e5))
+
+
+
 ## [1.1.4](https://github.com/muxinc/next-video/compare/v1.1.3...v1.1.4) (2024-08-07)
 
 
