@@ -1,6 +1,6 @@
 import symlinkDir from 'symlink-dir';
 import { join, dirname } from 'node:path';
-import fs from 'node:fs/promises';
+import fs from 'node:fs';
 import { env } from 'node:process';
 import { fileURLToPath } from 'node:url';
 import { videoConfigDefault } from './config.js';
@@ -33,11 +33,21 @@ export function withNextVideo(nextConfig: any, videoConfig?: VideoConfig) {
     const VIDEOS_PATH = join(process.cwd(), folder);
     const TMP_PUBLIC_VIDEOS_PATH = join(process.cwd(), 'public', `_next-video`);
 
-    symlinkDir(VIDEOS_PATH, TMP_PUBLIC_VIDEOS_PATH);
-
-    process.on('exit', async () => {
-      await fs.unlink(TMP_PUBLIC_VIDEOS_PATH);
-    });
+    try {
+      const files = fs.readdirSync(VIDEOS_PATH);
+      if (files.length > 0) {
+        symlinkDir(VIDEOS_PATH, TMP_PUBLIC_VIDEOS_PATH);
+        process.on('exit', () => {
+          try {
+            fs.unlinkSync(TMP_PUBLIC_VIDEOS_PATH);
+          } catch (error) {
+            // Silently fail if unable to remove symlink
+          }
+        });
+      }
+    } catch (error) {
+      // Videos directory doesn't exist or is not accessible, which we treat the same as having no files
+    }
   }
 
   const experimental = { ...nextConfig.experimental };

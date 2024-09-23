@@ -1,3 +1,6 @@
+import os from 'node:os';
+import fs from 'node:fs';
+import path from 'node:path';
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
 
@@ -94,5 +97,65 @@ describe('withNextVideo', () => {
     assert.equal(webpackConfig.externals[0].sharp, 'commonjs sharp');
     assert.equal(webpackConfig.module.rules.length, 2);
     assert.deepEqual(webpackConfig.infrastructureLogging, { level: 'error' });
+  });
+
+  it('should create symlink when video files are present', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'next-video-test-'));
+    const videosDir = path.join(tempDir, 'videos');
+    const publicDir = path.join(tempDir, 'public');
+    const symlinkPath = path.join(publicDir, '_next-video');
+
+    fs.mkdirSync(videosDir);
+    fs.mkdirSync(publicDir);
+    fs.writeFileSync(path.join(videosDir, 'test.mp4'), 'dummy content');
+
+    const originalCwd = process.cwd();
+    const originalArgv = process.argv;
+
+    try {
+      process.chdir(tempDir);
+      process.argv = ['node', 'next', 'dev'];
+
+      const nextConfig = {};
+      await withNextVideo(nextConfig, { folder: 'videos' });
+
+      assert(fs.existsSync(symlinkPath), 'Symlink should be created');
+      assert(fs.lstatSync(symlinkPath).isSymbolicLink(), 'Should be a symbolic link');
+      const symlinkTarget = fs.readlinkSync(symlinkPath);
+      assert.equal(path.resolve(path.dirname(symlinkPath), symlinkTarget), videosDir, 'Symlink should point to videos directory');
+    } catch (error) {
+      console.error('Test error:', error);
+    } finally {
+      process.chdir(originalCwd);
+      process.argv = originalArgv;
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('should not create symlink when no video files are present', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'next-video-test-'));
+    const videosDir = path.join(tempDir, 'videos');
+    const publicDir = path.join(tempDir, 'public');
+    const symlinkPath = path.join(publicDir, '_next-video');
+
+    fs.mkdirSync(videosDir);
+    fs.mkdirSync(publicDir);
+
+    const originalCwd = process.cwd();
+    const originalArgv = process.argv;
+
+    try {
+      process.chdir(tempDir);
+      process.argv = ['node', 'next', 'dev'];
+
+      const nextConfig = {};
+      await withNextVideo(nextConfig, { folder: 'videos' });
+
+      assert(!fs.existsSync(symlinkPath), 'Symlink should not be created');
+    } finally {
+      process.chdir(originalCwd);
+      process.argv = originalArgv;
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
   });
 });
