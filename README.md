@@ -45,7 +45,7 @@ It will also update your `.gitignore` file to ignore video files in the `/videos
 
 ### Remote storage and optimization
 
-Vercel [recommends](https://vercel.com/guides/best-practices-for-hosting-videos-on-vercel-nextjs-mp4-gif) using a dedicated content platform for video because video files are large and can lead to excessive bandwidth usage. By default, next-video uses [Mux](https://mux.com?utm_source=next-video.dev), which is built by the the creators of Video.js, powers popular streaming apps like Patreon, and whose video performance monitoring is used on the largest live events in the world.
+Vercel [recommends](https://vercel.com/guides/best-practices-for-hosting-videos-on-vercel-nextjs-mp4-gif) using a dedicated content platform for video because video files are large and can lead to excessive bandwidth usage. By default, next-video uses [Mux](https://mux.com?utm_source=next-video.dev) (a [video API](https://www.mux.com/video-api) for developers), which is built by the the creators of Video.js, powers popular streaming apps like Patreon, and whose video performance monitoring is used on the largest live events in the world.
 
 - [Sign up for Mux](https://dashboard.mux.com/signup?utm_source=next-video.dev)
 - [Create an access token](https://dashboard.mux.com/settings/access-tokens#create)
