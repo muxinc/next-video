@@ -76,7 +76,7 @@
   "devDependencies": {
     "@types/dotenv-flow": "^3.3.3",
     "@types/node": "^20.14.9",
-    "@types/react": "18.3.3",
+    "@types/react": "18.3.10",
     "@types/resolve": "^1.20.6",
     "@types/yargs": "^17.0.32",
     "c8": "^9.1.0",
@@ -92,8 +92,8 @@
     "@aws-sdk/client-s3": "^3.540.0",
     "@inquirer/prompts": "^4.3.1",
     "@mux/mux-node": "8.8.0",
-    "@mux/mux-player-react": "2.9.0",
-    "@mux/mux-video-react": "0.11.2",
+    "@mux/mux-video": "^0.21.0",
+    "@mux/playback-core": "^0.26.0",
     "@next/env": "^15.0.2",
     "@paralleldrive/cuid2": "^2.2.2",
     "@vercel/blob": "^0.23.3",
@@ -101,6 +101,7 @@
     "chokidar": "^3.6.0",
     "magicast": "^0.3.4",
     "resolve": "^1.22.8",
+    "media-chrome": "^4.1.4",
     "symlink-dir": "^5.2.1",
     "undici": "^5.28.4",
     "yargs": "^17.7.2"

@@ -15,7 +15,7 @@ export function toSymlinkPath(path?: string) {
 }
 
 export function camelCase(name: string) {
-  return name.replace(/[-_]([a-z])/g, ($0, $1) => $1.toUpperCase());
+  return name.toLowerCase().replace(/[-_]([a-z])/g, ($0, $1) => $1.toUpperCase());
 }
 
 export function getUrlExtension(url: string | unknown) {

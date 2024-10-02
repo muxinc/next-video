@@ -135,4 +135,9 @@ export interface PlayerProps {
    * The thumbnail time in seconds to use for the video poster image.
    */
   thumbnailTime?: number;
+
+  /**
+   * Change the look and feel with a custom theme.
+   */
+  theme?: FunctionComponent<any>;
 }
