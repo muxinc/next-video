@@ -28,10 +28,15 @@ const DefaultPlayer = forwardRef((allProps: DefaultPlayerProps, forwardedRef: an
     return typeof child === 'object' && 'type' in child && child.props.slot === 'poster';
   });
 
+  let slottedPosterImg;
+
   // If there's a slotted poster image (e.g. next/image) remove the default player poster and blurDataURL.
   if (isValidElement(slottedPoster)) {
     poster = '';
     blurDataURL = undefined;
+
+    slottedPosterImg = slottedPoster;
+    children = Children.toArray(children).filter((child) => child !== slottedPoster);
   }
 
   const props = rest as MuxVideoProps & { thumbnailTime?: number };
@@ -91,7 +96,6 @@ const DefaultPlayer = forwardRef((allProps: DefaultPlayerProps, forwardedRef: an
     // @ts-ignore
     const dataNextVideo = props['data-next-video'];
 
-    let slottedPosterImg;
     // The Mux player supports a poster image slot which improves the loading speed.
     if (poster) {
       slottedPosterImg = (
