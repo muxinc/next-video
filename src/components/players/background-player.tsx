@@ -2,14 +2,14 @@
 
 import { forwardRef, Children, isValidElement, useState } from 'react';
 
-import type { Props as MuxVideoProps } from '@mux/mux-video-react';
-import type { DefaultPlayerProps } from './default-player.js';
+import type { Props as MuxVideoProps } from './mux-video-react.js';
+import type { PlayerProps } from '../types.js';
 
-import MuxVideo from '@mux/mux-video-react';
+import MuxVideo from './mux-video-react.js';
 import { getPlaybackId, getPosterURLFromPlaybackId } from '../../providers/mux/transformer.js';
 import { svgBlurImage } from '../utils.js';
 
-export type BackgroundPlayerProps = DefaultPlayerProps;
+export type BackgroundPlayerProps = Omit<MuxVideoProps, 'ref' | 'src'> & PlayerProps;
 
 const BackgroundPlayer = forwardRef((allProps: BackgroundPlayerProps, forwardedRef: any) => {
   let {
