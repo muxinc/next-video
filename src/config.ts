@@ -104,6 +104,7 @@ export const videoConfigDefault: VideoConfigComplete = {
  */
 export async function getVideoConfig(): Promise<VideoConfigComplete> {
   let nextConfig: NextConfig | undefined = getConfig();
+  console.warn(99, nextConfig);
   if (!nextConfig?.serverRuntimeConfig?.nextVideo) {
     try {
       nextConfig = await importConfig('next.config.js');
