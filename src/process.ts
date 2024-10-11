@@ -2,6 +2,7 @@ import { videoHandler, callHandler } from './video-handler.js';
 import { uploadLocalFile } from './handlers/local-upload.js';
 import { uploadRequestedFile } from './handlers/api-request.js';
 import log from './utils/logger.js';
+import { NextVideo } from './setup-next-video.js';
 import { withNextVideo } from './with-next-video.js';
 
 try {
@@ -17,4 +18,4 @@ try {
   console.error(err);
 }
 
-export { videoHandler, withNextVideo, callHandler };
+export { videoHandler, callHandler, NextVideo, withNextVideo };

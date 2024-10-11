@@ -1,6 +1,6 @@
 import * as path from 'node:path';
 import { cwd } from 'node:process';
-import { stat, readFile, writeFile, mkdir } from 'node:fs/promises';
+import { stat } from 'node:fs/promises';
 import { getVideoConfig } from './config.js';
 import { deepMerge, camelCase, isRemote, toSafePath } from './utils/utils.js';
 import * as transformers from './providers/transformers.js';
