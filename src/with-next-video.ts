@@ -3,11 +3,11 @@ import { join, dirname } from 'node:path';
 import fs from 'node:fs/promises';
 import { env } from 'node:process';
 import { fileURLToPath } from 'node:url';
-import { videoConfigDefault } from './config.js';
+import { setVideoConfig } from './config.js';
 import type { VideoConfig } from './config.js';
 
 export function withNextVideo(nextConfig: any, videoConfig?: VideoConfig) {
-  const videoConfigComplete = Object.assign({}, videoConfigDefault, videoConfig);
+  const videoConfigComplete = setVideoConfig(videoConfig);
   const { path, folder, provider } = videoConfigComplete;
 
   // env VARS have to be set before the async function return!!
@@ -49,10 +49,6 @@ export function withNextVideo(nextConfig: any, videoConfig?: VideoConfig) {
 
   return Object.assign({}, nextConfig, {
     experimental,
-    serverRuntimeConfig: {
-      ...nextConfig.serverRuntimeConfig,
-      nextVideo: videoConfigComplete,
-    },
     webpack(config: any, options: any) {
       if (!options.defaultLoaders) {
         throw new Error(

@@ -1,5 +1,4 @@
-import { withNextVideo } from 'next-video/process';
-import { readFile } from 'node:fs/promises';
+import { withNextVideo } from './next-video.mjs';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = (phase, { defaultConfig }) => {
@@ -8,14 +7,7 @@ const nextConfig = (phase, { defaultConfig }) => {
   };
 };
 
-export default withNextVideo(nextConfig, {
-  loadAsset: async function (assetPath) {
-    console.warn(99, assetPath);
-    const file = await readFile(assetPath);
-    const asset = JSON.parse(file.toString());
-    return asset;
-  },
-});
+export default withNextVideo(nextConfig);
 
 // Amazon S3 example
 // export default withNextVideo(nextConfig, {
