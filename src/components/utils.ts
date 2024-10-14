@@ -54,24 +54,17 @@ export function useInterval(callback: () => any, delay: number | null) {
   // Remember the latest callback.
   useEffect(() => {
     savedCallback.current = callback;
-  }, [callback]);
+  });
 
   // Set up the interval.
   useEffect(() => {
-    let id: any;
-
     const tick = async () => {
-      // Wait to kick off another async callback until the current one is finished.
       await savedCallback.current?.();
-
-      if (delay != null) {
-        id = setTimeout(tick, delay);
-      }
     };
 
     if (delay != null) {
-      id = setTimeout(tick, delay);
-      return () => clearTimeout(id);
+      let id = setInterval(tick, delay);
+      return () => clearInterval(id);
     }
   }, [delay]);
 }
