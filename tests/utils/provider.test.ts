@@ -1,17 +1,13 @@
 import assert from 'node:assert';
 import { test } from 'node:test';
-import { setConfig } from 'next/config.js'
+import { setVideoConfig } from '../../src/config.js'
 import { createAssetKey } from '../../src/utils/provider.js';
 
 test('createAssetKey w/ defaultGenerateAssetKey and local asset', async () => {
-  setConfig({
-    serverRuntimeConfig: {
-      nextVideo: {
-        folder: 'videos',
-        providerConfig: {
-          'vercel-blob': {},
-        },
-      },
+  setVideoConfig({
+    folder: 'videos',
+    providerConfig: {
+      'vercel-blob': {},
     },
   });
 
@@ -20,18 +16,14 @@ test('createAssetKey w/ defaultGenerateAssetKey and local asset', async () => {
     '/videos/get-started.mp4'
   );
 
-  setConfig({});
+  setVideoConfig({});
 });
 
 test('createAssetKey w/ defaultGenerateAssetKey and remote asset', async () => {
-  setConfig({
-    serverRuntimeConfig: {
-      nextVideo: {
-        folder: 'videos',
-        providerConfig: {
-          'vercel-blob': {},
-        },
-      },
+  setVideoConfig({
+    folder: 'videos',
+    providerConfig: {
+      'vercel-blob': {},
     },
   });
 
@@ -40,21 +32,17 @@ test('createAssetKey w/ defaultGenerateAssetKey and remote asset', async () => {
     'videos/mux.mp4'
   );
 
-  setConfig({});
+  setVideoConfig({});
 });
 
 test('createAssetKey w/ custom generateAssetKey and remote asset', async () => {
-  setConfig({
-    serverRuntimeConfig: {
-      nextVideo: {
-        folder: 'videos',
-        providerConfig: {
-          'vercel-blob': {
-            generateAssetKey: (filePathOrURL, folder) => {
-              const url = new URL(filePathOrURL);
-              return `${folder}/remote${url.pathname}`;
-            },
-          },
+  setVideoConfig({
+    folder: 'videos',
+    providerConfig: {
+      'vercel-blob': {
+        generateAssetKey: (filePathOrURL, folder) => {
+          const url = new URL(filePathOrURL);
+          return `${folder}/remote${url.pathname}`;
         },
       },
     },
@@ -65,5 +53,5 @@ test('createAssetKey w/ custom generateAssetKey and remote asset', async () => {
     'videos/remote/muxdemofiles/mux.mp4'
   );
 
-  setConfig({});
+  setVideoConfig({});
 });

@@ -103,7 +103,7 @@ export function setVideoConfig(videoConfig?: VideoConfig): VideoConfigComplete {
 
 /**
  * The video config is set in `next.config.js` and passed to the `withNextVideo` function.
- * The video config is then stored in `serverRuntimeConfig`.
+ * The video config is then stored via the `setVideoConfig` function.
  */
 export async function getVideoConfig(): Promise<VideoConfigComplete> {
   let videoConfig: NextConfig | undefined = videoConfigComplete;

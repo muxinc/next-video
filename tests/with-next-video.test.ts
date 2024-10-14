@@ -3,6 +3,7 @@ import { describe, it } from 'node:test';
 
 import { withNextVideo } from '../src/with-next-video.js';
 import { Asset } from '../src/assets.js';
+import { getVideoConfig } from '../src/config.js';
 
 describe('withNextVideo', () => {
   it('should handle nextConfig being a function', async () => {
@@ -55,7 +56,7 @@ describe('withNextVideo', () => {
     const fakeSaveAsset = function (path: string, asset: Asset): Promise<void> { return Promise.resolve() }
     const fakeUpdateAsset = function (path: string, asset: Asset): Promise<void> { return Promise.resolve() }
 
-    const result = await withNextVideo(nextConfig, {
+    await withNextVideo(nextConfig, {
       path: '/api/video-files',
       folder: 'video-files',
       provider: 'vercel-blob',
@@ -64,7 +65,7 @@ describe('withNextVideo', () => {
       updateAsset: fakeUpdateAsset
     });
 
-    const config = result.serverRuntimeConfig.nextVideo;
+    const config = await getVideoConfig();
     assert.deepEqual(config, {
       path: '/api/video-files',
       folder: 'video-files',
