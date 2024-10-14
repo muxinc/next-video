@@ -22,9 +22,14 @@ export async function POST(request: Request) {
 
 // Pages Router
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { status, data } = req.method === 'POST' ?
-    await postRequest(String(req.query.url)) :
-    await getRequest(String(req.query.url));
+
+  if (req.method === 'POST') {
+    const { status, data } = await postRequest(String(req.body.url));
+    res.status(status).json(data);
+    return;
+  }
+
+  const { status, data } = await getRequest(String(req.query.url));
   res.status(status).json(data);
 }
 
