@@ -40,6 +40,23 @@ async function getRequest(url?: string | null) {
   try {
     asset = await getAsset(url);
   } catch {
+
+    // In dev mode we try to create the asset if it doesn't exist on a GET request.
+    const isDevMode = process.env.NODE_ENV === 'development';
+
+    if (isDevMode) {
+      asset = await createAsset(url);
+
+      if (asset) {
+        const videoConfig = await getVideoConfig();
+        await callHandler('request.video.added', asset, videoConfig);
+
+        return { status: 200, data: asset };
+      } else {
+        return { status: 500, data: { error: 'could not create asset' } };
+      }
+    }
+
     return { status: 404, data: { error: 'asset not found' } };
   }
 
