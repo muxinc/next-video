@@ -1,3 +1,12 @@
+## [1.2.1](https://github.com/muxinc/next-video/compare/v1.2.0...v1.2.1) (2024-10-25)
+
+
+### Bug Fixes
+
+* update peer deps for React 19 ([#308](https://github.com/muxinc/next-video/issues/308)) ([ec15d93](https://github.com/muxinc/next-video/commit/ec15d9334c7676a5f6f0f2b735e6e42ec9c1fb3c))
+
+
+
 # [1.2.0](https://github.com/muxinc/next-video/compare/v1.1.4...v1.2.0) (2024-09-17)
 
 
