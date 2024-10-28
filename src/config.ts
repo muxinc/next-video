@@ -1,13 +1,9 @@
 import { cwd } from 'node:process';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import nextConfig from 'next/config.js';
 import type { NextConfig } from 'next';
 import { Asset } from './assets';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
-
-// @ts-ignore
-const getConfig = nextConfig.default;
 
 /**
  * Video configurations
@@ -98,25 +94,31 @@ export const videoConfigDefault: VideoConfigComplete = {
   }
 };
 
+let videoConfigComplete: VideoConfigComplete = videoConfigDefault;
+
+export function setVideoConfig(videoConfig?: VideoConfig): VideoConfigComplete {
+  videoConfigComplete = Object.assign({}, videoConfigDefault, videoConfig);
+  return videoConfigComplete;
+}
+
 /**
  * The video config is set in `next.config.js` and passed to the `withNextVideo` function.
- * The video config is then stored in `serverRuntimeConfig`.
+ * The video config is then stored via the `setVideoConfig` function.
  */
 export async function getVideoConfig(): Promise<VideoConfigComplete> {
-  let nextConfig: NextConfig | undefined = getConfig();
-  if (!nextConfig?.serverRuntimeConfig?.nextVideo) {
+  let videoConfig: NextConfig | undefined = videoConfigComplete;
+  if (!videoConfig) {
     try {
-      nextConfig = await importConfig('next.config.js');
+      await importConfig('next.config.js');
     } catch (err) {
       try {
-        nextConfig = await importConfig('next.config.mjs');
+        await importConfig('next.config.mjs');
       } catch {
         console.error('Failed to load next-video config.');
       }
     }
   }
-
-  return nextConfig?.serverRuntimeConfig?.nextVideo;
+  return videoConfigComplete;
 }
 
 async function importConfig(file: string) {
