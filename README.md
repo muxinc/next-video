@@ -77,16 +77,30 @@ yarn add next-video
 pnpm add next-video
 ```
 
-#### Add Next Video to `next.config.js`
+#### Add Next Video to your Next.js config
+
+**`next.config.js`**
 
 ```js
-/** @type {import('next').NextConfig} */
 const { withNextVideo } = require('next-video/process');
 
+/** @type {import('next').NextConfig} */
 const nextConfig = {}; // Your current Next Config object
 
 module.exports = withNextVideo(nextConfig);
 ```
+
+**`next.config.mjs`**
+
+```js
+import { withNextVideo } from 'next-video/process';
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {};
+
+export default withNextVideo(nextConfig);
+```
+
 
 #### Add video import types to `tsconfig.json`
 
