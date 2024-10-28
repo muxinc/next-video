@@ -8,6 +8,10 @@ export function base(type: logType, ...messages: string[]) {
   console[type](...messages);
 }
 
+export function log(...messages: any[]) {
+  base('log', ...messages);
+}
+
 export function info(...messages: any[]) {
   base('log', chalk.blue.bold('-'), ...messages);
 }
@@ -39,7 +43,7 @@ export function label(detail: string) {
 
 export default {
   base,
-
+  log,
   info,
   success,
   add,

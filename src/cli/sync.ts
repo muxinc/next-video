@@ -40,18 +40,24 @@ function watcher(dir: string) {
   });
 
   watcher.on('add', async (filePath) => {
-    const newAsset = await createAsset(filePath);
-
-    if (newAsset) {
-      log.add(`New file found: ${filePath}`);
-      const videoConfig = await getVideoConfig();
-      return callHandler('local.video.added', newAsset, videoConfig);
+    try {
+      await getAsset(filePath);
+    } catch {
+      const newAsset = await createAsset(filePath);
+      if (newAsset) {
+        log.add(`New file found: ${filePath}`);
+        const videoConfig = await getVideoConfig();
+        return callHandler('local.video.added', newAsset, videoConfig);
+      }
     }
   });
 }
 
 export async function handler(argv: Arguments) {
   const directoryPath = path.join(cwd(), argv.dir as string);
+
+  const version = await getNextVideoVersion();
+  log.log(log.label(`▶︎ next-video ${version}`));
 
   try {
     // Filter out directories and get relative file paths.
@@ -62,15 +68,6 @@ export async function handler(argv: Arguments) {
     const otherFiles = files.filter(
       (file) => !file.match(/(^|[\/\\])\..*|\.json$/)
     );
-
-    if (argv.watch) {
-      const version = await getNextVideoVersion();
-      const relativePath = path.relative(cwd(), directoryPath);
-      log.space(log.label(`▶︎ next-video ${version}`));
-      log.base('log', ' ', `- Watching for file changes in ./${relativePath}`);
-      log.space();
-      watcher(directoryPath);
-    }
 
     const newFileProcessor = async (file: string) => {
       log.info(log.label('Processing file:'), file);
@@ -127,7 +124,17 @@ export async function handler(argv: Arguments) {
       log.success(
         `Processed (or resumed processing) ${processed.length} video${s}`
       );
+    } else {
+      log.info('No new or unprocessed videos found');
     }
+
+    if (argv.watch) {
+      const relativePath = path.relative(cwd(), directoryPath);
+      log.info(`Watching for file changes in ./${relativePath}`);
+      log.space();
+      watcher(directoryPath);
+    }
+
   } catch (err: any) {
     if (err.code === 'ENOENT' && err.path === directoryPath) {
       log.warning(`Directory does not exist: ${directoryPath}`);
