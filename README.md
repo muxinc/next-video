@@ -402,43 +402,6 @@ Supported providers with their required environment variables:
 *Web-compatible MP4 files required for hosting providers without video processing
 
 
-## Required Permissions for Amazon S3
-
-<details>
-<summary>If you're using Amazon S3 as the provider, you'll need to create a new IAM user with the following permissions:</summary>
-
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "s3:ListAllMyBuckets",
-        "s3:CreateBucket",
-        "s3:PutBucketOwnershipControls"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "s3:PutBucketPublicAccessBlock",
-        "s3:PutBucketAcl",
-        "s3:PutBucketCORS",
-        "s3:GetObject",
-        "s3:PutObject",
-        "s3:PutObjectAcl",
-        "s3:ListBucket"
-      ],
-      "Resource": "arn:aws:s3:::next-videos-*"
-    }
-  ]
-}
-```
-</details>
-
-
 ### Asset metadata storage hooks (callbacks)
 
 By default the asset metadata is stored in a JSON file in the `/videos` directory. 
@@ -517,6 +480,43 @@ export { GET, POST } from '@/next-video';
 // pages/api/video/[[...handler]].js
 export { handler as default } from '@/next-video';
 ```
+
+
+## Required Permissions for Amazon S3
+
+<details>
+<summary>If you're using Amazon S3 as the provider, you'll need to create a new IAM user with the following permissions:</summary>
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListAllMyBuckets",
+        "s3:CreateBucket",
+        "s3:PutBucketOwnershipControls"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutBucketPublicAccessBlock",
+        "s3:PutBucketAcl",
+        "s3:PutBucketCORS",
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:PutObjectAcl",
+        "s3:ListBucket"
+      ],
+      "Resource": "arn:aws:s3:::next-videos-*"
+    }
+  ]
+}
+```
+</details>
 
 
 ## Roadmap
