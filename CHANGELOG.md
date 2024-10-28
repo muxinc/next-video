@@ -1,3 +1,12 @@
+## [1.2.2](https://github.com/muxinc/next-video/compare/v1.2.1...v1.2.2) (2024-10-28)
+
+
+### Bug Fixes
+
+* dup sync via watch ([#311](https://github.com/muxinc/next-video/issues/311)) ([a3951a3](https://github.com/muxinc/next-video/commit/a3951a3962b1936bfb8bbb772470d01a9f577e4f)), closes [#310](https://github.com/muxinc/next-video/issues/310)
+
+
+
 ## [1.2.1](https://github.com/muxinc/next-video/compare/v1.2.0...v1.2.1) (2024-10-25)
 
 
