@@ -8,7 +8,7 @@ import { videoConfigDefault } from '../../config.js';
 import type { VideoConfig } from '../../config.js';
 
 function extensionToType(filePath: string) {
-  if (filePath.endsWith('.mjs')) {
+  if (filePath.endsWith('.mjs') || filePath.endsWith('.ts')) {
     return 'module';
   }
 
@@ -20,7 +20,7 @@ export default async function updateNextConfigFile(parentDir: string = './', vid
   let configPath: string | undefined = undefined;
   let configContents: string = '';
 
-  const pathsToCheck = ['next.config.js', 'next.config.mjs'];
+  const pathsToCheck = ['next.config.js', 'next.config.mjs', 'next.config.ts'];
 
   for (let i = 0; i < pathsToCheck.length; i++) {
     const filePath = path.join(parentDir, pathsToCheck[i]);

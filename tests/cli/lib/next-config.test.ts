@@ -10,6 +10,10 @@ function outputConfigName(configName: string) {
     return 'next.config.mjs';
   }
 
+  if (configName.endsWith('.ts')) {
+    return 'next.config.ts';
+  }
+
   // We have to return cjs files so we can import them async in a test.
   return 'next.config.js';
 }
@@ -47,6 +51,14 @@ describe('updateNextConfig', () => {
     await updateNextConfigFile(dirPath);
 
     const updatedContents = await fs.readFile(path.join(dirPath, 'next.config.mjs'), 'utf-8');
+    assert(updatedContents.includes('next-video'));
+  });
+
+  it('should add next-video to the next.config.ts file', async () => {
+    const dirPath = await createTempDirWithConfig('next.config.ts');
+    await updateNextConfigFile(dirPath);
+
+    const updatedContents = await fs.readFile(path.join(dirPath, 'next.config.ts'), 'utf-8');
     assert(updatedContents.includes('next-video'));
   });
 });
