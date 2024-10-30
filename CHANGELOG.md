@@ -1,3 +1,12 @@
+## [1.3.1](https://github.com/muxinc/next-video/compare/v1.3.0...v1.3.1) (2024-10-30)
+
+
+### Bug Fixes
+
+* wizard for Next15 ts config ([#313](https://github.com/muxinc/next-video/issues/313)) ([ae99a8b](https://github.com/muxinc/next-video/commit/ae99a8b0ff8b1354adfbb9ca19436431cd21aa1d)), closes [#312](https://github.com/muxinc/next-video/issues/312)
+
+
+
 # [1.3.0](https://github.com/muxinc/next-video/compare/v1.2.2...v1.3.0) (2024-10-28)
 
 
