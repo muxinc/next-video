@@ -1,9 +1,8 @@
-import { cwd } from 'node:process';
 import path from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { cwd } from 'node:process';
 import type { NextConfig } from 'next';
 import { Asset } from './assets';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
 
 /**
  * Video configurations
@@ -94,11 +93,25 @@ export const videoConfigDefault: VideoConfigComplete = {
   }
 };
 
-let videoConfigComplete: VideoConfigComplete = videoConfigDefault;
+declare global {
+  var __nextVideo: {
+    configComplete: VideoConfigComplete;
+    configIsDefined: boolean;
+  }
+}
+
+// globalThis is used here because in Next 15 when a next.config.ts is transpiled and imported
+// I believe this module is imported again in a different context and the module state is lost.
+
+globalThis.__nextVideo = {
+  configComplete: videoConfigDefault,
+  configIsDefined: false
+};
 
 export function setVideoConfig(videoConfig?: VideoConfig): VideoConfigComplete {
-  videoConfigComplete = Object.assign({}, videoConfigDefault, videoConfig);
-  return videoConfigComplete;
+  globalThis.__nextVideo.configIsDefined = true;
+  globalThis.__nextVideo.configComplete = { ...videoConfigDefault, ...videoConfig };
+  return globalThis.__nextVideo.configComplete;
 }
 
 /**
@@ -106,33 +119,11 @@ export function setVideoConfig(videoConfig?: VideoConfig): VideoConfigComplete {
  * The video config is then stored via the `setVideoConfig` function.
  */
 export async function getVideoConfig(): Promise<VideoConfigComplete> {
-  let videoConfig: NextConfig | undefined = videoConfigComplete;
-  if (!videoConfig) {
-    try {
-      await importConfig('next.config.js');
-    } catch (err) {
-      try {
-        await importConfig('next.config.mjs');
-      } catch {
-        console.error('Failed to load next-video config.');
-      }
-    }
+  // This condition is only true for the next-video CLI commands.
+  if (!globalThis.__nextVideo.configIsDefined) {
+    const nextConfigModule = (await import(/* webpackIgnore: true */ 'next/dist/server/config.js')).default;
+    const loadNextConfig = ((nextConfigModule as any).default ?? nextConfigModule) as typeof nextConfigModule;
+    await loadNextConfig('phase-development-server', cwd());
   }
-  return videoConfigComplete;
-}
-
-async function importConfig(file: string) {
-  const absFilePath = path.resolve(cwd(), file);
-  const fileUrl = pathToFileURL(absFilePath).href;
-
-  const mod = await import(/* webpackIgnore: true */ fileUrl);
-  const config:
-    | ((phase: string | undefined, opts: any) => Promise<NextConfig>)
-    | NextConfig
-    | undefined = mod?.default;
-
-  if (typeof config === 'function') {
-    return config(process.env.NEXT_PHASE, { defaultConfig: {} });
-  }
-  return config;
+  return globalThis.__nextVideo.configComplete;
 }

@@ -289,12 +289,12 @@ export async function handler(argv: Arguments) {
     if (e.error === 'not_found') {
       changes.push([
         log.error,
-        'No next.config.js or next.config.mjs file found. Please add next-video to your config manually.',
+        'No next.config.(js|mjs|ts) file found. Please add next-video to your config manually.',
       ]);
     } else if (e.error === 'already_added') {
       changes.push([log.info, 'It seems like next-video is already added to your Next Config']);
     } else {
-      changes.push([log.error, 'Failed to update next.config.js, please add next-video to your config manually.']);
+      changes.push([log.error, 'Failed to update next.config.(js|mjs|ts), please add next-video to your config manually.']);
     }
   }
 

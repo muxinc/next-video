@@ -57,7 +57,8 @@ export async function handler(argv: Arguments) {
   const directoryPath = path.join(cwd(), argv.dir as string);
 
   const version = await getNextVideoVersion();
-  log.log(log.label(`▶︎ next-video ${version}`));
+  log.space(log.label(`▶︎ next-video ${version}`));
+  log.space();
 
   try {
     // Filter out directories and get relative file paths.
