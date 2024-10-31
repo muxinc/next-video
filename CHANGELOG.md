@@ -1,3 +1,12 @@
+## [1.3.2](https://github.com/muxinc/next-video/compare/v1.3.1...v1.3.2) (2024-10-31)
+
+
+### Bug Fixes
+
+* loading of next.config.ts for next-video CLI ([#314](https://github.com/muxinc/next-video/issues/314)) ([728406a](https://github.com/muxinc/next-video/commit/728406a3347dcfab21c321593abf3ab7fcc95da8))
+
+
+
 ## [1.3.1](https://github.com/muxinc/next-video/compare/v1.3.0...v1.3.1) (2024-10-30)
 
 
