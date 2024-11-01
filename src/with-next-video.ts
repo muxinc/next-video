@@ -3,16 +3,12 @@ import { join, dirname } from 'node:path';
 import fs from 'node:fs';
 import { env } from 'node:process';
 import { fileURLToPath } from 'node:url';
-import { createRequire } from 'node:module';
+import logger from './utils/logger.js';
+import { getPackageVersion } from './utils/utils.js';
 import { setVideoConfig } from './config.js';
 import type { VideoConfig } from './config.js';
 
-let moduleRequire: NodeRequire;
-try {
-  moduleRequire = require;
-} catch {
-  moduleRequire = createRequire(import.meta.url);
-}
+let hasWarned = false;
 
 export function withNextVideo(nextConfig: any, videoConfig?: VideoConfig) {
   const videoConfigComplete = setVideoConfig(videoConfig);
@@ -48,7 +44,7 @@ export function withNextVideo(nextConfig: any, videoConfig?: VideoConfig) {
     });
   }
 
-  const nextVersion = getNextjsVersion();
+  const nextVersion = getPackageVersion('next');
 
   if (nextVersion && nextVersion.startsWith('15.')) {
     nextConfig.outputFileTracingIncludes = {
@@ -62,6 +58,22 @@ export function withNextVideo(nextConfig: any, videoConfig?: VideoConfig) {
       [path]: [`./${folder}/**/*.json`],
     };
     nextConfig.experimental = experimental;
+  }
+
+  if (!hasWarned && process.env.TURBOPACK && !process.env.NEXT_VIDEO_SUPPRESS_TURBOPACK_WARNING) {
+    hasWarned = true;
+
+    const nextVideoVersion = getPackageVersion('next-video');
+
+    logger.space(logger.label(`▶︎ next-video ${nextVideoVersion}\n`));
+    logger.warning(
+      `You are using next-video with \`next ${
+        process.env.NODE_ENV === 'development' ? 'dev' : 'build'
+      } --turbo\`. next-video doesn't yet fully support Turbopack.\n  We recommend temporarily removing the \`--turbo\` flag for use with next-video.\n`
+    );
+    logger.warning(
+      `Follow this issue for progress on next-video + Turbopack: https://github.com/muxinc/next-video/issues/266.\n  (You can suppress this warning by setting NEXT_VIDEO_SUPPRESS_TURBOPACK_WARNING=1 as environment variable)\n`
+    );
   }
 
   return Object.assign({}, nextConfig, {
@@ -140,28 +152,4 @@ export function withNextVideo(nextConfig: any, videoConfig?: VideoConfig) {
       return config;
     },
   });
-}
-
-function getNextjsVersion(): string | undefined {
-  const nextjsPackageJsonPath = resolveNextjsPackageJson();
-  if (nextjsPackageJsonPath) {
-    try {
-      const nextjsPackageJson: { version: string } = JSON.parse(
-        fs.readFileSync(nextjsPackageJsonPath, { encoding: 'utf-8' }),
-      );
-      return nextjsPackageJson.version;
-    } catch {
-      // noop
-    }
-  }
-
-  return undefined;
-}
-
-function resolveNextjsPackageJson(): string | undefined {
-  try {
-    return moduleRequire.resolve('next/package.json', { paths: [process.cwd()] });
-  } catch {
-    return undefined;
-  }
 }

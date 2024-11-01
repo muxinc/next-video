@@ -6,11 +6,11 @@ import { cwd } from 'node:process';
 import { readdir } from 'node:fs/promises';
 import path from 'node:path';
 
-import log from '../utils/logger.js';
 import { callHandler } from '../process.js';
 import { createAsset, getAsset } from '../assets.js';
 import { getVideoConfig } from '../config.js';
-import { getNextVideoVersion } from './lib/json-configs.js';
+import { getPackageVersion } from '../utils/utils.js';
+import log from '../utils/logger.js';
 
 export const command = 'sync';
 export const desc =
@@ -56,7 +56,7 @@ function watcher(dir: string) {
 export async function handler(argv: Arguments) {
   const directoryPath = path.join(cwd(), argv.dir as string);
 
-  const version = await getNextVideoVersion();
+  const version = getPackageVersion('next-video');
   log.space(log.label(`▶︎ next-video ${version}`));
   log.space();
 
