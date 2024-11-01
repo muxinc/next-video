@@ -1,3 +1,12 @@
+## [1.3.3](https://github.com/muxinc/next-video/compare/v1.3.2...v1.3.3) (2024-11-01)
+
+
+### Bug Fixes
+
+* adding video JSON to the Next 15 build + Turbopack warning ([#316](https://github.com/muxinc/next-video/issues/316)) ([199e158](https://github.com/muxinc/next-video/commit/199e1583f0769d80d48e96701583d3378c685909))
+
+
+
 ## [1.3.2](https://github.com/muxinc/next-video/compare/v1.3.1...v1.3.2) (2024-10-31)
 
 
