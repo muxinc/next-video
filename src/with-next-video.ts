@@ -1,10 +1,18 @@
 import symlinkDir from 'symlink-dir';
 import { join, dirname } from 'node:path';
-import fs from 'node:fs/promises';
+import fs from 'node:fs';
 import { env } from 'node:process';
 import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 import { setVideoConfig } from './config.js';
 import type { VideoConfig } from './config.js';
+
+let moduleRequire: NodeRequire;
+try {
+  moduleRequire = require;
+} catch {
+  moduleRequire = createRequire(import.meta.url);
+}
 
 export function withNextVideo(nextConfig: any, videoConfig?: VideoConfig) {
   const videoConfigComplete = setVideoConfig(videoConfig);
@@ -36,19 +44,27 @@ export function withNextVideo(nextConfig: any, videoConfig?: VideoConfig) {
     symlinkDir(VIDEOS_PATH, TMP_PUBLIC_VIDEOS_PATH);
 
     process.on('exit', async () => {
-      await fs.unlink(TMP_PUBLIC_VIDEOS_PATH);
+      fs.unlinkSync(TMP_PUBLIC_VIDEOS_PATH);
     });
   }
 
-  const experimental = { ...nextConfig.experimental };
+  const nextVersion = getNextjsVersion();
 
-  experimental.outputFileTracingIncludes = {
-    ...experimental.outputFileTracingIncludes,
-    [path]: [`./${folder}/**/*.json`],
-  };
+  if (nextVersion && nextVersion.startsWith('15.')) {
+    nextConfig.outputFileTracingIncludes = {
+      ...nextConfig.outputFileTracingIncludes,
+      [path]: [`./${folder}/**/*.json`],
+    };
+  } else {
+    const experimental = { ...nextConfig.experimental };
+    experimental.outputFileTracingIncludes = {
+      ...experimental.outputFileTracingIncludes,
+      [path]: [`./${folder}/**/*.json`],
+    };
+    nextConfig.experimental = experimental;
+  }
 
   return Object.assign({}, nextConfig, {
-    experimental,
     webpack(config: any, options: any) {
       if (!options.defaultLoaders) {
         throw new Error(
@@ -124,4 +140,28 @@ export function withNextVideo(nextConfig: any, videoConfig?: VideoConfig) {
       return config;
     },
   });
+}
+
+function getNextjsVersion(): string | undefined {
+  const nextjsPackageJsonPath = resolveNextjsPackageJson();
+  if (nextjsPackageJsonPath) {
+    try {
+      const nextjsPackageJson: { version: string } = JSON.parse(
+        fs.readFileSync(nextjsPackageJsonPath, { encoding: 'utf-8' }),
+      );
+      return nextjsPackageJson.version;
+    } catch {
+      // noop
+    }
+  }
+
+  return undefined;
+}
+
+function resolveNextjsPackageJson(): string | undefined {
+  try {
+    return moduleRequire.resolve('next/package.json', { paths: [process.cwd()] });
+  } catch {
+    return undefined;
+  }
 }
