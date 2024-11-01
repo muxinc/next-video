@@ -40,15 +40,12 @@ export function withNextVideo(nextConfig: any, videoConfig?: VideoConfig) {
     });
   }
 
-  const experimental = { ...nextConfig.experimental };
-
-  experimental.outputFileTracingIncludes = {
-    ...experimental.outputFileTracingIncludes,
+  nextConfig.outputFileTracingIncludes = {
+    ...nextConfig.outputFileTracingIncludes,
     [path]: [`./${folder}/**/*.json`],
   };
 
   return Object.assign({}, nextConfig, {
-    experimental,
     webpack(config: any, options: any) {
       if (!options.defaultLoaders) {
         throw new Error(
