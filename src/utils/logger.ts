@@ -25,7 +25,7 @@ export function add(...messages: any[]) {
 }
 
 export function warning(...messages: any[]) {
-  base('log', chalk.yellow.bold('!'), ...messages);
+  base('log', chalk.yellow.bold('⚠'), ...messages);
 }
 
 export function error(...messages: any[]) {

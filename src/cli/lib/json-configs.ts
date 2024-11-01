@@ -1,6 +1,4 @@
 import { readFile } from 'node:fs/promises';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 import { PACKAGE_NAME } from '../../constants.js';
 
@@ -43,12 +41,4 @@ export async function checkPackageJsonForNextVideo(packagePath: string = './pack
   const json = JSON.parse(pkg);
 
   return !!(json.devDependencies?.[PACKAGE_NAME] || json.dependencies?.[PACKAGE_NAME]);
-}
-
-export async function getNextVideoVersion() {
-  const scriptDir = path.dirname(fileURLToPath(import.meta.url));
-  const scriptRoot = path.join(scriptDir, '..', '..', '..');
-  const packagePath = path.join(scriptRoot, 'package.json');
-  const pkg = JSON.parse(await readFile(packagePath, 'utf-8'));
-  return pkg.version;
 }

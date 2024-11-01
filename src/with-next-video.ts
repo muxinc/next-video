@@ -1,10 +1,14 @@
 import symlinkDir from 'symlink-dir';
 import { join, dirname } from 'node:path';
-import fs from 'node:fs/promises';
+import fs from 'node:fs';
 import { env } from 'node:process';
 import { fileURLToPath } from 'node:url';
+import logger from './utils/logger.js';
+import { getPackageVersion } from './utils/utils.js';
 import { setVideoConfig } from './config.js';
 import type { VideoConfig } from './config.js';
+
+let hasWarned = false;
 
 export function withNextVideo(nextConfig: any, videoConfig?: VideoConfig) {
   const videoConfigComplete = setVideoConfig(videoConfig);
@@ -36,19 +40,43 @@ export function withNextVideo(nextConfig: any, videoConfig?: VideoConfig) {
     symlinkDir(VIDEOS_PATH, TMP_PUBLIC_VIDEOS_PATH);
 
     process.on('exit', async () => {
-      await fs.unlink(TMP_PUBLIC_VIDEOS_PATH);
+      fs.unlinkSync(TMP_PUBLIC_VIDEOS_PATH);
     });
   }
 
-  const experimental = { ...nextConfig.experimental };
+  const nextVersion = getPackageVersion('next');
 
-  experimental.outputFileTracingIncludes = {
-    ...experimental.outputFileTracingIncludes,
-    [path]: [`./${folder}/**/*.json`],
-  };
+  if (nextVersion && nextVersion.startsWith('15.')) {
+    nextConfig.outputFileTracingIncludes = {
+      ...nextConfig.outputFileTracingIncludes,
+      [path]: [`./${folder}/**/*.json`],
+    };
+  } else {
+    const experimental = { ...nextConfig.experimental };
+    experimental.outputFileTracingIncludes = {
+      ...experimental.outputFileTracingIncludes,
+      [path]: [`./${folder}/**/*.json`],
+    };
+    nextConfig.experimental = experimental;
+  }
+
+  if (!hasWarned && process.env.TURBOPACK && !process.env.NEXT_VIDEO_SUPPRESS_TURBOPACK_WARNING) {
+    hasWarned = true;
+
+    const nextVideoVersion = getPackageVersion('next-video');
+
+    logger.space(logger.label(`▶︎ next-video ${nextVideoVersion}\n`));
+    logger.warning(
+      `You are using next-video with \`next ${
+        process.env.NODE_ENV === 'development' ? 'dev' : 'build'
+      } --turbo\`. next-video doesn't yet fully support Turbopack.\n  We recommend temporarily removing the \`--turbo\` flag for use with next-video.\n`
+    );
+    logger.warning(
+      `Follow this issue for progress on next-video + Turbopack: https://github.com/muxinc/next-video/issues/266.\n  (You can suppress this warning by setting NEXT_VIDEO_SUPPRESS_TURBOPACK_WARNING=1 as environment variable)\n`
+    );
+  }
 
   return Object.assign({}, nextConfig, {
-    experimental,
     webpack(config: any, options: any) {
       if (!options.defaultLoaders) {
         throw new Error(

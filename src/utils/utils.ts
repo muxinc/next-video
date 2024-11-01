@@ -1,3 +1,32 @@
+import fs from 'node:fs';
+import resolve from 'resolve';
+
+export function getPackageVersion(packageName: string) {
+  const packageJsonPath = resolvePackageJson(packageName);
+  if (packageJsonPath) {
+    try {
+      const packageJson: { version: string } = JSON.parse(
+        fs.readFileSync(packageJsonPath, { encoding: 'utf-8' }),
+      );
+      return packageJson.version;
+    } catch {
+      // noop
+    }
+  }
+  return undefined;
+}
+
+function resolvePackageJson(packageName: string) {
+  try {
+    return resolve.sync(`${packageName}/package.json`, {
+      basedir: process.cwd(),
+      preserveSymlinks: true,
+    });
+  } catch {
+    return undefined;
+  }
+}
+
 export function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
