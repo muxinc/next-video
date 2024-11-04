@@ -1,5 +1,4 @@
 import type { VideoConfig } from '../config.js';
-import type { FunctionComponent } from 'react';
 import type { DefaultPlayerProps } from './players/default-player.js';
 import type { Asset } from '../assets.js';
 import { StaticImageData } from 'next/image.js';
@@ -34,7 +33,7 @@ export interface VideoProps extends Omit<DefaultPlayerProps, 'src' | 'poster'> {
   /**
    * The component type to render the video as.
    */
-  as?: FunctionComponent<DefaultPlayerProps>;
+  as?: React.FunctionComponent<DefaultPlayerProps>;
 
   /**
    * An imported video source object or a string video source URL.
@@ -91,7 +90,7 @@ export interface VideoPropsInternal extends VideoProps {
   /**
    * The component type to render the video as.
    */
-  as: FunctionComponent<DefaultPlayerProps>;
+  as: React.FunctionComponent<DefaultPlayerProps>;
 
   /**
    * A custom function used to resolve string based video URLs (not imports).
@@ -139,5 +138,5 @@ export interface PlayerProps {
   /**
    * Change the look and feel with a custom theme.
    */
-  theme?: FunctionComponent<any>;
+  theme?: React.ComponentType;
 }
