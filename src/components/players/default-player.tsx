@@ -1,10 +1,10 @@
 'use client';
 
 import { forwardRef, Suspense, lazy, Children, isValidElement } from 'react';
+import Sutro from 'player.style/sutro/react';
 import { getPlaybackId, getPosterURLFromPlaybackId } from '../../providers/mux/transformer.js';
 import { getUrlExtension, svgBlurImage } from '../utils.js';
 
-import DefaultTheme from './default-theme.js';
 import type { Props as MuxVideoProps } from './mux-video-react.js';
 import type { PlayerProps } from '../types.js';
 
@@ -20,7 +20,7 @@ const DefaultPlayer = forwardRef((allProps: DefaultPlayerProps, forwardedRef: an
     controls,
     poster,
     blurDataURL,
-    theme: Theme = DefaultTheme,
+    theme: Theme = Sutro,
     ...rest
   } = allProps;
 

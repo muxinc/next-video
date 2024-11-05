@@ -42,9 +42,9 @@ test('renders media-controller and mux-video', async () => {
 
   const wrapper = create(<Video src={asset} />);
   await setTimeout(50);
-  console.log(JSON.stringify(wrapper.toJSON()));
-  assert.equal(wrapper.toJSON().children[2].type, 'media-controller');
-  assert.equal(wrapper.toJSON().children[2].children[1].type, 'mux-video');
+
+  assert.equal(wrapper.toJSON().children[1].type, 'media-theme-sutro');
+  assert.equal(wrapper.toJSON().children[1].children[1].type, 'mux-video');
   assert.equal(
     wrapper.root.findByType('mux-video').parent.props.playbackId,
     'zNYmqdvJ61gt5uip02zPid01rYIPyyzVRVKQChgSgJlaY'
