@@ -101,7 +101,7 @@
     "chokidar": "^3.6.0",
     "magicast": "^0.3.4",
     "resolve": "^1.22.8",
-    "media-chrome": "^4.2.2",
+    "media-chrome": "^4.2.3",
     "symlink-dir": "^5.2.1",
     "undici": "^5.28.4",
     "yargs": "^17.7.2"
