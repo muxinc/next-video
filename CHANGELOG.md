@@ -1,3 +1,12 @@
+# [1.4.0](https://github.com/muxinc/next-video/compare/v1.3.3...v1.4.0) (2024-11-27)
+
+
+### Features
+
+* Cloudflare R2 provider ([#277](https://github.com/muxinc/next-video/issues/277)) ([cce3347](https://github.com/muxinc/next-video/commit/cce33473d7a769a32aa734278ddfe8642a3eaf90))
+
+
+
 ## [1.3.3](https://github.com/muxinc/next-video/compare/v1.3.2...v1.3.3) (2024-11-01)
 
 
