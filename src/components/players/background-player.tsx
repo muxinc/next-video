@@ -137,6 +137,7 @@ const BackgroundPlayer = forwardRef((allProps: BackgroundPlayerProps, forwardedR
           muted={true}
           autoPlay={true}
           loop={true}
+          playsInline={true}
           {...props}
         />
         {poster && (

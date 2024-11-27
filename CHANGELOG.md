@@ -1,3 +1,93 @@
+## [1.3.3](https://github.com/muxinc/next-video/compare/v1.3.2...v1.3.3) (2024-11-01)
+
+
+### Bug Fixes
+
+* adding video JSON to the Next 15 build + Turbopack warning ([#316](https://github.com/muxinc/next-video/issues/316)) ([199e158](https://github.com/muxinc/next-video/commit/199e1583f0769d80d48e96701583d3378c685909))
+
+
+
+## [1.3.2](https://github.com/muxinc/next-video/compare/v1.3.1...v1.3.2) (2024-10-31)
+
+
+### Bug Fixes
+
+* loading of next.config.ts for next-video CLI ([#314](https://github.com/muxinc/next-video/issues/314)) ([728406a](https://github.com/muxinc/next-video/commit/728406a3347dcfab21c321593abf3ab7fcc95da8))
+
+
+
+## [1.3.1](https://github.com/muxinc/next-video/compare/v1.3.0...v1.3.1) (2024-10-30)
+
+
+### Bug Fixes
+
+* wizard for Next15 ts config ([#313](https://github.com/muxinc/next-video/issues/313)) ([ae99a8b](https://github.com/muxinc/next-video/commit/ae99a8b0ff8b1354adfbb9ca19436431cd21aa1d)), closes [#312](https://github.com/muxinc/next-video/issues/312)
+
+
+
+# [1.3.0](https://github.com/muxinc/next-video/compare/v1.2.2...v1.3.0) (2024-10-28)
+
+
+### Features
+
+* decoupled video config ([#306](https://github.com/muxinc/next-video/issues/306)) ([e0b426c](https://github.com/muxinc/next-video/commit/e0b426c5f87a5b5e1ca5c3ad78c26a3e13ac52e0))
+
+
+
+## [1.2.2](https://github.com/muxinc/next-video/compare/v1.2.1...v1.2.2) (2024-10-28)
+
+
+### Bug Fixes
+
+* dup sync via watch ([#311](https://github.com/muxinc/next-video/issues/311)) ([a3951a3](https://github.com/muxinc/next-video/commit/a3951a3962b1936bfb8bbb772470d01a9f577e4f)), closes [#310](https://github.com/muxinc/next-video/issues/310)
+
+
+
+## [1.2.1](https://github.com/muxinc/next-video/compare/v1.2.0...v1.2.1) (2024-10-25)
+
+
+### Bug Fixes
+
+* update peer deps for React 19 ([#308](https://github.com/muxinc/next-video/issues/308)) ([ec15d93](https://github.com/muxinc/next-video/commit/ec15d9334c7676a5f6f0f2b735e6e42ec9c1fb3c))
+
+
+
+# [1.2.0](https://github.com/muxinc/next-video/compare/v1.1.4...v1.2.0) (2024-09-17)
+
+
+### Features
+
+* Allow assets to be saved in different locations ([#281](https://github.com/muxinc/next-video/issues/281)) ([2cf822c](https://github.com/muxinc/next-video/commit/2cf822cc01ac5ec4e89a530b11436d08d02772e5))
+
+
+
+## [1.1.4](https://github.com/muxinc/next-video/compare/v1.1.3...v1.1.4) (2024-08-07)
+
+
+### Bug Fixes
+
+* background player on iOS ([d228812](https://github.com/muxinc/next-video/commit/d228812c51119546c9bb8642d8a32283a6ee429e)), closes [#274](https://github.com/muxinc/next-video/issues/274)
+
+
+
+## [1.1.3](https://github.com/muxinc/next-video/compare/v1.1.2...v1.1.3) (2024-08-02)
+
+
+### Bug Fixes
+
+* add support for player-only <source> tag ([#284](https://github.com/muxinc/next-video/issues/284)) ([e1ed50f](https://github.com/muxinc/next-video/commit/e1ed50f4c81fa073f98f88382455db2b30de8587)), closes [#262](https://github.com/muxinc/next-video/issues/262)
+
+
+
+## [1.1.2](https://github.com/muxinc/next-video/compare/v1.1.1...v1.1.2) (2024-08-02)
+
+
+### Bug Fixes
+
+* JSX in SVG ([#283](https://github.com/muxinc/next-video/issues/283)) ([d6d6f0e](https://github.com/muxinc/next-video/commit/d6d6f0e1db09e2612b5222bbb178ae0d452326b6)), closes [#279](https://github.com/muxinc/next-video/issues/279)
+
+
+
 ## [1.1.1](https://github.com/muxinc/next-video/compare/v1.1.0...v1.1.1) (2024-06-27)
 
 

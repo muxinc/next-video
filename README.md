@@ -45,7 +45,7 @@ It will also update your `.gitignore` file to ignore video files in the `/videos
 
 ### Remote storage and optimization
 
-Vercel [recommends](https://vercel.com/guides/best-practices-for-hosting-videos-on-vercel-nextjs-mp4-gif) using a dedicated content platform for video because video files are large and can lead to excessive bandwidth usage. By default, next-video uses [Mux](https://mux.com?utm_source=next-video.dev), which is built by the the creators of Video.js, powers popular streaming apps like Patreon, and whose video performance monitoring is used on the largest live events in the world.
+Vercel [recommends](https://vercel.com/guides/best-practices-for-hosting-videos-on-vercel-nextjs-mp4-gif) using a dedicated content platform for video because video files are large and can lead to excessive bandwidth usage. By default, next-video uses [Mux](https://mux.com?utm_source=next-video.dev) (a [video API](https://www.mux.com/video-api) for developers), which is built by the the creators of Video.js, powers popular streaming apps like Patreon, and whose video performance monitoring is used on the largest live events in the world.
 
 - [Sign up for Mux](https://dashboard.mux.com/signup?utm_source=next-video.dev)
 - [Create an access token](https://dashboard.mux.com/settings/access-tokens#create)
@@ -77,16 +77,34 @@ yarn add next-video
 pnpm add next-video
 ```
 
-#### Add Next Video to `next.config.js`
+#### Add Next Video to your Next.js config
+
+**`next.config.js`**
+
+If you're using CommonJS modules:
 
 ```js
-/** @type {import('next').NextConfig} */
 const { withNextVideo } = require('next-video/process');
 
+/** @type {import('next').NextConfig} */
 const nextConfig = {}; // Your current Next Config object
 
 module.exports = withNextVideo(nextConfig);
 ```
+
+**`next.config.mjs`**
+
+If you're using ES modules:
+
+```js
+import { withNextVideo } from 'next-video/process';
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {};
+
+export default withNextVideo(nextConfig);
+```
+
 
 #### Add video import types to `tsconfig.json`
 
@@ -383,6 +401,86 @@ Supported providers with their required environment variables:
 | Pricing                      | Minutes-based | GB-based    | GB-based  | GB-based  | GB-based      |
 
 *Web-compatible MP4 files required for hosting providers without video processing
+
+
+### Asset metadata storage hooks (callbacks)
+
+By default the asset metadata is stored in a JSON file in the `/videos` directory. 
+If you want to store the metadata in a database or elsewhere you can customize
+the storage hooks in a separate next-video config file.
+
+The below example config shows the default storage hooks for the JSON file storage.
+
+These hooks can be customized to fit your needs by changing the body of the
+`loadAsset`, `saveAsset`, and `updateAsset` functions.
+
+```js
+// next-video.mjs
+import { NextVideo } from 'next-video/process';
+import path from 'node:path';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+
+export const { GET, POST, handler, withNextVideo } = NextVideo({
+  // Other next-video config options should be added here if using a next-video config file. 
+  // folder: 'videos',
+  // path: '/api/video',
+
+  loadAsset: async function (assetPath) {
+    const file = await readFile(assetPath);
+    const asset = JSON.parse(file.toString());
+    return asset;
+  },
+  saveAsset: async function (assetPath, asset) {
+    try {
+      await mkdir(path.dirname(assetPath), { recursive: true });
+      await writeFile(assetPath, JSON.stringify(asset), {
+        flag: 'wx',
+      });
+    } catch (err) {
+      if (err.code === 'EEXIST') {
+        // The file already exists, and that's ok in this case. Ignore the error.
+        return;
+      }
+      throw err;
+    }
+  },
+  updateAsset: async function (assetPath, asset) {
+    await writeFile(assetPath, JSON.stringify(asset));
+  }
+});
+```
+
+Then import the `withNextVideo` function in your `next.config.mjs` file.
+
+```js
+// next.config.mjs
+import { withNextVideo } from './next-video.mjs';
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {};
+
+export default withNextVideo(nextConfig);
+```
+
+Lastly import the `GET` and `POST`, or `handler` functions in your API routes as you see fit.
+The handlers expect a `url` query or body parameter with the video source URL.
+
+These are the most minimal examples for the handlers, typically you would add
+more error handling and validation, authentication and authorization.
+
+**App router (Next.js >=13)**
+
+```js
+// app/api/video/route.js
+export { GET, POST } from '@/next-video';
+```
+
+**Pages router (Next.js)**
+
+```js
+// pages/api/video/[[...handler]].js
+export { handler as default } from '@/next-video';
+```
 
 
 ## Required Permissions for Amazon S3

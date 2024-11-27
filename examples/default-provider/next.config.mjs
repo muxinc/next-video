@@ -1,4 +1,4 @@
-import { withNextVideo } from 'next-video/process';
+import { withNextVideo } from './next-video.mjs';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = (phase, { defaultConfig }) => {
