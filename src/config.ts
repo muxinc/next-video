@@ -60,6 +60,17 @@ export type ProviderConfig = {
     /* An optional function to generate the bucket asset key. */
     generateAssetKey?: (filePathOrURL: string, folder: string) => string;
   };
+
+  'cloudflare-r2'?: {
+    endpoint: string;
+    bucket?: string;
+    bucketUrlPublic?: string;
+    accessKeyId?: string;
+    secretAccessKey?: string;
+    apiToken?: string;
+    /* An optional function to generate the bucket asset key. */
+    generateAssetKey?: (filePathOrURL: string, folder: string) => string;
+  };
 };
 
 export type VideoConfig = Partial<VideoConfigComplete>;

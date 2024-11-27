@@ -381,23 +381,24 @@ Supported providers with their required environment variables:
 | [`vercel-blob`](https://vercel.com/docs/storage/vercel-blob) | `BLOB_READ_WRITE_TOKEN`                                     |                                    | [Pricing](https://vercel.com/docs/storage/vercel-blob/usage-and-pricing) |
 | [`backblaze`](https://www.backblaze.com/cloud-storage)       | `BACKBLAZE_ACCESS_KEY_ID`<br/>`BACKBLAZE_SECRET_ACCESS_KEY` | `endpoint`<br/>`bucket` (optional) | [Pricing](https://www.backblaze.com/cloud-storage/pricing)               |
 | [`amazon-s3`](https://aws.amazon.com/s3)                     | `AWS_ACCESS_KEY_ID`<br/>`AWS_SECRET_ACCESS_KEY`             | `endpoint`<br/>`bucket` (optional) | [Pricing](https://aws.amazon.com/s3/pricing/)                            |
+| [`cloudflare-r2`](https://developers.cloudflare.com/r2/)     | `R2_ACCESS_KEY_ID`<br/>`R2_SECRET_ACCESS_KEY`<br/>`R2_CF_API_TOKEN` (optional when `bucketUrlPublic` set) | `bucket` (optional)<br/>`bucketUrlPublic` (optional when `R2_CF_API_TOKEN` set) | [Pricing](https://developers.cloudflare.com/r2/pricing/) |
 
 
 #### Provider feature set
 
-|                              | Mux (default) | Vercel Blob | Backblaze | Amazon S3 |
-| ---------------------------- | ------------- | ----------- | --------- | --------- |
-| Off-repo storage             | ✅            | ✅          | ✅        | ✅        |
-| Delivery via CDN             | ✅            | ✅          | -         | -         |
-| BYO player                   | ✅            | ✅          | ✅        | ✅        |
-| Compressed for streaming     | ✅            | -           | -         | -         |
-| Adapt to slow networks (HLS) | ✅            | -           | -         | -         |
-| Automatic placeholder poster | ✅            | -           | -         | -         |
-| Timeline hover thumbnails    | ✅            | -           | -         | -         |
-| Stream any source format     | ✅            | *           | *         | *         |
-| AI captions & subtitles      | ✅            | -           | -         | -         |
-| Video analytics              | ✅            | -           | -         | -         |
-| Pricing                      | Minutes-based | GB-based    | GB-based  | GB-based  |
+|                              | Mux (default) | Vercel Blob | Backblaze | Amazon S3 | Cloudflare R2 |
+| ---------------------------- | ------------- | ----------- | --------- | --------- | ------------- |
+| Off-repo storage             | ✅            | ✅          | ✅        | ✅         | ✅             |
+| Delivery via CDN             | ✅            | ✅          | -         | -         | ✅             |
+| BYO player                   | ✅            | ✅          | ✅        | ✅         | ✅             |
+| Compressed for streaming     | ✅            | -           | -         | -         |               |
+| Adapt to slow networks (HLS) | ✅            | -           | -         | -         |               |
+| Automatic placeholder poster | ✅            | -           | -         | -         |               |
+| Timeline hover thumbnails    | ✅            | -           | -         | -         |               |
+| Stream any source format     | ✅            | *           | *         | *         | *             |
+| AI captions & subtitles      | ✅            | -           | -         | -         |               |
+| Video analytics              | ✅            | -           | -         | -         |               |
+| Pricing                      | Minutes-based | GB-based    | GB-based  | GB-based  | GB-based      |
 
 *Web-compatible MP4 files required for hosting providers without video processing
 
@@ -518,6 +519,24 @@ export { handler as default } from '@/next-video';
 ```
 </details>
 
+## Cloudflare R2 Bucket Public Access
+
+<details>
+<summary>By default, Cloudflare R2 Buckets are not publicly accessible. To enable public access, you must ensure one of the following:</summary>
+
+1. Configure the Bucket for Public Access:
+   - Provide a `bucket` Name in the provider configuration and ensure it is configured for public access
+   - Specify the public URL in the provider configuration under the `bucketUrlPublic` key
+   - For detailed instructions, refer to the Cloudflare documentation:
+     https://developers.cloudflare.com/r2/buckets/public-buckets/
+
+2. Provide a Cloudflare API Key:
+   - You can specify a Cloudflare API Key with R2 Admin read & write permissions using the environment variable: `R2_CF_API_TOKEN`
+   - This API Key will allow the provider to enable public access for the bucket and retrieve the public URL using the Cloudflare API
+   - You don't need to create a bucket manually
+   - To create an API Token, visit:
+     https://dash.cloudflare.com/?to=/:account/r2/api-tokens
+</details>
 
 ## Roadmap
 
