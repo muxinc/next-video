@@ -1,17 +1,16 @@
 'use client';
 
 import { forwardRef, Suspense, lazy, Children, isValidElement } from 'react';
+import Sutro from 'player.style/sutro/react';
 import { getPlaybackId, getPosterURLFromPlaybackId } from '../../providers/mux/transformer.js';
-import { svgBlurImage } from '../utils.js';
+import { getUrlExtension, svgBlurImage } from '../utils.js';
 
-import type { MuxPlayerProps, MuxPlayerRefAttributes } from '@mux/mux-player-react';
+import type { Props as MuxVideoProps } from './mux-video-react.js';
 import type { PlayerProps } from '../types.js';
 
-const MuxPlayer = lazy(() => import('@mux/mux-player-react'));
+export type DefaultPlayerProps = Omit<MuxVideoProps, 'ref' | 'src'> & PlayerProps;
 
-export type DefaultPlayerRefAttributes = MuxPlayerRefAttributes;
-
-export type DefaultPlayerProps = Omit<MuxPlayerProps, 'src'> & PlayerProps;
+let MuxVideo;
 
 const DefaultPlayer = forwardRef((allProps: DefaultPlayerProps, forwardedRef: any) => {
   let {
@@ -21,6 +20,7 @@ const DefaultPlayer = forwardRef((allProps: DefaultPlayerProps, forwardedRef: an
     controls,
     poster,
     blurDataURL,
+    theme: Theme = Sutro,
     ...rest
   } = allProps;
 
@@ -28,13 +28,18 @@ const DefaultPlayer = forwardRef((allProps: DefaultPlayerProps, forwardedRef: an
     return typeof child === 'object' && 'type' in child && child.props.slot === 'poster';
   });
 
+  let slottedPosterImg;
+
   // If there's a slotted poster image (e.g. next/image) remove the default player poster and blurDataURL.
   if (isValidElement(slottedPoster)) {
     poster = '';
     blurDataURL = undefined;
+
+    slottedPosterImg = slottedPoster;
+    children = Children.toArray(children).filter((child) => child !== slottedPoster);
   }
 
-  const props: MuxPlayerProps = rest;
+  const props = rest as MuxVideoProps & { thumbnailTime?: number };
   const imgStyleProps: React.CSSProperties = {};
   const playbackId = asset ? getPlaybackId(asset) : undefined;
 
@@ -42,7 +47,7 @@ const DefaultPlayer = forwardRef((allProps: DefaultPlayerProps, forwardedRef: an
   let srcSet: string | undefined;
 
   if (playbackId && asset?.status === 'ready') {
-    props.src = null;
+    props.src = undefined;
     props.playbackId = playbackId;
 
     if (poster) {
@@ -56,7 +61,7 @@ const DefaultPlayer = forwardRef((allProps: DefaultPlayerProps, forwardedRef: an
           `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 960 })} 960w,` +
           `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 1280 })} 1280w,` +
           `${getPosterURLFromPlaybackId(playbackId, { ...props, width: 1600 })} 1600w,` +
-          `${getPosterURLFromPlaybackId(playbackId, { ...props, })} 1920w`;
+          `${getPosterURLFromPlaybackId(playbackId, { ...props })} 1920w`;
       }
     }
   }
@@ -72,39 +77,88 @@ const DefaultPlayer = forwardRef((allProps: DefaultPlayerProps, forwardedRef: an
       imgStyleProps.backgroundSize = 'cover';
       imgStyleProps.backgroundPosition = 'center';
       imgStyleProps.backgroundRepeat = 'no-repeat';
-      imgStyleProps.backgroundImage =
-        `url('data:image/svg+xml;charset=utf-8,${svgBlurImage(blurDataURL)}')`;
+      imgStyleProps.backgroundImage = `url('data:image/svg+xml;charset=utf-8,${svgBlurImage(blurDataURL)}')`;
     }
   }
 
-  // The Mux player supports a poster image slot which improves the loading speed.
-  if (poster) {
-    children = <>
-      {children}
-      <img
-        slot="poster"
-        src={isCustomPoster ? poster : undefined}
-        srcSet={srcSet}
-        style={imgStyleProps}
-        decoding="async"
-        aria-hidden="true"
-      />
-    </>
-    poster = '';
+  // Remove props that are not supported by MuxVideo.
+  delete props.thumbnailTime;
+
+  let Video = (props: any) => <video {...props} />;
+  const fileExtension = getUrlExtension(props.src);
+
+  if (playbackId || ['m3u8', 'mpd'].includes(fileExtension ?? '')) {
+    MuxVideo ??= lazy(() => import('./mux-video-react.js'));
+    Video = MuxVideo;
+  }
+
+  if (controls && Theme) {
+    // @ts-ignore
+    const dataNextVideo = props['data-next-video'];
+
+    // The Mux player supports a poster image slot which improves the loading speed.
+    if (poster) {
+      slottedPosterImg = (
+        <img
+          slot="poster"
+          src={isCustomPoster ? poster : undefined}
+          srcSet={srcSet}
+          style={imgStyleProps}
+          decoding="async"
+          aria-hidden="true"
+        />
+      );
+      poster = '';
+    }
+
+    return (
+      <Theme style={style} data-next-video={dataNextVideo}>
+        {slottedPosterImg}
+        <Suspense fallback={null}>
+          <Video
+            suppressHydrationWarning
+            ref={forwardedRef}
+            slot="media"
+            poster={poster}
+            crossOrigin=""
+            {...props}
+          >
+            {playbackId && (
+              <track
+                default
+                kind="metadata"
+                label="thumbnails"
+                src={`https://image.mux.com/${playbackId}/storyboard.vtt`}
+              />
+            )}
+            {children}
+          </Video>
+        </Suspense>
+      </Theme>
+    );
   }
 
   return (
     <Suspense fallback={null}>
-      <MuxPlayer
+      <Video
+        suppressHydrationWarning
         ref={forwardedRef}
-        style={{
-          '--controls': controls === false ? 'none' : undefined,
-          ...style,
-        }}
-        children={children}
+        style={style}
+        controls={controls === false ? undefined : true}
         poster={poster}
+        crossOrigin=""
         {...props}
-      />
+      >
+        {playbackId && (
+          <track
+            default
+            kind="metadata"
+            label="thumbnails"
+            src={`https://image.mux.com/${playbackId}/storyboard.vtt`}
+          />
+        )}
+        {children}
+      </Video>
     </Suspense>
   );
 });

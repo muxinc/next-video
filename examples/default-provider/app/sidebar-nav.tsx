@@ -15,6 +15,9 @@ export default function SidebarNav() {
         <Link className={`link ${pathname === '/background-video' ? 'active' : ''}`} href="/background-video">Background video</Link>
       </li>
       <li>
+        <Link className={`link ${pathname === '/custom-theme' ? 'active' : ''}`} href="/custom-theme">Custom theme</Link>
+      </li>
+      <li>
         <Link className={`link ${pathname === '/custom-player' ? 'active' : ''}`} href="/custom-player">Custom player</Link>
       </li>
       <li>
