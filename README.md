@@ -206,6 +206,22 @@ export default function Page() {
 ```
 </details>
 
+
+### Change player theme ([Demo](https://next-video-demo.vercel.app/custom-theme))
+
+You can change the player theme by passing the `theme` prop to the `<Video>` component.  
+See [player.style](https://player.style/) for more themes.
+
+```tsx
+import Video from 'next-video';
+import Instaplay from 'player.style/instaplay/react';
+import awesomeVideo from '/videos/awesome-video.mp4';
+
+export default function Page() {
+  return <Video src={awesomeVideo} theme={Instaplay} />;
+}
+```
+
 ### Player only ([Demo](https://next-video-demo.vercel.app/player-only))
 
 Since [`v1.1.0`](https://github.com/muxinc/next-video/releases/tag/v1.1.0) you can import the player component directly and use it without any upload and processing features.
@@ -492,20 +508,6 @@ The default player is built with [Media Chrome](https://github.com/muxinc/media-
   - Mux videos are played with [`<mux-video>`](https://github.com/muxinc/elements/tree/main/packages/mux-video).
   - HLS streams are played with [`<hls-video>`](https://github.com/muxinc/media-elements/tree/main/packages/hls-video-element).
   - DASH streams are played with [`<dash-video>`](https://github.com/muxinc/media-elements/tree/main/packages/dash-video-element).
-
-### Changing the player theme
-
-You can change the player theme by passing the `theme` prop to the `<Video>` component.
-
-```tsx
-import Video from 'next-video';
-import Instaplay from 'player.style/instaplay/react';
-import awesomeVideo from '/videos/awesome-video.mp4';
-
-export default function Page() {
-  return <Video src={awesomeVideo} theme={Instaplay} />;
-}
-```
 
 ### Props
 
