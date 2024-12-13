@@ -87,6 +87,11 @@ test('renders mux-video with string source', async () => {
         return {
           status: 'ready',
           provider: 'mux',
+          providerMetadata: {
+            mux: {
+              playbackId: 'jxEf6XiJs6JY017pSzpv8Hd6tTbdAOecHTq4FiFAn564',
+            },
+          },
           sources: [{
             type: 'application/x-mpegURL',
             src: 'https://stream.mux.com/jxEf6XiJs6JY017pSzpv8Hd6tTbdAOecHTq4FiFAn564.m3u8'
@@ -105,8 +110,8 @@ test('renders mux-video with string source', async () => {
 
   assert.equal(wrapper.toJSON().children[1].type, 'mux-video');
   assert.equal(
-    wrapper.root.findByType('mux-video').parent.parent.props.src,
-    'https://stream.mux.com/jxEf6XiJs6JY017pSzpv8Hd6tTbdAOecHTq4FiFAn564.m3u8'
+    wrapper.root.findByType('mux-video').parent.parent.props.playbackId,
+    'jxEf6XiJs6JY017pSzpv8Hd6tTbdAOecHTq4FiFAn564'
   );
 
   global.fetch = globalFetch;
