@@ -14,11 +14,11 @@ import {
   getUrlExtension,
 } from './utils.js';
 
-import type { DefaultPlayerProps } from './players/default-player.js';
 import type { Asset } from '../assets.js';
-import type { VideoLoaderProps, VideoProps, VideoPropsInternal, PlayerProps } from './types.js';
+import type { VideoLoaderProps, VideoProps, VideoPropsInternal } from './types.js';
+export type * from './types.js';
 
-const NextVideo = forwardRef((props: VideoProps, forwardedRef) => {
+const NextVideo = forwardRef<HTMLVideoElement, VideoProps>((props, forwardedRef) => {
   // Keep in component so we can emulate the DEV_MODE.
   const DEV_MODE = process.env.NODE_ENV === 'development';
 
@@ -122,8 +122,9 @@ export function getVideoProps(allProps: VideoPropsInternal, state: { asset?: Ass
     ...rest
   } = allProps;
 
-  const props: DefaultPlayerProps = {
+  const props = {
     src: src as string | undefined,
+    poster: poster as string | undefined,
     controls,
     blurDataURL,
     ...rest,
@@ -133,8 +134,6 @@ export function getVideoProps(allProps: VideoPropsInternal, state: { asset?: Ass
   if (typeof poster === 'object') {
     props.poster = poster.src;
     props.blurDataURL ??= poster.blurDataURL;
-  } else {
-    props.poster = poster;
   }
 
   if (asset) {
@@ -166,5 +165,3 @@ function defaultTransformer(asset: Asset, props: Record<string, any>) {
 }
 
 export default NextVideo;
-
-export type { VideoLoaderProps, VideoProps, DefaultPlayerProps, PlayerProps };

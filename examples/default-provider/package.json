@@ -9,9 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "next": "14.2.12",
+    "next": "14.2.14",
     "next-video": "file:../..",
     "open-props": "^1.7.3",
+    "player.style": "^0.0.12",
     "react": "^18",
     "react-dom": "^18",
     "react-player": "^3.0.0-canary.0"

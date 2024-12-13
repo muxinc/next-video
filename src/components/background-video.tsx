@@ -6,8 +6,9 @@ import BackgroundPlayer from './players/background-player.js';
 import Video from './video.js';
 
 import type { VideoProps } from './types.js';
+export type * from './types.js';
 
-const BackgroundVideo = forwardRef((props: VideoProps, forwardedRef) => {
+const BackgroundVideo = forwardRef<HTMLVideoElement, VideoProps>((props, forwardedRef) => {
   return <Video
     ref={forwardedRef}
     as={BackgroundPlayer}

@@ -206,6 +206,22 @@ export default function Page() {
 ```
 </details>
 
+
+### Change player theme ([Demo](https://next-video-demo.vercel.app/custom-theme))
+
+You can change the player theme by passing the `theme` prop to the `<Video>` component.  
+See [player.style](https://player.style/) for more themes.
+
+```tsx
+import Video from 'next-video';
+import Instaplay from 'player.style/instaplay/react';
+import awesomeVideo from '/videos/awesome-video.mp4';
+
+export default function Page() {
+  return <Video src={awesomeVideo} theme={Instaplay} />;
+}
+```
+
 ### Player only ([Demo](https://next-video-demo.vercel.app/player-only))
 
 Since [`v1.1.0`](https://github.com/muxinc/next-video/releases/tag/v1.1.0) you can import the player component directly and use it without any upload and processing features.
@@ -481,6 +497,62 @@ export { GET, POST } from '@/next-video';
 // pages/api/video/[[...handler]].js
 export { handler as default } from '@/next-video';
 ```
+
+
+## Default Player
+
+The default player is built with [Media Chrome](https://github.com/muxinc/media-chrome).
+
+- The default theme is [Sutro](https://player.style/themes/sutro) by Mux.
+- The video engine changes automatically based on the source format:
+  - Video files (like MP4, MP3, WEBM) that are progressively downloaded are played with the native `<video>` element.
+  - Mux videos are played with [`<mux-video>`](https://github.com/muxinc/elements/tree/main/packages/mux-video).
+  - HLS streams are played with [`<hls-video>`](https://github.com/muxinc/media-elements/tree/main/packages/hls-video-element).
+  - DASH streams are played with [`<dash-video>`](https://github.com/muxinc/media-elements/tree/main/packages/dash-video-element).
+
+### Props
+
+The `<Video>` component accepts all the props of the `<video>` element and the following additional props:
+
+- `src` (Asset | string): The video asset object (import) or source URL.
+- `poster` (StaticImageData | string): A placeholder image for the video. (Auto generated for Mux videos)
+- `blurDataURL` (string): A base64 image source URL that can be used as a placeholder. (Auto generated for Mux videos)
+- `theme` (React Component): The player theme component. See [player.style](https://player.style/) for more themes.
+- `as` (React Component): A custom player component. See [Custom player](#custom-player-demo).
+- `transform` (function): A custom function to transform the asset object (src and poster).
+- `loader` (function): A custom function used to resolve string based video URLs (not imports).
+
+#### Mux video props
+
+The `<Video>` component with a Mux video source accepts the following additional props:
+
+- `startTime` (number): The start time of the video in seconds.
+- `streamType` ("on-demand" | "live"): The stream type of the video. Default is "on-demand".
+- `customDomain` (string): Assigns a custom domain to be used for Mux Video.
+- `beaconCollectionDomain` (string): Assigns a custom domain to be used for Mux Data collection. NOTE: Must be set before playbackId to apply to Mux Data monitoring.
+- `envKey` (string): This is the environment key for Mux Data. If you use Mux video this is automatically
+  set for you. If you use a different provider you can set this to your own key.
+- `disableTracking` (boolean): Disables Mux data tracking of video playback.
+- `disableCookies` (boolean): Disables cookies used by Mux Data.
+- `preferPlayback` ("mse" | "native"): Specify if `<mux-video>` should try to use Media Source Extension or native playback (if available). If no value is provided, `<mux-video>` will choose based on what's deemed optimal for content and playback environment.
+- `maxResolution` ("720p" | "1080p" | "1440p" | "2160p"): Specify the maximum resolution you want delivered for this video.
+- `minResolution` ("480p" | "540p" | "720p" | "1080p" | "1440p" | "2160p"): Specify the minimum resolution you want delivered for this video.
+- `programStartTime` (number): Apply PDT-based [instant clips](https://docs.mux.com/guides/create-instant-clips) to the beginning of the media stream.
+- `programEndTime` (number): Apply PDT-based [instant clips](https://docs.mux.com/guides/create-instant-clips) to the end of the media stream.
+- `assetStartTime` (number): Apply media timeline-based [instant clips](https://docs.mux.com/guides/create-instant-clips) to the beginning of the media stream.
+- `assetEndTime` (number): Apply media timeline-based [instant clips](https://docs.mux.com/guides/create-instant-clips) to the end of the media stream.
+- `renditionOrder` (string): Change the order in which renditions are provided in the src playlist. Can impact initial segment loads. Currently only support "desc" for descending order.
+- `metadataVideoId` (string): This is an arbitrary ID sent to Mux Data that should map back to a record of this video in your database.
+- `metadataTitle` (string): This is an arbitrary title for your video that will be passed in as metadata into Mux Data. Adding a title will give you useful context in your Mux Data dashboard. (optional, but encouraged)
+- `metadataViewerUserId` (string): If you have a logged-in user, this should be an anonymized ID value that maps back to the user in your database that will be sent to Mux Data. Take care to not expose personal identifiable information like names, usernames or email addresses. (optional, but encouraged)
+- `metadata*` (string): This metadata* syntax can be used to pass any arbitrary Mux Data metadata fields.
+- `playbackToken` (string): The playback token for signing the `src` URL.
+- `thumbnailToken` (string): The token for signing the `poster` URL.
+- `storyboardToken` (string): The token for signing the storyboard URL.
+- `drmToken` (string): The token for signing DRM license and related URLs.
+- `targetLiveWindow` (number): An offset representing the seekable range for live content, where `Infinity` means the entire live content is seekable (aka "standard DVR"). Used along with `streamType` to determine what UI/controls to show.
+- `liveEdgeOffset` (number): The earliest playback time that will be treated as playing "at the live edge" for live content.
+- `debug` (boolean): Enables debug mode for the underlying playback engine (currently hls.js) and mux-embed, providing additional information in the console.
 
 
 ## Required Permissions for Amazon S3

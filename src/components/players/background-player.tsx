@@ -1,23 +1,19 @@
 'use client';
 
 import { forwardRef, Children, isValidElement, useState } from 'react';
-
-import type { Props as MuxVideoProps } from '@mux/mux-video-react';
-import type { DefaultPlayerProps } from './default-player.js';
-
-import MuxVideo from '@mux/mux-video-react';
+import Media from './media/index.js';
 import { getPlaybackId, getPosterURLFromPlaybackId } from '../../providers/mux/transformer.js';
 import { svgBlurImage } from '../utils.js';
 
-export type BackgroundPlayerProps = DefaultPlayerProps;
+import type { PlayerProps } from '../types.js';
+import type { MediaProps } from './media/index.js';
 
-const BackgroundPlayer = forwardRef((allProps: BackgroundPlayerProps, forwardedRef: any) => {
+const BackgroundPlayer = forwardRef<HTMLVideoElement, Omit<MediaProps, 'ref'> & PlayerProps>((allProps, forwardedRef) => {
   let {
     style,
     className,
     children,
     asset,
-    controls,
     poster,
     blurDataURL,
     onPlaying,
@@ -35,7 +31,7 @@ const BackgroundPlayer = forwardRef((allProps: BackgroundPlayerProps, forwardedR
     blurDataURL = undefined;
   }
 
-  const props = rest as MuxVideoProps & { thumbnailTime?: number };
+  const props = rest as MediaProps & { thumbnailTime?: number };
   const imgStyleProps: React.CSSProperties = {};
   const playbackId = asset ? getPlaybackId(asset) : undefined;
 
@@ -123,7 +119,7 @@ const BackgroundPlayer = forwardRef((allProps: BackgroundPlayerProps, forwardedR
         `
       }</style>
       <div className={`${className ? `${className} ` : ''}next-video-bg`} style={{ ...style }}>
-        <MuxVideo
+        <Media
           ref={forwardedRef}
           className="next-video-bg-video"
           onPlaying={(event) => {
