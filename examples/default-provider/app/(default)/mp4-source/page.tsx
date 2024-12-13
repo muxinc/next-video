@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import Player from 'next-video/player';
 
 export const metadata: Metadata = {
-  title: 'next-video - Player only',
+  title: 'next-video - MP4 Source',
 };
 
 export default function Page() {

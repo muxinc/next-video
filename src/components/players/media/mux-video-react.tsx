@@ -4,7 +4,7 @@ import React from 'react';
 // Use the mux-video custom element for renditions and audio tracks support.
 import MuxVideoElement, { Attributes as MuxVideoElementAttrs } from '@mux/mux-video';
 import { MuxMediaProps } from '@mux/playback-core';
-import { camelCase } from '../utils';
+import { camelCase } from '../../utils.js';
 
 type MuxVideoElementType = Element & {
   getTemplateHTML?(attrs: Record<string, any>): string;
@@ -13,13 +13,9 @@ type MuxVideoElementType = Element & {
 
 const Element = MuxVideoElement as unknown as MuxVideoElementType;
 
-export type Props = Partial<MuxMediaProps> &
-  Omit<
-    React.DetailedHTMLProps<React.VideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement>,
-    'autoPlay'
-  >;
+export type MuxVideoProps = MuxMediaProps & Omit<React.ComponentProps<'video'>, 'autoPlay'>;
 
-const MuxVideo = React.forwardRef<HTMLElement | undefined, Partial<Props>>((allProps, ref) => {
+const MuxVideo = React.forwardRef<HTMLElement | undefined, MuxVideoProps>((allProps, ref) => {
   let { children, suppressHydrationWarning, ...props } = allProps;
   const elementRef = React.useRef<HTMLElement | null>(null);
 
@@ -27,7 +23,7 @@ const MuxVideo = React.forwardRef<HTMLElement | undefined, Partial<Props>>((allP
     if (name[0] === 'o' && name[1] === 'n') {
       const useCapture = name.endsWith('Capture');
       const eventName = name.slice(2, useCapture ? name.length - 7 : undefined).toLowerCase();
-      const callback = (props as Props)[name as keyof Props];
+      const callback = (props as MuxVideoProps)[name as keyof MuxVideoProps];
 
       React.useEffect(() => {
         const eventTarget = elementRef?.current;

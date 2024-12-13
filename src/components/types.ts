@@ -1,7 +1,7 @@
 import type { VideoConfig } from '../config.js';
-import type { DefaultPlayerProps } from './players/default-player.js';
 import type { Asset } from '../assets.js';
 import { StaticImageData } from 'next/image.js';
+import type { MediaProps, NativeVideoProps, MuxVideoProps } from './players/media/index.js';
 
 declare module 'react' {
   interface CSSProperties {
@@ -29,7 +29,15 @@ export interface PosterProps {
   domain?: string;
 }
 
-export interface VideoProps extends Omit<DefaultPlayerProps, 'src' | 'poster'> {
+type DefaultPlayerProps = Omit<MediaProps, 'ref'> & PlayerProps;
+
+// Keep in mind the hierarchy is Video(Player(Media))
+
+export type VideoProps<TPlaybackId = string | undefined> = TPlaybackId extends string
+  ? Omit<Partial<MuxVideoProps> & PlayerProps, 'src' | 'poster'> & SuperVideoProps & { playbackId?: TPlaybackId }
+  : Omit<NativeVideoProps & PlayerProps, 'src' | 'poster'> & SuperVideoProps & { playbackId?: undefined };
+
+type SuperVideoProps = {
   /**
    * The component type to render the video as.
    */
@@ -86,7 +94,7 @@ export interface VideoProps extends Omit<DefaultPlayerProps, 'src' | 'poster'> {
   transform?: (asset: Asset) => Asset;
 }
 
-export interface VideoPropsInternal extends VideoProps {
+export type VideoPropsInternal = VideoProps & {
   /**
    * The component type to render the video as.
    */
@@ -103,7 +111,7 @@ export interface VideoPropsInternal extends VideoProps {
   transform: (asset: Asset, props?: Record<string, any>) => Asset;
 }
 
-export interface PlayerProps {
+export type PlayerProps = {
   /**
    * The asset object for the video.
    */

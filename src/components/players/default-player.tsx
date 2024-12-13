@@ -1,23 +1,20 @@
 'use client';
 
-import { forwardRef, Suspense, lazy, Children, isValidElement } from 'react';
+import { forwardRef, Suspense, Children, isValidElement } from 'react';
 import Sutro from 'player.style/sutro/react';
 import { getPlaybackId, getPosterURLFromPlaybackId } from '../../providers/mux/transformer.js';
-import { getUrlExtension, svgBlurImage } from '../utils.js';
+import { svgBlurImage } from '../utils.js';
+import Media from './media/index.js';
 
-import type { Props as MuxVideoProps } from './mux-video-react.js';
+import type { MediaProps } from './media/index.js';
 import type { PlayerProps } from '../types.js';
 
-export type DefaultPlayerProps = Omit<MuxVideoProps, 'ref' | 'src'> & PlayerProps;
-
-let MuxVideo;
-
-const DefaultPlayer = forwardRef((allProps: DefaultPlayerProps, forwardedRef: any) => {
+const DefaultPlayer = forwardRef<HTMLVideoElement, Omit<MediaProps, 'ref'> & PlayerProps>((allProps, forwardedRef) => {
   let {
     style,
     children,
     asset,
-    controls,
+    controls = true,
     poster,
     blurDataURL,
     theme: Theme = Sutro,
@@ -39,7 +36,7 @@ const DefaultPlayer = forwardRef((allProps: DefaultPlayerProps, forwardedRef: an
     children = Children.toArray(children).filter((child) => child !== slottedPoster);
   }
 
-  const props = rest as MuxVideoProps & { thumbnailTime?: number };
+  const props = rest as MediaProps & { thumbnailTime?: number };
   const imgStyleProps: React.CSSProperties = {};
   const playbackId = asset ? getPlaybackId(asset) : undefined;
 
@@ -84,14 +81,6 @@ const DefaultPlayer = forwardRef((allProps: DefaultPlayerProps, forwardedRef: an
   // Remove props that are not supported by MuxVideo.
   delete props.thumbnailTime;
 
-  let Video = (props: any) => <video {...props} />;
-  const fileExtension = getUrlExtension(props.src);
-
-  if (playbackId || ['m3u8', 'mpd'].includes(fileExtension ?? '')) {
-    MuxVideo ??= lazy(() => import('./mux-video-react.js'));
-    Video = MuxVideo;
-  }
-
   if (controls && Theme) {
     // @ts-ignore
     const dataNextVideo = props['data-next-video'];
@@ -115,7 +104,7 @@ const DefaultPlayer = forwardRef((allProps: DefaultPlayerProps, forwardedRef: an
       <Theme style={style} data-next-video={dataNextVideo}>
         {slottedPosterImg}
         <Suspense fallback={null}>
-          <Video
+          <Media
             suppressHydrationWarning
             ref={forwardedRef}
             slot="media"
@@ -132,7 +121,7 @@ const DefaultPlayer = forwardRef((allProps: DefaultPlayerProps, forwardedRef: an
               />
             )}
             {children}
-          </Video>
+          </Media>
         </Suspense>
       </Theme>
     );
@@ -140,7 +129,7 @@ const DefaultPlayer = forwardRef((allProps: DefaultPlayerProps, forwardedRef: an
 
   return (
     <Suspense fallback={null}>
-      <Video
+      <Media
         suppressHydrationWarning
         ref={forwardedRef}
         style={style}
@@ -158,7 +147,7 @@ const DefaultPlayer = forwardRef((allProps: DefaultPlayerProps, forwardedRef: an
           />
         )}
         {children}
-      </Video>
+      </Media>
     </Suspense>
   );
 });
