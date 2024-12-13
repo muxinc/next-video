@@ -489,7 +489,9 @@ The default player is built with [Media Chrome](https://github.com/muxinc/media-
 - The default theme is [Sutro](https://player.style/themes/sutro) by Mux.
 - The video engine changes automatically based on the source format:
   - Video files (like MP4, MP3, WEBM) that are progressively downloaded are played with the native `<video>` element.
-  - HLS streams are played with [`<mux-video>`](https://github.com/muxinc/elements/tree/main/packages/mux-video).
+  - Mux videos are played with [`<mux-video>`](https://github.com/muxinc/elements/tree/main/packages/mux-video).
+  - HLS streams are played with [`<hls-video>`](https://github.com/muxinc/media-elements/tree/main/packages/hls-video-element).
+  - DASH streams are played with [`<dash-video>`](https://github.com/muxinc/media-elements/tree/main/packages/dash-video-element).
 
 ### Changing the player theme
 
@@ -509,7 +511,18 @@ export default function Page() {
 
 The `<Video>` component accepts all the props of the `<video>` element and the following additional props:
 
+- `src` (Asset | string): The video asset object (import) or source URL.
+- `poster` (StaticImageData | string): A placeholder image for the video. (Auto generated for Mux videos)
+- `blurDataURL` (string): A base64 image source URL that can be used as a placeholder. (Auto generated for Mux videos)
 - `theme` (React Component): The player theme component. See [player.style](https://player.style/) for more themes.
+- `as` (React Component): A custom player component. See [Custom player](#custom-player-demo).
+- `transform` (function): A custom function to transform the asset object (src and poster).
+- `loader` (function): A custom function used to resolve string based video URLs (not imports).
+
+#### Mux video props
+
+The `<mux-video>` element accepts the following additional props:
+
 - `startTime` (number): The start time of the video in seconds.
 - `streamType` ("on-demand" | "live"): The stream type of the video. Default is "on-demand".
 - `customDomain` (string): Assigns a custom domain to be used for Mux Video.
