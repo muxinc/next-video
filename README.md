@@ -523,7 +523,7 @@ The `<Video>` component accepts all the props of the `<video>` element and the f
 
 #### Mux video props
 
-The `<mux-video>` element accepts the following additional props:
+The `<Video>` component with a Mux video source accepts the following additional props:
 
 - `startTime` (number): The start time of the video in seconds.
 - `streamType` ("on-demand" | "live"): The stream type of the video. Default is "on-demand".
