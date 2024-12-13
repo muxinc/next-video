@@ -33,7 +33,7 @@ export default function SidebarNav() {
         <Link className={`link ${pathname === '/dash-source' ? 'active' : ''}`} href="/dash-source">DASH source<span>player only</span></Link>
       </li>
       <li>
-        <Link className={`link ${pathname === '/player-only' ? 'active' : ''}`} href="/mp4-source">MP4 source<span>player only</span></Link>
+        <Link className={`link ${pathname === '/mp4-source' ? 'active' : ''}`} href="/mp4-source">MP4 source<span>player only</span></Link>
       </li>
       <li>
         <Link className={`link ${pathname === '/source-tag' ? 'active' : ''}`} href="/source-tag">Source tag<span>player only</span></Link>
