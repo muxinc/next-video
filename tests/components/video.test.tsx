@@ -27,6 +27,7 @@ test('renders native video without source', async () => {
 
 test('renders mux-video without UI with imported source', async () => {
   await import('@mux/mux-video');
+
   const wrapper = create(<Video controls={false} src={asset} />);
   await setTimeout(50);
   assert.equal(wrapper.toJSON().children[1].type, 'mux-video');

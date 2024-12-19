@@ -1,12 +1,13 @@
 import { forwardRef, lazy } from 'react';
 import { getUrlExtension } from '../../utils.js';
-import type MuxVideoComponent from './mux-video-react.js';
-import type { MuxVideoProps } from './mux-video-react.js';
+import type { MuxMediaProps } from '@mux/playback-core';
+import type MuxVideoComponent from '@mux/mux-video/react';
 import type HlsVideoComponent from 'hls-video-element/react';
 import type DashVideoComponent from 'dash-video-element/react';
 
-export type NativeVideoProps = React.ComponentPropsWithoutRef<'video'>;
-export type { MuxVideoProps };
+export type MuxVideoProps = Omit<MuxMediaProps, 'preload'> & Omit<React.ComponentProps<'video'>, 'autoPlay'>;
+
+export type NativeVideoProps = Omit<React.ComponentPropsWithoutRef<'video'>, 'preload' | 'width' | 'height'>;
 
 export type MediaProps<TPlaybackId = string | undefined> = TPlaybackId extends string
   ? MuxVideoProps & { playbackId?: TPlaybackId }
@@ -16,10 +17,11 @@ let MuxVideo: React.LazyExoticComponent<typeof MuxVideoComponent>;
 let HlsVideo: React.LazyExoticComponent<typeof HlsVideoComponent>;
 let DashVideo: React.LazyExoticComponent<typeof DashVideoComponent>;
 
-const Media = forwardRef<HTMLVideoElement, MediaProps>((props, forwardedRef) => {
+const Media = forwardRef<any, MediaProps>((props, forwardedRef) => {
 
   if (typeof props.playbackId === 'string') {
-    MuxVideo ??= lazy(() => import('./mux-video-react.js'));
+    MuxVideo ??= lazy(() => import('@mux/mux-video/react'));
+    // @ts-expect-error
     return <MuxVideo ref={forwardedRef} {...props} controls={false} />;
   }
 

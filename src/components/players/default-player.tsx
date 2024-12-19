@@ -68,6 +68,7 @@ const DefaultPlayer = forwardRef<HTMLVideoElement, Omit<MediaProps, 'ref'> & Pla
     const showCustomBlur = isCustomPoster && blurDataURL !== asset?.blurDataURL;
 
     if (showGeneratedBlur || showCustomBlur) {
+      imgStyleProps.gridArea = '1 / 1';
       imgStyleProps.width = '100%';
       imgStyleProps.height = '100%';
       imgStyleProps.color = 'transparent';
@@ -101,12 +102,18 @@ const DefaultPlayer = forwardRef<HTMLVideoElement, Omit<MediaProps, 'ref'> & Pla
     }
 
     return (
-      <Theme style={style} data-next-video={dataNextVideo}>
+      <Theme data-next-video={dataNextVideo} style={{
+        display: 'grid',
+        ...style,
+      }}>
         {slottedPosterImg}
         <Suspense fallback={null}>
           <Media
             suppressHydrationWarning
             ref={forwardedRef}
+            style={{
+              gridArea: '1 / 1',
+            }}
             slot="media"
             poster={poster}
             crossOrigin=""
@@ -132,7 +139,10 @@ const DefaultPlayer = forwardRef<HTMLVideoElement, Omit<MediaProps, 'ref'> & Pla
       <Media
         suppressHydrationWarning
         ref={forwardedRef}
-        style={style}
+        style={{
+          gridArea: '1 / 1',
+          ...style,
+        }}
         controls={controls === false ? undefined : true}
         poster={poster}
         crossOrigin=""
