@@ -70,6 +70,7 @@ const NextVideo = forwardRef<HTMLVideoElement, VideoProps>((props, forwardedRef)
       <style>{
         /* css */`
         .next-video-container {
+          display: grid;  /* Fixes a Safari aspect-ratio + height bug. */
           position: relative;
           width: 100%;
           aspect-ratio: 16 / 9;
