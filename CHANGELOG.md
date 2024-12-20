@@ -1,3 +1,13 @@
+# [2.0.0](https://github.com/muxinc/next-video/compare/v1.4.0...v2.0.0) (2024-12-20)
+
+
+### Bug Fixes
+
+* Safari top/bottom border bug ([#323](https://github.com/muxinc/next-video/issues/323)) ([d60d080](https://github.com/muxinc/next-video/commit/d60d080ce29d3e147e067cfcd7f1833d2ce3cd33))
+* upgrade Mux elements + deps ([#324](https://github.com/muxinc/next-video/issues/324)) ([2d52e6c](https://github.com/muxinc/next-video/commit/2d52e6c2232dac19f2a275070ff84ab1d244acbb))
+
+
+
 # [1.4.0](https://github.com/muxinc/next-video/compare/v1.3.3...v1.4.0) (2024-11-27)
 
 
