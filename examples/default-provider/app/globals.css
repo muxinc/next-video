@@ -158,7 +158,8 @@ aside nav li {
 }
 
 aside nav a {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1.15rem auto auto;
   align-items: center;
   padding: .375rem var(--size-4) .375rem .75rem;
   margin: 0;
@@ -189,6 +190,20 @@ aside nav a::before {
 
 aside nav a.active::before {
   background-color: var(--text-1);
+}
+
+aside nav a span {
+  justify-self: end;
+  background: var(--yellow-0);
+  border: 1px solid var(--choco-1);
+  color: var(--choco-4);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  font-size: .6em;
+  margin-left: 7px;
+  padding: .25em .7em;
+  white-space: nowrap;
+  word-spacing: -2px;
 }
 
 .theme-toggle {

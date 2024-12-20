@@ -19,26 +19,41 @@ test('prepends a class to the video container', async () => {
   assert.equal(wrapper.toJSON().props.className, 'foo next-video-container');
 });
 
-test('renders mux-player without source', async () => {
-  await import('@mux/mux-player-react');
-  const wrapper = create(<Video />);
+test('renders native video without source', async () => {
+  const wrapper = create(<Video controls={false} />);
   await setTimeout(50);
-  assert.equal(wrapper.toJSON().children[1].type, 'mux-player');
+  assert.equal(wrapper.toJSON().children[1].type, 'video');
 });
 
-test('renders mux-player with imported source', async () => {
-  await import('@mux/mux-player-react');
-  const wrapper = create(<Video src={asset} />);
+test('renders mux-video without UI with imported source', async () => {
+  await import('@mux/mux-video');
+
+  const wrapper = create(<Video controls={false} src={asset} />);
   await setTimeout(50);
-  assert.equal(wrapper.toJSON().children[1].type, 'mux-player');
+  assert.equal(wrapper.toJSON().children[1].type, 'mux-video');
   assert.equal(
-    wrapper.root.findByType('mux-player').parent.parent.props.playbackId,
+    wrapper.root.findByType('mux-video').parent.props.playbackId,
     'zNYmqdvJ61gt5uip02zPid01rYIPyyzVRVKQChgSgJlaY'
   );
 });
 
-test('renders mux-player with string source', async () => {
-  await import('@mux/mux-player-react');
+test('renders media-controller and mux-video', async () => {
+  await import('media-chrome');
+  await import('@mux/mux-video');
+
+  const wrapper = create(<Video src={asset} />);
+  await setTimeout(50);
+
+  assert.equal(wrapper.toJSON().children[1].type, 'media-theme-sutro');
+  assert.equal(wrapper.toJSON().children[1].children[1].type, 'mux-video');
+  assert.equal(
+    wrapper.root.findByType('mux-video').parent.props.playbackId,
+    'zNYmqdvJ61gt5uip02zPid01rYIPyyzVRVKQChgSgJlaY'
+  );
+});
+
+test('renders mux-video with string source', async () => {
+  await import('@mux/mux-video');
 
   process.env.NODE_ENV = 'development';
 
@@ -73,6 +88,11 @@ test('renders mux-player with string source', async () => {
         return {
           status: 'ready',
           provider: 'mux',
+          providerMetadata: {
+            mux: {
+              playbackId: 'jxEf6XiJs6JY017pSzpv8Hd6tTbdAOecHTq4FiFAn564',
+            },
+          },
           sources: [{
             type: 'application/x-mpegURL',
             src: 'https://stream.mux.com/jxEf6XiJs6JY017pSzpv8Hd6tTbdAOecHTq4FiFAn564.m3u8'
@@ -82,17 +102,17 @@ test('renders mux-player with string source', async () => {
     };
   };
 
-  const wrapper = create(<Video src="https://storage.googleapis.com/muxdemofiles/mux.mp4" />);
+  const wrapper = create(<Video controls={false} src="https://storage.googleapis.com/muxdemofiles/mux.mp4" />);
 
   await pollReady;
   await setTimeout(50);
 
   clearTimeout(keepalive);
 
-  assert.equal(wrapper.toJSON().children[1].type, 'mux-player');
+  assert.equal(wrapper.toJSON().children[1].type, 'mux-video');
   assert.equal(
-    wrapper.root.findByType('mux-player').parent.parent.props.src,
-    'https://stream.mux.com/jxEf6XiJs6JY017pSzpv8Hd6tTbdAOecHTq4FiFAn564.m3u8'
+    wrapper.root.findByType('mux-video').parent.parent.props.playbackId,
+    'jxEf6XiJs6JY017pSzpv8Hd6tTbdAOecHTq4FiFAn564'
   );
 
   global.fetch = globalFetch;
