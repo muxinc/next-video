@@ -89,7 +89,7 @@
     "typescript": "^5.7.2"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.716.0",
+    "@aws-sdk/client-s3": "^3.717.0",
     "@inquirer/prompts": "^4.3.1",
     "@mux/mux-node": "9.0.1",
     "@mux/mux-video": "^0.24.2",
