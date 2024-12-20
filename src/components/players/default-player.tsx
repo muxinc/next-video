@@ -22,7 +22,7 @@ const DefaultPlayer = forwardRef<HTMLVideoElement, Omit<MediaProps, 'ref'> & Pla
   } = allProps;
 
   const slottedPoster = Children.toArray(children).find((child) => {
-    return typeof child === 'object' && 'type' in child && child.props.slot === 'poster';
+    return typeof child === 'object' && 'type' in child && (child.props as any).slot === 'poster';
   });
 
   let slottedPosterImg;

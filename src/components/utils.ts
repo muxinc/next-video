@@ -49,7 +49,7 @@ export function usePolling(
 }
 
 export function useInterval(callback: () => any, delay: number | null) {
-  const savedCallback = useRef<() => any | undefined>();
+  const savedCallback = useRef<() => any>(null);
 
   // Remember the latest callback.
   useEffect(() => {

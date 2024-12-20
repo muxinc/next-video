@@ -1,5 +1,5 @@
 import assert from 'node:assert';
-import { test, mock } from 'node:test';
+import { test } from 'node:test';
 import { setTimeout } from 'node:timers/promises';
 import { create } from 'react-test-renderer';
 import React from 'react';
@@ -29,7 +29,8 @@ test('renders mux-video without UI with imported source', async () => {
   await import('@mux/mux-video');
 
   const wrapper = create(<Video controls={false} src={asset} />);
-  await setTimeout(50);
+  await setTimeout(400);
+
   assert.equal(wrapper.toJSON().children[1].type, 'mux-video');
   assert.equal(
     wrapper.root.findByType('mux-video').parent.props.playbackId,
