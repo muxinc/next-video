@@ -10,7 +10,14 @@ export default function Page() {
   return (
     <>
       <section>
-        <Video src={getStarted}>
+        <Video
+          src={getStarted}
+          streamType='on-demand'
+          metadata={{
+            video_id: 'next-video-intro',
+            video_title: 'next-video intro',
+          }}
+        >
           <track kind="captions" src="/get-started.vtt" srcLang="en" label="English" default />
         </Video>
       </section>
