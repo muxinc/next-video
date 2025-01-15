@@ -222,7 +222,7 @@ export default function Page() {
 }
 ```
 
-### Player only ([Demo](https://next-video-demo.vercel.app/player-only))
+### Player only ([Demo](https://next-video-demo.vercel.app/hls-source))
 
 Since [`v1.1.0`](https://github.com/muxinc/next-video/releases/tag/v1.1.0) you can import the player component directly and use it without any upload and processing features.
 
