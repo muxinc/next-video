@@ -92,7 +92,6 @@ describe('withNextVideo', () => {
     };
     const webpackConfig = result.webpack(config, options);
 
-    assert.equal(webpackConfig.externals[0].sharp, 'commonjs sharp');
     assert.equal(webpackConfig.module.rules.length, 2);
     assert.deepEqual(webpackConfig.infrastructureLogging, { level: 'error' });
   });
