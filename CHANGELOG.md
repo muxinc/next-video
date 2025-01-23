@@ -1,3 +1,12 @@
+## [2.0.1](https://github.com/muxinc/next-video/compare/v2.0.0...v2.0.1) (2025-01-23)
+
+
+### Bug Fixes
+
+* upgrade MC + player.style ([2b5d224](https://github.com/muxinc/next-video/commit/2b5d224ab98be4474a5d2514ea66bbf8928a2d65))
+
+
+
 # [2.0.0](https://github.com/muxinc/next-video/compare/v1.4.0...v2.0.0) (2024-12-20)
 
 
