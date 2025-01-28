@@ -84,20 +84,6 @@ export function withNextVideo(nextConfig: any, videoConfig?: VideoConfig) {
         );
       }
 
-      if (Array.isArray(config.externals)) {
-        config.externals.unshift({
-          sharp: 'commonjs sharp',
-        });
-      } else {
-        config.externals = Object.assign(
-          {},
-          {
-            sharp: 'commonjs sharp',
-          },
-          config.externals
-        );
-      }
-
       config.infrastructureLogging = {
         ...config.infrastructureLogging,
         // Silence warning about dynamic import of next.config file.
