@@ -36,6 +36,7 @@ export type VideoConfigComplete = {
 export type ProviderConfig = {
   mux?: {
     generateAssetKey: undefined;
+    videoQuality?: 'basic' | 'plus' | 'premium';
   };
 
   'vercel-blob'?: {
