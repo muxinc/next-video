@@ -9,6 +9,7 @@ import Mux from '@mux/mux-node';
 import { fetch as uFetch } from 'undici';
 
 import { updateAsset, Asset } from '../../assets.js';
+import { getVideoConfig } from '../../config.js';
 import log from '../../utils/logger.js';
 import { sleep } from '../../utils/utils.js';
 
@@ -154,14 +155,17 @@ export async function uploadLocalFile(asset: Asset) {
     return uploadRequestedFile(asset);
   }
 
+  const { providerConfig } = await getVideoConfig();
+  const muxConfig = providerConfig.mux;
+
   let upload: Mux.Video.Uploads.Upload;
   try {
     // Create a direct upload url
     upload = await mux.video.uploads.create({
       cors_origin: '*',
-      // @ts-ignore
       new_asset_settings: {
         playback_policy: ['public'],
+        video_quality: muxConfig?.videoQuality,
       },
     });
   } catch (e) {
@@ -226,12 +230,15 @@ export async function uploadRequestedFile(asset: Asset) {
     return pollForAssetReady(filePath, asset);
   }
 
+  const { providerConfig } = await getVideoConfig();
+  const muxConfig = providerConfig.mux;
+
   const assetObj = await mux.video.assets.create({
-    // @ts-ignore
     input: [{
       url: filePath
     }],
-    playback_policy: ['public']
+    playback_policy: ['public'],
+    video_quality: muxConfig?.videoQuality,
   });
 
   log.info(log.label('Asset is processing:'), filePath);

@@ -99,7 +99,7 @@
     "@vercel/blob": "^0.27.0",
     "chalk": "^4.1.2",
     "chokidar": "^4.0.3",
-    "dash-video-element": "^0.0.17",
+    "dash-video-element": "^0.1.0",
     "hls-video-element": "^1.4.1",
     "magicast": "^0.3.5",
     "media-chrome": "^4.4.0",
