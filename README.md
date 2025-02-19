@@ -301,6 +301,8 @@ The custom player component accepts the following props:
 - `poster`: A string image source URL if the asset is ready.
 - `blurDataURL`: A string base64 image source URL that can be used as a placeholder.
 
+#### Example ([react-player](https://github.com/cookpete/react-player))
+
 ```tsx
 import Video from 'next-video';
 import ReactPlayer from './player';
@@ -325,6 +327,34 @@ export default function Player(props: PlayerProps) {
   return <ReactPlayer url={src} config={config} width="100%" height="100%" {...rest} />;
 }
 ```
+
+#### Example ([mux-player](https://www.mux.com/docs/guides/mux-player-web?utm_source=next-video.dev))
+
+```tsx
+import Video from 'next-video';
+import MuxPlayer from './player';
+import awesomeVideo from '/videos/awesome-video.mp4';
+
+export default function Page() {
+  return <Video as={MuxPlayer} src={awesomeVideo} />;
+}
+```
+
+```tsx
+// player.tsx
+'use client';
+
+import type { PlayerProps } from 'next-video';
+import MuxPlayer from '@mux/mux-player-react';
+
+export default function Player(props: PlayerProps) {
+  let { asset, src, poster, blurDataURL, theme, ...rest } = props;
+  const playbackId = asset?.providerMetadata?.mux?.playbackId;
+
+  return <MuxPlayer playbackId={playbackId} {...rest} />
+}
+```
+
 
 ### Background Video ([Demo](https://next-video-demo.vercel.app/background-video))
 
