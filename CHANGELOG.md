@@ -1,3 +1,12 @@
+# [2.1.0](https://github.com/muxinc/next-video/compare/v2.0.4...v2.1.0) (2025-02-19)
+
+
+### Features
+
+* add `videoQuality` Mux config ([#346](https://github.com/muxinc/next-video/issues/346)) ([2991cd2](https://github.com/muxinc/next-video/commit/2991cd2aec079286f6a555bb244fb1f8d5100335)), closes [#336](https://github.com/muxinc/next-video/issues/336)
+
+
+
 ## [2.0.4](https://github.com/muxinc/next-video/compare/v2.0.3...v2.0.4) (2025-01-31)
 
 
