@@ -581,6 +581,21 @@ If you are looking to completely change the layout and style it's recommended to
 - `--media-secondary-color`: The background color of the control when hovered.
 - `--media-accent-color`: The color of the volume slider and time slider.
 
+For example:
+
+```tsx
+import Video from 'next-video';
+import getStarted from '/videos/get-started.mp4';
+
+export default function Page() {
+  return <Video src={getStarted} style={{
+    '--media-primary-color': '#fdaff3',
+    '--media-secondary-color': '#ff0088',
+    '--media-accent-color': '#42ffe0',
+  }} />;
+}
+```
+
 This is just the tip of the iceberg. For a full list of CSS variables, check out the [Media Chrome styling docs](https://www.media-chrome.org/docs/en/reference/styling)
 
 
