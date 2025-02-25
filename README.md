@@ -569,6 +569,36 @@ The `<Video>` component with a Mux video source accepts the following additional
 - `liveEdgeOffset` (number): The earliest playback time that will be treated as playing "at the live edge" for live content.
 - `debug` (boolean): Enables debug mode for the underlying playback engine (currently hls.js) and mux-embed, providing additional information in the console.
 
+
+#### Styling the default player
+
+The default theme is [Sutro](https://player.style/themes/sutro) which can be styled with CSS variables.
+If you are looking to completely change the layout and style it's recommended to [change the `theme` prop](#change-player-theme-demo) to a different theme or create a new theme.
+
+**CSS Variables**: The default theme uses CSS variables for many colors, so you can override them in your CSS.
+
+- `--media-primary-color`: The color of the control icons.
+- `--media-secondary-color`: The background color of the control when hovered.
+- `--media-accent-color`: The color of the volume slider and time slider.
+
+For example:
+
+```tsx
+import Video from 'next-video';
+import getStarted from '/videos/get-started.mp4';
+
+export default function Page() {
+  return <Video src={getStarted} style={{
+    '--media-primary-color': '#fdaff3',
+    '--media-secondary-color': '#ff0088',
+    '--media-accent-color': '#42ffe0',
+  }} />;
+}
+```
+
+This is just the tip of the iceberg. For a full list of CSS variables, check out the [Media Chrome styling docs](https://www.media-chrome.org/docs/en/reference/styling)
+
+
 ## Required Permissions for Amazon S3
 
 <details>
