@@ -5,6 +5,9 @@ updates:
       - '/'
     schedule:
       interval: 'daily'
+    commit_message:
+      prefix: 'fix'
+      prefix_development: 'chore'
     groups:
       prod-dependencies:
         patterns:
