@@ -1,0 +1,15 @@
+version: 2
+updates:
+  - package-ecosystem: 'npm'
+    directories:
+      - '/'
+    schedule:
+      interval: 'daily'
+    groups:
+      prod-dependencies:
+        patterns:
+          - 'media-chrome'
+          - 'player.style'
+    allow:
+      - dependency-name: 'media-chrome'
+      - dependency-name: 'player.style'
