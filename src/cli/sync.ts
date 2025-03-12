@@ -151,6 +151,10 @@ export async function handler(argv: Arguments) {
       log.warning(`Source video file does not exist: ${err.path}`);
       return;
     }
+    if(err.message.includes("MUX_TOKEN_ID environment variable is missing or empty") || err.message.includes("MUX_TOKEN_SECRET environment variable is missing or empty")){
+      log.error(err.message);
+      return;
+    }
 
     log.error('An unknown error occurred', err);
   }
