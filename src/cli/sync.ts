@@ -152,7 +152,7 @@ export async function handler(argv: Arguments) {
       return;
     }
     if(err.message.includes("MUX_TOKEN_ID environment variable is missing or empty") || err.message.includes("MUX_TOKEN_SECRET environment variable is missing or empty")){
-      log.error(err.message);
+      log.error(err.message, "Visit https://github.com/muxinc/next-video?tab=readme-ov-file#remote-storage-and-optimization for more information.");
       return;
     }
 
