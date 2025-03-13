@@ -169,6 +169,10 @@ export async function uploadLocalFile(asset: Asset) {
       },
     });
   } catch (e) {
+    if (e instanceof Error && 'status' in e && e.status === 401) {
+      log.error("Unauthorized request. Check that your MUX_TOKEN_ID and MUX_TOKEN_SECRET credentials are valid.");
+      return;
+    }
     log.error('Error creating a Mux Direct Upload');
     console.error(e);
     return;
