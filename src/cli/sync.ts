@@ -152,9 +152,9 @@ export async function handler(argv: Arguments) {
       return;
     }
     if(err.message.includes("MUX_TOKEN_ID environment variable is missing or empty") || err.message.includes("MUX_TOKEN_SECRET environment variable is missing or empty")){
-      log.error(err.message, "Visit https://next-video.dev/docs#remote-storage-and-optimization for more information.");
+      log.error(`${err.message} \x1b[4;34mVisit https://next-video.dev/docs#remote-storage-and-optimization\x1b[0m for more information.`);
       return;
-    }
+    }    
 
     log.error('An unknown error occurred', err);
   }
