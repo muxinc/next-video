@@ -168,8 +168,8 @@ export async function uploadLocalFile(asset: Asset) {
         video_quality: muxConfig?.videoQuality,
       },
     });
-  } catch (e: any) {
-    if(e.status === 401){
+  } catch (e) {
+    if (e instanceof Error && 'status' in e && e.status === 401) {
       log.error("Unauthorized request. Check that your MUX_TOKEN_ID and MUX_TOKEN_SECRET credentials are valid.");
       return;
     }
