@@ -1,3 +1,18 @@
+# [2.2.0](https://github.com/muxinc/next-video/compare/v2.1.0...v2.2.0) (2025-03-17)
+
+
+### Bug Fixes
+
+* bump the prod-dependencies group across 1 directory with 2 updates ([#354](https://github.com/muxinc/next-video/issues/354)) ([92d91e3](https://github.com/muxinc/next-video/commit/92d91e30f6b69efa0e2e2d1a471eaae680e0909b))
+* bump the prod-dependencies group across 1 directory with 2 updates ([#361](https://github.com/muxinc/next-video/issues/361)) ([1eca8ab](https://github.com/muxinc/next-video/commit/1eca8ab3a161828dc0d91c33483367a5811f5505))
+
+
+### Features
+
+* handle missing token errors ([#359](https://github.com/muxinc/next-video/issues/359)) ([d134d21](https://github.com/muxinc/next-video/commit/d134d21f3cf6f2f5562fe5085eab006d1e6c7a7e))
+
+
+
 # [2.1.0](https://github.com/muxinc/next-video/compare/v2.0.4...v2.1.0) (2025-02-19)
 
 
