@@ -151,6 +151,10 @@ export async function handler(argv: Arguments) {
       log.warning(`Source video file does not exist: ${err.path}`);
       return;
     }
+    if(err.message.includes("MUX_TOKEN_ID environment variable is missing or empty") || err.message.includes("MUX_TOKEN_SECRET environment variable is missing or empty")){
+      log.error(`Mux MUX_TOKEN_ID or MUX_TOKEN_SECRET can't be found. Visit \x1b[4;34mhttps://next-video.dev/docs#remote-storage-and-optimization\x1b[0m for more information.`);
+      return;
+    }    
 
     log.error('An unknown error occurred', err);
   }
