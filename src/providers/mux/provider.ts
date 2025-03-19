@@ -53,6 +53,13 @@ async function startProcessingQueue() {
   }, 1000);
 }
 
+export function stopProcessingQueue() {
+  if (intervalId) {
+    clearInterval(intervalId);
+    intervalId = undefined;
+  }
+}
+
 function enqueueMethod<T>(fn: () => Promise<T>): Promise<T> {
   return new Promise<T>((resolve, reject) => {
     requestQueue.push({ fn, resolve, reject });
