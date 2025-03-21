@@ -12,6 +12,7 @@ import { updateAsset, Asset } from '../../assets.js';
 import { getVideoConfig } from '../../config.js';
 import log from '../../utils/logger.js';
 import { sleep } from '../../utils/utils.js';
+import { startProcessingQueue, enqueueMethod } from '../../utils/queue.js';
 
 export type MuxMetadata = {
   uploadId?: string;
@@ -19,51 +20,13 @@ export type MuxMetadata = {
   playbackId?: string;
 }
 
-interface QueueItem<T = any> {
-  fn: () => Promise<T>;
-  resolve: (value: T) => void;
-  reject: (reason?: any) => void;
-}
-
 // We don't want to blow things up immediately if Mux isn't configured,
 // but we also don't want to need to initialize it every time in situations like polling.
 // So we'll initialize it lazily but cache the instance.
 let mux: Mux;
-const requestQueue: QueueItem[] = [];
-let intervalId: NodeJS.Timeout | undefined = undefined;
 function initMux() {
   mux ??= new Mux();
   startProcessingQueue();
-}
-
-async function startProcessingQueue() {
-  if (intervalId) {
-    return;
-  }
-  intervalId = setInterval(async () => {
-    if (requestQueue.length > 0) {
-      const { fn, resolve, reject } = requestQueue.shift() as QueueItem;
-      try {
-        const result = await fn();
-        resolve(result);
-      } catch (error) {
-        reject(error);
-      }
-    }
-  }, 1000);
-}
-
-export function stopProcessingQueue() {
-  if (intervalId) {
-    clearInterval(intervalId);
-    intervalId = undefined;
-  }
-}
-
-function enqueueMethod<T>(fn: () => Promise<T>): Promise<T> {
-  return new Promise<T>((resolve, reject) => {
-    requestQueue.push({ fn, resolve, reject });
-  });
 }
 
 async function pollForAssetReady(filePath: string, asset: Asset) {

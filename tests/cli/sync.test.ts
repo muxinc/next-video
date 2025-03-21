@@ -10,7 +10,7 @@ import log from '../../src/utils/logger.js';
 
 import { handler, builder } from '../../src/cli/sync.js';
 import { createAsset, updateAsset } from '../../src/assets.js';
-import { stopProcessingQueue } from '../../src/providers/mux/provider.js';
+import { stopProcessingQueue } from '../../src/utils/queue.js';
 
 import * as fakeMux from '../utils/fake-mux.js';
 
@@ -112,7 +112,7 @@ describe('cli', () => {
       const args = builder(yargs(`--dir ${dir}`)).parseSync();
 
       await handler(args);
-      
+
       assert(findConsoleMessage(addSpy, /found 1/i), 'Found 1 message not found');
     });
 
