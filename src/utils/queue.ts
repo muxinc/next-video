@@ -14,13 +14,13 @@ export async function startProcessingQueue() {
     }
     intervalId = setInterval(async () => {
         if (requestQueue.length > 0) {
-        const { fn, resolve, reject } = requestQueue.shift() as QueueItem;
-        try {
-            const result = await fn();
-            resolve(result);
-        } catch (error) {
-            reject(error);
-        }
+            const { fn, resolve, reject } = requestQueue.shift() as QueueItem;
+            try {
+                const result = await fn();
+                resolve(result);
+            } catch (error) {
+                reject(error);
+            }
         }
     }, 1000);
 }
