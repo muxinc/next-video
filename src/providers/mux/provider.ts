@@ -12,7 +12,7 @@ import { updateAsset, Asset } from '../../assets.js';
 import { getVideoConfig } from '../../config.js';
 import log from '../../utils/logger.js';
 import { sleep } from '../../utils/utils.js';
-import { startProcessingQueue, enqueueMethod } from '../../utils/queue.js';
+import { Queue } from '../../utils/queue.js';
 
 export type MuxMetadata = {
   uploadId?: string;
@@ -24,9 +24,11 @@ export type MuxMetadata = {
 // but we also don't want to need to initialize it every time in situations like polling.
 // So we'll initialize it lazily but cache the instance.
 let mux: Mux;
+export let queue: Queue;
 function initMux() {
   mux ??= new Mux();
-  startProcessingQueue();
+  queue ??= new Queue();
+  queue.startProcessingQueue();
 }
 
 async function pollForAssetReady(filePath: string, asset: Asset) {
@@ -181,7 +183,7 @@ export async function uploadLocalFile(asset: Asset) {
     return uploadRequestedFile(asset);
   }
 
-  const upload: Mux.Video.Uploads.Upload | undefined = await enqueueMethod(() => createUploadURL());
+  const upload: Mux.Video.Uploads.Upload | undefined = await queue.enqueueMethod(() => createUploadURL());
   if (!upload) {
     return;
   }

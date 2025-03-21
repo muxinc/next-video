@@ -10,7 +10,7 @@ import log from '../../src/utils/logger.js';
 
 import { handler, builder } from '../../src/cli/sync.js';
 import { createAsset, updateAsset } from '../../src/assets.js';
-import { stopProcessingQueue } from '../../src/utils/queue.js';
+import { queue } from '../../src/providers/mux/provider.js';
 
 import * as fakeMux from '../utils/fake-mux.js';
 
@@ -82,7 +82,9 @@ describe('cli', () => {
 
   after(async () => {
     server.close();
-    stopProcessingQueue();
+    if (queue) {
+      queue.stopProcessingQueue();
+    }
 
     for (const dir of tmpDirs) {
       await fs.rm(dir, { recursive: true, force: true });

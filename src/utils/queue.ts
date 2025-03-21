@@ -4,41 +4,51 @@ export interface QueueItem<T = any> {
     reject: (reason?: any) => void;
 }
 
-let intervalId: NodeJS.Timeout | undefined = undefined;
-let firstItemInQueue: boolean = true;
-const requestQueue: QueueItem[] = [];
+export class Queue {
+    private intervalId: NodeJS.Timeout | undefined = undefined;
+    private firstItemInQueue: boolean = true;
+    private requestQueue: QueueItem[] = [];
+    private processingInterval: number;
 
-export async function startProcessingQueue() {
-    if (intervalId) {
-        return;
+    constructor(processingInterval: number = 1000) {
+        this.processingInterval = processingInterval;
     }
-    intervalId = setInterval(async () => {
-        if (requestQueue.length > 0) {
-            const { fn, resolve, reject } = requestQueue.shift() as QueueItem;
-            try {
-                const result = await fn();
-                resolve(result);
-            } catch (error) {
-                reject(error);
-            }
+
+    public async startProcessingQueue(): Promise<void> {
+        if (this.intervalId) {
+            return;
         }
-    }, 1000);
-}
+        this.intervalId = setInterval(async () => {
+            if (this.requestQueue.length > 0) {
+                const { fn, resolve, reject } = this.requestQueue.shift() as QueueItem;
+                try {
+                    const result = await fn();
+                    resolve(result);
+                } catch (error) {
+                    reject(error);
+                }
+            } else {
+                this.firstItemInQueue = true;
+            }
+        }, this.processingInterval);
+    }
 
-export function stopProcessingQueue() {
-  if (intervalId) {
-    clearInterval(intervalId);
-    intervalId = undefined;
-  }
-}
+    public stopProcessingQueue(): void {
+        if (this.intervalId) {
+            clearInterval(this.intervalId);
+            this.intervalId = undefined;
+            this.firstItemInQueue = true;
+        }
+    }
 
-export async function enqueueMethod<T>(fn: () => Promise<T>): Promise<T> {
-    if (firstItemInQueue) {
-        firstItemInQueue = false;
-        return await fn();
-    } else {
-        return new Promise<T>((resolve, reject) => {
-            requestQueue.push({ fn, resolve, reject });
-        });
+    public async enqueueMethod<T>(fn: () => Promise<T>): Promise<T> {
+        if (this.firstItemInQueue) {
+            this.firstItemInQueue = false;
+            return await fn();
+        } else {
+            return new Promise<T>((resolve, reject) => {
+                this.requestQueue.push({ fn, resolve, reject });
+            });
+        }
     }
 }
