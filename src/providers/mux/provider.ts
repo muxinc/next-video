@@ -24,11 +24,10 @@ export type MuxMetadata = {
 // but we also don't want to need to initialize it every time in situations like polling.
 // So we'll initialize it lazily but cache the instance.
 let mux: Mux;
-export let queue: Queue;
+let queue: Queue;
 function initMux() {
   mux ??= new Mux();
   queue ??= new Queue();
-  queue.startProcessingQueue();
 }
 
 async function pollForAssetReady(filePath: string, asset: Asset) {
@@ -183,7 +182,7 @@ export async function uploadLocalFile(asset: Asset) {
     return uploadRequestedFile(asset);
   }
 
-  const upload: Mux.Video.Uploads.Upload | undefined = await queue.enqueueMethod(() => createUploadURL());
+  const upload: Mux.Video.Uploads.Upload | undefined = await queue.enqueue(() => createUploadURL());
   if (!upload) {
     return;
   }
