@@ -12,6 +12,7 @@ import { updateAsset, Asset } from '../../assets.js';
 import { getVideoConfig } from '../../config.js';
 import log from '../../utils/logger.js';
 import { sleep } from '../../utils/utils.js';
+import { Queue } from '../../utils/queue.js';
 
 export type MuxMetadata = {
   uploadId?: string;
@@ -23,8 +24,10 @@ export type MuxMetadata = {
 // but we also don't want to need to initialize it every time in situations like polling.
 // So we'll initialize it lazily but cache the instance.
 let mux: Mux;
+let queue: Queue;
 function initMux() {
   mux ??= new Mux();
+  queue ??= new Queue();
 }
 
 async function pollForAssetReady(filePath: string, asset: Asset) {
@@ -128,6 +131,30 @@ async function pollForUploadAsset(filePath: string, asset: Asset) {
   }
 }
 
+async function createUploadURL() : Promise<Mux.Video.Uploads.Upload | undefined> {
+  try {
+    const { providerConfig } = await getVideoConfig();
+    const muxConfig = providerConfig.mux;
+    // Create a direct upload url
+    const upload = await mux.video.uploads.create({
+      cors_origin: '*',
+      new_asset_settings: {
+        playback_policy: ['public'],
+        video_quality: muxConfig?.videoQuality,
+      },
+    });
+    return upload
+  } catch (e) {
+    if (e instanceof Error && 'status' in e && e.status === 401) {
+      log.error("Unauthorized request. Check that your MUX_TOKEN_ID and MUX_TOKEN_SECRET credentials are valid.");
+    } else {
+      log.error('Error creating a Mux Direct Upload');
+      console.error(e);
+    }
+    return undefined;
+  }
+}
+
 export async function uploadLocalFile(asset: Asset) {
   const filePath = asset.originalFilePath;
 
@@ -155,26 +182,8 @@ export async function uploadLocalFile(asset: Asset) {
     return uploadRequestedFile(asset);
   }
 
-  const { providerConfig } = await getVideoConfig();
-  const muxConfig = providerConfig.mux;
-
-  let upload: Mux.Video.Uploads.Upload;
-  try {
-    // Create a direct upload url
-    upload = await mux.video.uploads.create({
-      cors_origin: '*',
-      new_asset_settings: {
-        playback_policy: ['public'],
-        video_quality: muxConfig?.videoQuality,
-      },
-    });
-  } catch (e) {
-    if (e instanceof Error && 'status' in e && e.status === 401) {
-      log.error("Unauthorized request. Check that your MUX_TOKEN_ID and MUX_TOKEN_SECRET credentials are valid.");
-      return;
-    }
-    log.error('Error creating a Mux Direct Upload');
-    console.error(e);
+  const upload: Mux.Video.Uploads.Upload | undefined = await queue.enqueue(() => createUploadURL());
+  if (!upload) {
     return;
   }
 
