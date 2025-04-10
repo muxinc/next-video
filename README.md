@@ -558,7 +558,7 @@ The `<Video>` component with a Mux video source accepts the following additional
 - `assetEndTime` (number): Apply media timeline-based [instant clips](https://docs.mux.com/guides/create-instant-clips) to the end of the media stream.
 - `renditionOrder` (string): Change the order in which renditions are provided in the src playlist. Can impact initial segment loads. Currently only support "desc" for descending order.
 - `metadataVideoId` (string): This is an arbitrary ID sent to Mux Data that should map back to a record of this video in your database.
-- `metadataTitle` (string): This is an arbitrary title for your video that will be passed in as metadata into Mux Data. Adding a title will give you useful context in your Mux Data dashboard. (optional, but encouraged)
+- `metadataVideoTitle` (string): This is an arbitrary title for your video that will be passed in as metadata into Mux Data. Adding a title will give you useful context in your Mux Data dashboard. (optional, but encouraged)
 - `metadataViewerUserId` (string): If you have a logged-in user, this should be an anonymized ID value that maps back to the user in your database that will be sent to Mux Data. Take care to not expose personal identifiable information like names, usernames or email addresses. (optional, but encouraged)
 - `metadata*` (string): This metadata\* syntax can be used to pass any arbitrary Mux Data metadata fields.
 - `playbackToken` (string): The playback token for signing the `src` URL.
