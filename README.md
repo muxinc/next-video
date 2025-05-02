@@ -650,7 +650,7 @@ This is just the tip of the iceberg. For a full list of CSS variables, check out
    - You don't need to create a bucket manually
    - To create an API Token, visit:
    https://dash.cloudflare.com/?to=/:account/r2/api-tokens
-   </details>
+</details>
 
 ## Roadmap
 
