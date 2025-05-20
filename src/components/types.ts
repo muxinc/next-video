@@ -133,6 +133,11 @@ export type PlayerProps = {
   poster?: StaticImageData | string;
 
   /**
+   * The poster image fetch priority for the video.
+   */
+  posterFetchPriority?: 'high' | 'low' | 'auto';
+
+  /**
    * Set a manual data URL to be used as a placeholder image before the poster image successfully loads.
    * For imported videos this will be automatically generated.
    */
