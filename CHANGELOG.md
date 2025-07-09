@@ -1,3 +1,14 @@
+## [2.2.1](https://github.com/muxinc/next-video/compare/v2.2.0...v2.2.1) (2025-07-09)
+
+
+### Bug Fixes
+
+* add a queue to throttle requests and avoid 429 errors ([#362](https://github.com/muxinc/next-video/issues/362)) ([21db7dd](https://github.com/muxinc/next-video/commit/21db7dd2908829160e14b8231f0ca5852616a9be))
+* bump the prod-dependencies group across 1 directory with 2 updates ([#366](https://github.com/muxinc/next-video/issues/366)) ([ae98ca7](https://github.com/muxinc/next-video/commit/ae98ca75b235bc1f7fde4b937e0909f5e884de1e))
+* upgrade player pkgs ([#380](https://github.com/muxinc/next-video/issues/380)) ([729f6d2](https://github.com/muxinc/next-video/commit/729f6d28d68e1d0d97f6c7bdbd86343559144af2))
+
+
+
 # [2.2.0](https://github.com/muxinc/next-video/compare/v2.1.0...v2.2.0) (2025-03-17)
 
 
