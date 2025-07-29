@@ -86,6 +86,10 @@ const NextVideo = forwardRef<HTMLVideoElement, VideoProps>((props, forwardedRef)
         [data-next-video] img {
           object-fit: var(--media-object-fit, contain);
           object-position: var(--media-object-position, center);
+          max-width: 100%;
+          max-height: 100%;
+          min-width: 100%;
+          min-height: 100%;
         }
         `
       }</style>
