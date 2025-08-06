@@ -29,6 +29,11 @@
       "require": "./dist/cjs/process.js",
       "default": "./dist/process.js"
     },
+    "./webpack/*": {
+      "import": "./dist/webpack/*",
+      "require": "./dist/cjs/webpack/*",
+      "default": "./dist/webpack/*"
+    },
     "./background-video": "./dist/components/background-video.js",
     "./background-player": "./dist/components/players/background-player.js",
     "./request-handler": "./dist/request-handler.js",

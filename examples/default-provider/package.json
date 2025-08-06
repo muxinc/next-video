@@ -3,19 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
-    "next": "15.1.2",
+    "next": "15.4.5",
     "next-video": "file:../..",
     "open-props": "^1.7.8",
     "player.style": "^0.1.1",
     "react": "^19",
     "react-dom": "^19",
-    "react-player": "^3.0.0-canary.0"
+    "react-player": "^3.3.1"
   },
   "devDependencies": {
     "@types/node": "^22",
