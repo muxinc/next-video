@@ -99,6 +99,7 @@ const BackgroundPlayer = forwardRef<HTMLVideoElement, Omit<MediaProps, 'ref'> & 
 
         .next-video-bg-video {
           object-fit: cover;
+          --media-object-fit: cover;
         }
 
         .next-video-bg-text {
