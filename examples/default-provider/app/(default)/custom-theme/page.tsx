@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Video from 'next-video';
 import Instaplay from 'player.style/instaplay/react';
-import getStarted from '/videos/get-started.mp4?thumbnailTime=0';
+import getStarted from '../../../videos/get-started.mp4?thumbnailTime=0';
 
 export const metadata: Metadata = {
   title: 'next-video - Custom theme',

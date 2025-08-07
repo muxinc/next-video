@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 import Image from 'next/image';
 import Video from 'next-video';
-import getStarted from '/videos/get-started.mp4';
-import getStartedPoster from '/images/get-started-poster.jpg';
+import getStarted from '../../../videos/get-started.mp4';
+import getStartedPoster from '../../../images/get-started-poster.jpg';
 
 export const metadata: Metadata = {
   title: 'next-video - Slotted poster image',

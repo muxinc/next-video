@@ -11,6 +11,24 @@ declare module '/videos/*' {
   export default content;
 }
 
+declare module '../videos/*' {
+  const content: import('../dist/assets').Asset;
+
+  export default content;
+}
+
+declare module '../../videos/*' {
+  const content: import('../dist/assets').Asset;
+
+  export default content;
+}
+
+declare module '../../../videos/*' {
+  const content: import('../dist/assets').Asset;
+
+  export default content;
+}
+
 declare module '*.mp4' {
   const content: import('../dist/assets').Asset;
 
