@@ -1,3 +1,12 @@
+## [2.2.3](https://github.com/muxinc/next-video/compare/v2.2.2...v2.2.3) (2025-08-07)
+
+
+### Bug Fixes
+
+* set object-fit to cover for background video ([#383](https://github.com/muxinc/next-video/issues/383)) ([8df6efb](https://github.com/muxinc/next-video/commit/8df6efb646526c6acca3e08a81b7ac93e910a219))
+
+
+
 ## [2.2.2](https://github.com/muxinc/next-video/compare/v2.2.1...v2.2.2) (2025-08-04)
 
 
