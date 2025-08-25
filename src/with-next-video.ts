@@ -85,7 +85,7 @@ export function withNextVideo(nextConfig: any, videoConfig?: VideoConfig) {
     process.env.TURBOPACK &&
     !process.env.NEXT_VIDEO_SUPPRESS_TURBOPACK_WARNING &&
     nextVersion &&
-    isVersionLessThan(nextVersion, '15.4.0')
+    isVersionLessThan(nextVersion, '15.5.0')
   ) {
     hasWarned = true;
 
@@ -93,7 +93,7 @@ export function withNextVideo(nextConfig: any, videoConfig?: VideoConfig) {
     logger.warning(
       `You are using next-video with \`next ${
         process.env.NODE_ENV === 'development' ? 'dev' : 'build'
-      } --turbo\`. next-video doesn't support Turbopack on Next.js 15.4.0 and below.\n  We recommend removing the \`--turbo\` flag for use with next-video.\n`
+      } --turbo\`. next-video doesn't support Turbopack on Next.js 15.5.0 and below.\n  We recommend removing the \`--turbo\` flag for use with next-video.\n`
     );
   }
 
