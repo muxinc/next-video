@@ -63,6 +63,7 @@ export function withNextVideo(nextConfig: any, videoConfig?: VideoConfig) {
   nextConfig.turbopack = {
     ...nextConfig.turbopack,
     rules: {
+      ...nextConfig.turbopack?.rules,
       '*.mp4': {
         loaders: [
           'next-video/webpack/video-raw-loader.js',
