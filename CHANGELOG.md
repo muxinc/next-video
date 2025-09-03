@@ -1,3 +1,12 @@
+# [2.3.0](https://github.com/muxinc/next-video/compare/v2.2.3...v2.3.0) (2025-09-03)
+
+
+### Features
+
+* add turbopack support ([#382](https://github.com/muxinc/next-video/issues/382)) ([1edf581](https://github.com/muxinc/next-video/commit/1edf581f92cfbbcabc7a6f25cde011bd242a6a59)), closes [#266](https://github.com/muxinc/next-video/issues/266)
+
+
+
 ## [2.2.3](https://github.com/muxinc/next-video/compare/v2.2.2...v2.2.3) (2025-08-07)
 
 
