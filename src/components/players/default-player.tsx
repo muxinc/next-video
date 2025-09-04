@@ -16,6 +16,7 @@ const DefaultPlayer = forwardRef<HTMLVideoElement, Omit<MediaProps, 'ref'> & Pla
     asset,
     controls = true,
     poster,
+    posterFetchPriority = 'auto',
     blurDataURL,
     theme: Theme = Sutro,
     ...rest
@@ -96,6 +97,7 @@ const DefaultPlayer = forwardRef<HTMLVideoElement, Omit<MediaProps, 'ref'> & Pla
           style={imgStyleProps}
           decoding="async"
           aria-hidden="true"
+          fetchPriority={posterFetchPriority}
         />
       );
       poster = '';
