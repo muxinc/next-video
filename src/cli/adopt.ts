@@ -1,6 +1,7 @@
 import { input, select, confirm } from '@inquirer/prompts';
 import chalk from 'chalk';
 import { Argv, Arguments } from 'yargs';
+import { fetch } from 'undici';
 
 import { writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -11,6 +12,49 @@ import { createAsset, updateAsset, Asset } from '../assets.js';
 import { transform as muxTransform } from '../providers/mux/transformer.js';
 
 const PLAYBACK_ID_REGEX = /^[a-zA-Z0-9]{22,}$/;
+
+interface MuxMetadataResponse {
+  'start-time': number;
+  titles: Array<{
+    language: string;
+    title: string;
+  }>;
+}
+
+function sanitizeFilename(title: string): string {
+  return title
+    .replace(/[^a-zA-Z0-9\s\-_]/g, '') // Remove special characters except spaces, hyphens, underscores
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+    .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
+    .toLowerCase();
+}
+
+function sanitizeImportName(filename: string): string {
+  // Remove .mp4 extension if present
+  const nameWithoutExt = filename.replace(/\.mp4$/, '');
+
+  return nameWithoutExt
+    .replace(/[^a-zA-Z0-9\s\-_]/g, '') // Remove special characters
+    .replace(/[-\s]+(.)/g, (_, char) => char.toUpperCase()) // Convert kebab-case to camelCase
+    .replace(/^[^a-zA-Z_$]/, '_') // Ensure starts with valid identifier character
+    .replace(/[^a-zA-Z0-9_$]/g, '_'); // Replace any remaining invalid chars with underscores
+}
+
+async function fetchMuxMetadata(playbackId: string): Promise<string | null> {
+  try {
+    const response = await fetch(`https://stream.mux.com/${playbackId}/metadata.json`);
+    if (!response.ok) {
+      return null;
+    }
+    const metadata = (await response.json()) as MuxMetadataResponse[];
+    const title = metadata?.[0]?.titles?.[0]?.title;
+    return title ? sanitizeFilename(title) : null;
+  } catch (error) {
+    // Silently fail - metadata is optional
+    return null;
+  }
+}
 
 export const command = 'adopt <playbackId>';
 export const desc = 'Create a local asset metadata file for an existing Mux asset using its playback ID.';
@@ -64,6 +108,16 @@ export async function handler(argv: Arguments) {
   );
   log.space();
 
+  // Try to fetch metadata from Mux to get the title
+  log.info('Fetching asset metadata from Mux...');
+  const muxTitle = await fetchMuxMetadata(playbackId);
+  if (muxTitle) {
+    log.info(`Found title: ${chalk.cyan(muxTitle)} (sanitized for filename)`);
+  } else {
+    log.info('No metadata found or unable to fetch from Mux');
+  }
+  log.space();
+
   try {
     const videoConfig = await getVideoConfig();
 
@@ -92,9 +146,10 @@ export async function handler(argv: Arguments) {
     // Interactive prompts
     if (interactive) {
       if (!assetName) {
+        const defaultName = muxTitle || `adopted-${playbackId.slice(0, 8)}`;
         assetName = await input({
           message: 'Asset name (filename without extension):',
-          default: `adopted-${playbackId.slice(0, 8)}`,
+          default: defaultName,
           validate: (input: string) => {
             if (!input.trim()) return 'Asset name is required';
             if (input.includes('/') || input.includes('\\')) return 'Asset name should not contain path separators';
@@ -122,7 +177,7 @@ export async function handler(argv: Arguments) {
       }
     } else {
       // Non-interactive mode - use defaults if not provided
-      assetName = assetName || `adopted-${playbackId.slice(0, 8)}`;
+      assetName = assetName || muxTitle || `adopted-${playbackId.slice(0, 8)}`;
     }
 
     // Compute original path from dir and name
@@ -184,12 +239,15 @@ export async function handler(argv: Arguments) {
     log.space();
     log.info(`You can now import this asset in your Next.js application:`);
     log.space();
+    const importName = sanitizeImportName(assetName);
     log.space(`${chalk.magenta('import')} Video ${chalk.magenta('from')} ${chalk.cyan("'next-video'")};`);
-    log.space(`${chalk.magenta('import')} ${assetName} ${chalk.magenta('from')} ${chalk.cyan(`'/${assetFilePath}'`)};`);
+    log.space(
+      `${chalk.magenta('import')} ${importName} ${chalk.magenta('from')} ${chalk.cyan(`'/${assetFilePath}'`)};`
+    );
     log.space();
     log.space(`${chalk.magenta('export default function')} Page() {`);
     log.space(
-      `  ${chalk.magenta('return')} ${chalk.cyan('<')}Video ${chalk.cyan('src=')}{${assetName}} ${chalk.cyan('/>')};`
+      `  ${chalk.magenta('return')} ${chalk.cyan('<')}Video ${chalk.cyan('src=')}{${importName}} ${chalk.cyan('/>')};`
     );
     log.space(`}`);
     log.space();
