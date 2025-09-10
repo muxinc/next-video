@@ -108,7 +108,7 @@
     "hls-video-element": "^1.5.5",
     "magicast": "^0.3.5",
     "media-chrome": "^4.12.0",
-    "player.style": "^0.1.9",
+    "player.style": "^0.2.0",
     "resolve": "^1.22.10",
     "symlink-dir": "^6.0.3",
     "undici": "^5.28.4",
