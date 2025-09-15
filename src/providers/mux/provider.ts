@@ -1,12 +1,13 @@
 // Right now, this thing does nothing with timeouts. It should.
 // We probably want to migrate this from being a stateless function to a stateful function.
 // Also really need to do a ton of work to make this more resilient around retries, etc.
-import { createReadStream } from 'node:fs';
+import { createReadStream, existsSync, readFileSync } from 'node:fs';
 import fs from 'node:fs/promises';
 
 import chalk from 'chalk';
 import Mux from '@mux/mux-node';
 import { fetch as uFetch } from 'undici';
+import { minimatch } from 'minimatch';
 
 import { updateAsset, Asset } from '../../assets.js';
 import { getVideoConfig } from '../../config.js';
@@ -18,6 +19,87 @@ export type MuxMetadata = {
   uploadId?: string;
   assetId?: string;
   playbackId?: string;
+}
+
+export function validateUploadParams(videoUploadParams: any): { valid: boolean; errors: string[] } {
+  const errors: string[] = [];
+
+  if (!videoUploadParams || typeof videoUploadParams !== 'object') {
+    errors.push('videoUploadParams must be an object');
+    return { valid: false, errors };
+  }
+
+  if (videoUploadParams.max_resolution_tier !== undefined) {
+    const validResolutions = ['1080p', '1440p', '2160p'];
+    if (!validResolutions.includes(videoUploadParams.max_resolution_tier)) {
+      errors.push(`max_resolution_tier must be one of: ${validResolutions.join(', ')}`);
+    }
+  }
+
+  if (videoUploadParams.videoQuality !== undefined) {
+    const validQualities = ['basic', 'plus', 'premium'];
+    if (!validQualities.includes(videoUploadParams.videoQuality)) {
+      errors.push(`videoQuality must be one of: ${validQualities.join(', ')}`);
+    }
+  }
+
+  const validProperties = ['max_resolution_tier', 'videoQuality'];
+  const unknownProperties = Object.keys(videoUploadParams).filter((key) => !validProperties.includes(key));
+  if (unknownProperties.length > 0) {
+    errors.push(`Unknown properties: ${unknownProperties.join(', ')}. Valid properties: ${validProperties.join(', ')}`);
+  }
+
+  return { valid: errors.length === 0, errors };
+}
+
+function getParamsForUpload(filePath: string, muxConfig: any) {
+  try {
+    if (!filePath) {
+      return undefined;
+    }
+
+    // 1. Check for co-located .params.json file
+    const uploadParamsFile = filePath + '.params.json';
+    if (existsSync(uploadParamsFile)) {
+      try {
+        const videoUploadParamsContent = readFileSync(uploadParamsFile, 'utf8');
+        const videoUploadParams = JSON.parse(videoUploadParamsContent);
+
+        const validation = validateUploadParams(videoUploadParams);
+        if (!validation.valid) {
+          log.error(`Invalid upload params in ${uploadParamsFile}:`);
+          validation.errors.forEach((error) => log.error(`  - ${error}`));
+        } else {
+          log.info(log.label('Asset params:'), 'Using co-located upload params file');
+          return videoUploadParams;
+        }
+      } catch (e) {
+        log.error(`Error reading params file ${uploadParamsFile}:`, e);
+      }
+    }
+
+    // 2. Check exact file path match in UploadParams
+    if (muxConfig?.videoUploadParams?.[filePath]) {
+      const uploadParams = muxConfig.videoUploadParams[filePath];
+      log.info(log.label('Asset params:'), 'Using path match for upload params');
+      return uploadParams;
+    }
+
+    // 3. Check glob pattern matches in videoUploadParams
+    if (muxConfig?.videoUploadParams) {
+      for (const [pattern, uploadParams] of Object.entries(muxConfig.videoUploadParams)) {
+        if (minimatch(filePath, pattern)) {
+          log.info(log.label('Asset params:'), `Using pattern match '${pattern}' for upload params`);
+          return uploadParams;
+        }
+      }
+    }
+
+    return undefined;
+  } catch (e) {
+    log.error('Error retrieving video upload params for file:', filePath);
+    return undefined;
+  }
 }
 
 // We don't want to blow things up immediately if Mux isn't configured,
@@ -131,16 +213,19 @@ async function pollForUploadAsset(filePath: string, asset: Asset) {
   }
 }
 
-async function createUploadURL() : Promise<Mux.Video.Uploads.Upload | undefined> {
+async function createUploadURL(filePath: string): Promise<Mux.Video.Uploads.Upload | undefined> {
   try {
     const { providerConfig } = await getVideoConfig();
     const muxConfig = providerConfig.mux;
+    const uploadParams = getParamsForUpload(filePath, muxConfig);
+
     // Create a direct upload url
     const upload = await mux.video.uploads.create({
       cors_origin: '*',
       new_asset_settings: {
         playback_policy: ['public'],
-        video_quality: muxConfig?.videoQuality,
+        video_quality: uploadParams?.videoQuality || muxConfig?.videoQuality,
+        max_resolution_tier: uploadParams?.max_resolution_tier,
       },
     });
     return upload
@@ -182,7 +267,7 @@ export async function uploadLocalFile(asset: Asset) {
     return uploadRequestedFile(asset);
   }
 
-  const upload: Mux.Video.Uploads.Upload | undefined = await queue.enqueue(() => createUploadURL());
+  const upload: Mux.Video.Uploads.Upload | undefined = await queue.enqueue(() => createUploadURL(filePath));
   if (!upload) {
     return;
   }
@@ -245,13 +330,15 @@ export async function uploadRequestedFile(asset: Asset) {
 
   const { providerConfig } = await getVideoConfig();
   const muxConfig = providerConfig.mux;
+  const uploadParams = getParamsForUpload(filePath, muxConfig);
 
   const assetObj = await mux.video.assets.create({
     input: [{
       url: filePath
     }],
     playback_policy: ['public'],
-    video_quality: muxConfig?.videoQuality,
+    video_quality: uploadParams?.videoQuality || muxConfig?.videoQuality,
+    max_resolution_tier: uploadParams?.max_resolution_tier,
   });
 
   log.info(log.label('Asset is processing:'), filePath);

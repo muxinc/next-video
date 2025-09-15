@@ -33,10 +33,16 @@ export type VideoConfigComplete = {
   remoteSourceAssetPath?: (url: string) => string;
 };
 
+export type VideoUploadParams =  {
+  videoQuality?: 'basic' | 'plus' | 'premium';
+  max_resolution_tier?: '1080p' | '1440p' | '2160p';
+};
+
 export type ProviderConfig = {
   mux?: {
     generateAssetKey: undefined;
     videoQuality?: 'basic' | 'plus' | 'premium';
+    videoUploadParams?: Record<string, VideoUploadParams>;
   };
 
   'vercel-blob'?: {
