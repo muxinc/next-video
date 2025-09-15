@@ -19,7 +19,7 @@ export type MuxMetadata = {
   uploadId?: string;
   assetId?: string;
   playbackId?: string;
-}
+};
 
 export function validateUploadParams(videoUploadParams: any): { valid: boolean; errors: string[] } {
   const errors: string[] = [];
@@ -78,9 +78,11 @@ function getParamsForUpload(filePath: string, muxConfig: any) {
       }
     }
 
+    const normalizedFilePath = filePath.replace(/\\/g, '/');
+
     // 2. Check exact file path match in UploadParams
-    if (muxConfig?.videoUploadParams?.[filePath]) {
-      const uploadParams = muxConfig.videoUploadParams[filePath];
+    if (muxConfig?.videoUploadParams?.[filePath] || muxConfig?.videoUploadParams?.[normalizedFilePath]) {
+      const uploadParams = muxConfig.videoUploadParams[filePath] || muxConfig.videoUploadParams[normalizedFilePath];
       log.info(log.label('Asset params:'), 'Using path match for upload params');
       return uploadParams;
     }
@@ -88,7 +90,7 @@ function getParamsForUpload(filePath: string, muxConfig: any) {
     // 3. Check glob pattern matches in videoUploadParams
     if (muxConfig?.videoUploadParams) {
       for (const [pattern, uploadParams] of Object.entries(muxConfig.videoUploadParams)) {
-        if (minimatch(filePath, pattern)) {
+        if (minimatch(normalizedFilePath, pattern)) {
           log.info(log.label('Asset params:'), `Using pattern match '${pattern}' for upload params`);
           return uploadParams;
         }
@@ -134,7 +136,7 @@ async function pollForAssetReady(filePath: string, asset: Asset) {
       providerMetadata: {
         mux: {
           playbackId,
-        }
+        },
       },
     });
   }
@@ -166,7 +168,7 @@ async function pollForAssetReady(filePath: string, asset: Asset) {
       providerMetadata: {
         mux: {
           playbackId,
-        }
+        },
       },
     });
 
@@ -201,7 +203,7 @@ async function pollForUploadAsset(filePath: string, asset: Asset) {
       providerMetadata: {
         mux: {
           assetId: muxUpload.asset_id,
-        }
+        },
       },
     });
 
@@ -228,10 +230,10 @@ async function createUploadURL(filePath: string): Promise<Mux.Video.Uploads.Uplo
         max_resolution_tier: uploadParams?.max_resolution_tier,
       },
     });
-    return upload
+    return upload;
   } catch (e) {
     if (e instanceof Error && 'status' in e && e.status === 401) {
-      log.error("Unauthorized request. Check that your MUX_TOKEN_ID and MUX_TOKEN_SECRET credentials are valid.");
+      log.error('Unauthorized request. Check that your MUX_TOKEN_ID and MUX_TOKEN_SECRET credentials are valid.');
     } else {
       log.error('Error creating a Mux Direct Upload');
       console.error(e);
@@ -277,7 +279,7 @@ export async function uploadLocalFile(asset: Asset) {
     providerMetadata: {
       mux: {
         uploadId: upload.id as string, // more typecasting while we use the beta mux sdk
-      }
+      },
     },
   });
 
@@ -333,9 +335,11 @@ export async function uploadRequestedFile(asset: Asset) {
   const uploadParams = getParamsForUpload(filePath, muxConfig);
 
   const assetObj = await mux.video.assets.create({
-    input: [{
-      url: filePath
-    }],
+    input: [
+      {
+        url: filePath,
+      },
+    ],
     playback_policy: ['public'],
     video_quality: uploadParams?.videoQuality || muxConfig?.videoQuality,
     max_resolution_tier: uploadParams?.max_resolution_tier,
@@ -349,7 +353,7 @@ export async function uploadRequestedFile(asset: Asset) {
     providerMetadata: {
       mux: {
         assetId: assetObj.id!,
-      }
+      },
     },
   });
 
