@@ -1,7 +1,7 @@
 // Right now, this thing does nothing with timeouts. It should.
 // We probably want to migrate this from being a stateless function to a stateful function.
 // Also really need to do a ton of work to make this more resilient around retries, etc.
-import { createReadStream, existsSync, readFileSync } from 'node:fs';
+import { createReadStream } from 'node:fs';
 import fs from 'node:fs/promises';
 
 import chalk from 'chalk';
@@ -21,30 +21,30 @@ export type MuxMetadata = {
   playbackId?: string;
 };
 
-export function validateUploadParams(videoUploadParams: any): { valid: boolean; errors: string[] } {
+export function validateNewAssetSettings(newAssetSettings: any): { valid: boolean; errors: string[] } {
   const errors: string[] = [];
 
-  if (!videoUploadParams || typeof videoUploadParams !== 'object') {
-    errors.push('videoUploadParams must be an object');
+  if (!newAssetSettings || typeof newAssetSettings !== 'object') {
+    errors.push('newAssetSettings must be an object');
     return { valid: false, errors };
   }
 
-  if (videoUploadParams.max_resolution_tier !== undefined) {
+  if (newAssetSettings.maxResolutionTier !== undefined) {
     const validResolutions = ['1080p', '1440p', '2160p'];
-    if (!validResolutions.includes(videoUploadParams.max_resolution_tier)) {
-      errors.push(`max_resolution_tier must be one of: ${validResolutions.join(', ')}`);
+    if (!validResolutions.includes(newAssetSettings.maxResolutionTier)) {
+      errors.push(`maxResolutionTier must be one of: ${validResolutions.join(', ')}`);
     }
   }
 
-  if (videoUploadParams.videoQuality !== undefined) {
+  if (newAssetSettings.videoQuality !== undefined) {
     const validQualities = ['basic', 'plus', 'premium'];
-    if (!validQualities.includes(videoUploadParams.videoQuality)) {
+    if (!validQualities.includes(newAssetSettings.videoQuality)) {
       errors.push(`videoQuality must be one of: ${validQualities.join(', ')}`);
     }
   }
 
-  const validProperties = ['max_resolution_tier', 'videoQuality'];
-  const unknownProperties = Object.keys(videoUploadParams).filter((key) => !validProperties.includes(key));
+  const validProperties = ['maxResolutionTier', 'videoQuality'];
+  const unknownProperties = Object.keys(newAssetSettings).filter((key) => !validProperties.includes(key));
   if (unknownProperties.length > 0) {
     errors.push(`Unknown properties: ${unknownProperties.join(', ')}. Valid properties: ${validProperties.join(', ')}`);
   }
@@ -52,54 +52,34 @@ export function validateUploadParams(videoUploadParams: any): { valid: boolean; 
   return { valid: errors.length === 0, errors };
 }
 
-function getParamsForUpload(filePath: string, muxConfig: any) {
+function getNewAssetSettings(filePath: string, muxConfig: any) {
   try {
     if (!filePath) {
       return undefined;
     }
 
-    // 1. Check for co-located .params.json file
-    const uploadParamsFile = filePath + '.params.json';
-    if (existsSync(uploadParamsFile)) {
-      try {
-        const videoUploadParamsContent = readFileSync(uploadParamsFile, 'utf8');
-        const videoUploadParams = JSON.parse(videoUploadParamsContent);
-
-        const validation = validateUploadParams(videoUploadParams);
-        if (!validation.valid) {
-          log.error(`Invalid upload params in ${uploadParamsFile}:`);
-          validation.errors.forEach((error) => log.error(`  - ${error}`));
-        } else {
-          log.info(log.label('Asset params:'), 'Using co-located upload params file');
-          return videoUploadParams;
-        }
-      } catch (e) {
-        log.error(`Error reading params file ${uploadParamsFile}:`, e);
-      }
-    }
-
     const normalizedFilePath = filePath.replace(/\\/g, '/');
 
-    // 2. Check exact file path match in UploadParams
-    if (muxConfig?.videoUploadParams?.[filePath] || muxConfig?.videoUploadParams?.[normalizedFilePath]) {
-      const uploadParams = muxConfig.videoUploadParams[filePath] || muxConfig.videoUploadParams[normalizedFilePath];
-      log.info(log.label('Asset params:'), 'Using path match for upload params');
-      return uploadParams;
+    // 1. Check exact file path match in newAssetSettings
+    if (muxConfig?.newAssetSettings?.[filePath] || muxConfig?.newAssetSettings?.[normalizedFilePath]) {
+      const newAssetSettings = muxConfig.newAssetSettings[filePath] || muxConfig.newAssetSettings[normalizedFilePath];
+      log.info(log.label('Asset settings:'), 'Using exact path match');
+      return newAssetSettings;
     }
 
-    // 3. Check glob pattern matches in videoUploadParams
-    if (muxConfig?.videoUploadParams) {
-      for (const [pattern, uploadParams] of Object.entries(muxConfig.videoUploadParams)) {
+    // 2. Check glob pattern matches in newAssetSettings
+    if (muxConfig?.newAssetSettings) {
+      for (const [pattern, newAssetSettings] of Object.entries(muxConfig.newAssetSettings)) {
         if (minimatch(normalizedFilePath, pattern)) {
-          log.info(log.label('Asset params:'), `Using pattern match '${pattern}' for upload params`);
-          return uploadParams;
+          log.info(log.label('Asset settings:'), 'Using pattern match');
+          return newAssetSettings;
         }
       }
     }
 
     return undefined;
   } catch (e) {
-    log.error('Error retrieving video upload params for file:', filePath);
+    log.error('Error retrieving asset settings for file:', filePath);
     return undefined;
   }
 }
@@ -219,15 +199,15 @@ async function createUploadURL(filePath: string): Promise<Mux.Video.Uploads.Uplo
   try {
     const { providerConfig } = await getVideoConfig();
     const muxConfig = providerConfig.mux;
-    const uploadParams = getParamsForUpload(filePath, muxConfig);
+    const newAssetSettings = getNewAssetSettings(filePath, muxConfig);
 
     // Create a direct upload url
     const upload = await mux.video.uploads.create({
       cors_origin: '*',
       new_asset_settings: {
         playback_policy: ['public'],
-        video_quality: uploadParams?.videoQuality || muxConfig?.videoQuality,
-        max_resolution_tier: uploadParams?.max_resolution_tier,
+        video_quality: newAssetSettings?.videoQuality || muxConfig?.videoQuality,
+        max_resolution_tier: newAssetSettings?.maxResolutionTier,
       },
     });
     return upload;
@@ -332,7 +312,7 @@ export async function uploadRequestedFile(asset: Asset) {
 
   const { providerConfig } = await getVideoConfig();
   const muxConfig = providerConfig.mux;
-  const uploadParams = getParamsForUpload(filePath, muxConfig);
+  const newAssetSettings = getNewAssetSettings(filePath, muxConfig);
 
   const assetObj = await mux.video.assets.create({
     input: [
@@ -341,8 +321,8 @@ export async function uploadRequestedFile(asset: Asset) {
       },
     ],
     playback_policy: ['public'],
-    video_quality: uploadParams?.videoQuality || muxConfig?.videoQuality,
-    max_resolution_tier: uploadParams?.max_resolution_tier,
+    video_quality: newAssetSettings?.videoQuality || muxConfig?.videoQuality,
+    max_resolution_tier: newAssetSettings?.maxResolutionTier,
   });
 
   log.info(log.label('Asset is processing:'), filePath);

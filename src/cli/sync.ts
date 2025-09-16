@@ -35,7 +35,7 @@ export function builder(yargs: Argv) {
 
 function watcher(dir: string) {
   const watcher = chokidar.watch(dir, {
-    ignored: /(^|[\/\\])\..*|\.json$|\.ts$|\.params\.json$/,
+    ignored: /(^|[\/\\])\..*|\.json$|\.ts$/,
     persistent: true,
   });
 
@@ -66,7 +66,7 @@ export async function handler(argv: Arguments) {
       .map((file) => path.relative(directoryPath, file));
 
     const jsonFiles = files.filter((file) => file.endsWith('.json'));
-    const otherFiles = files.filter((file) => !file.match(/(^|[\/\\])\..*|\.json$|\.ts$|\.params\.json$/));
+    const otherFiles = files.filter((file) => !file.match(/(^|[\/\\])\..*|\.json$|\.ts$/));
 
     const newFileProcessor = async (file: string) => {
       log.info(log.label('Processing file:'), file);
@@ -162,8 +162,8 @@ async function getFiles(dir: string): Promise<string[]> {
   const dirents = await readdir(dir, { withFileTypes: true });
 
   const files = await Promise.all(dirents.map((dirent) => {
-    const res = path.resolve(dir, dirent.name);
-    return dirent.isDirectory() ? getFiles(res) : res;
+      const res = path.resolve(dir, dirent.name);
+      return dirent.isDirectory() ? getFiles(res) : res;
   }));
   return files.flat();
 }
