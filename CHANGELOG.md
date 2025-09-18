@@ -1,3 +1,12 @@
+# [2.4.0](https://github.com/muxinc/next-video/compare/v2.3.0...v2.4.0) (2025-09-18)
+
+
+### Features
+
+* add Mux adopt command ([#387](https://github.com/muxinc/next-video/issues/387)) ([7404f7a](https://github.com/muxinc/next-video/commit/7404f7ad39afd96c1dfc254bb0e8e0fc02f56a52))
+
+
+
 # [2.3.0](https://github.com/muxinc/next-video/compare/v2.2.3...v2.3.0) (2025-09-03)
 
 
