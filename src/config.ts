@@ -78,6 +78,14 @@ export type ProviderConfig = {
     /* An optional function to generate the bucket asset key. */
     generateAssetKey?: (filePathOrURL: string, folder: string) => string;
   };
+
+  cloudinary?: {
+    cloudName: string;
+    apiKey: string;
+    apiSecret: string;
+    /* An optional function to generate the public ID for the asset. */
+    generatePublicId?: (filePathOrURL: string, folder: string) => string;
+  };
 };
 
 export type VideoConfig = Partial<VideoConfigComplete>;
