@@ -1,3 +1,12 @@
+# [2.5.0](https://github.com/muxinc/next-video/compare/v2.4.0...v2.5.0) (2025-09-22)
+
+
+### Features
+
+* Add video params on uploads for Mux ([#390](https://github.com/muxinc/next-video/issues/390)) ([6f0c16d](https://github.com/muxinc/next-video/commit/6f0c16dca0ed0810554a5ae76a91a66f490f1c46))
+
+
+
 # [2.4.0](https://github.com/muxinc/next-video/compare/v2.3.0...v2.4.0) (2025-09-18)
 
 
