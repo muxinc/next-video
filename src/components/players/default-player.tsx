@@ -7,9 +7,9 @@ import { svgBlurImage } from '../utils.js';
 import Media from './media/index.js';
 
 import type { MediaProps } from './media/index.js';
-import type { PlayerProps } from '../types.js';
+import type { PlayerProps, CSSPropertiesWithVars } from '../types.js';
 
-const DefaultPlayer = forwardRef<HTMLVideoElement, Omit<MediaProps, 'ref'> & PlayerProps>((allProps, forwardedRef) => {
+const DefaultPlayer = forwardRef<HTMLVideoElement, Omit<MediaProps, 'ref'> & PlayerProps & { style?: CSSPropertiesWithVars }>((allProps, forwardedRef) => {
   let {
     style,
     children,
