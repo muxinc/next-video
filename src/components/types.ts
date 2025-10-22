@@ -3,7 +3,6 @@ import type { Asset } from '../assets.js';
 import { StaticImageData } from 'next/image.js';
 import type { MediaProps, NativeVideoProps, MuxVideoProps } from './players/media/index.js';
 
-// Custom CSS properties type that includes CSS variables
 export type CSSPropertiesWithVars = React.CSSProperties & {
   [key: `--${string}`]: string | number;
 };
