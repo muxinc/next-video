@@ -1,7 +1,7 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-// import { withNextVideo } from 'next-video/process';
-import { withNextVideo } from './next-video.mjs';
+import { withNextVideo } from 'next-video/process';
+// import { withNextVideo } from './next-video.mjs';
 
 const fileDir = path.dirname(fileURLToPath(import.meta.url));
 
@@ -24,7 +24,14 @@ const nextConfig = (phase, { defaultConfig }) => {
   };
 };
 
-export default withNextVideo(nextConfig);
+export default withNextVideo(nextConfig, {
+  provider: 'mux',
+  providerConfig: {
+    mux: {
+      videoQuality: 'premium',
+    },
+  },
+});
 
 // Amazon S3 example
 // export default withNextVideo(nextConfig, {
