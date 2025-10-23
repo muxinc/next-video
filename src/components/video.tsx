@@ -15,10 +15,10 @@ import {
 } from './utils.js';
 
 import type { Asset } from '../assets.js';
-import type { VideoLoaderProps, VideoProps, VideoPropsInternal } from './types.js';
+import type { VideoLoaderProps, VideoProps, VideoPropsInternal, CSSPropertiesWithVars } from './types.js';
 export type * from './types.js';
 
-const NextVideo = forwardRef<HTMLVideoElement, VideoProps>((props, forwardedRef) => {
+const NextVideo = forwardRef<HTMLVideoElement, VideoProps & { style?: CSSPropertiesWithVars }>((props, forwardedRef) => {
   // Keep in component so we can emulate the DEV_MODE.
   const DEV_MODE = process.env.NODE_ENV === 'development';
 
