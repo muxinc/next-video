@@ -37,8 +37,10 @@ async function initS3() {
   bucketName = amazonS3Config?.bucket ?? '';
   endpoint = amazonS3Config?.endpoint ?? '';
 
+  const configuredRegion = amazonS3Config?.region;
   const regionMatch = endpoint.match(/\.([a-z0-9-]+)\.amazonaws\.com$/);
-  const region = regionMatch ? regionMatch[1] : '';
+  const extractedRegion = regionMatch ? regionMatch[1] : '';
+  const region = configuredRegion || extractedRegion || 'us-east-1';
 
   s3 ??= new S3Client({
     endpoint,
