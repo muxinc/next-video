@@ -1,4 +1,4 @@
-import { confirm, input } from '@inquirer/prompts';
+import { confirm, input, password } from '@inquirer/prompts';
 import chalk from 'chalk';
 import { Argv, Arguments } from 'yargs';
 
@@ -10,6 +10,10 @@ import path from 'node:path';
 import log, { Logger } from '../utils/logger.js';
 import { checkPackageJsonForNextVideo, updateTSConfigFileContent } from './lib/json-configs.js';
 import updateNextConfigFile from './lib/next-config.js';
+import { openUrl } from '../utils/cli-utils/open-url.js';
+import { updateEnvFile, ensureEnvInGitignore } from '../utils/cli-utils/env-file.js';
+import { prepareTestVideo } from '../utils/cli-utils/download-test-video.js';
+import { createDemoPage } from '../utils/cli-utils/create-demo-page.js';
 
 const GET_STARTED_CONTENTS = `{
   "status": "ready",
@@ -266,7 +270,7 @@ export async function handler(argv: Arguments) {
 
   if (!cmd && updateDevScript) {
     try {
-      const devScript = (await execPromise(`npm pkg get scripts.dev`) as string)?.trim().slice(1, -1);
+      const devScript = ((await execPromise(`npm pkg get scripts.dev`)) as string)?.trim().slice(1, -1);
 
       if (devScript && !devScript.includes(DEV_SCRIPT)) {
         // Use npm pkg set instead of writeFile to maintain indentation.
@@ -294,7 +298,10 @@ export async function handler(argv: Arguments) {
     } else if (e.error === 'already_added') {
       changes.push([log.info, 'It seems like next-video is already added to your Next Config']);
     } else {
-      changes.push([log.error, 'Failed to update next.config.(js|mjs|ts), please add next-video to your config manually.']);
+      changes.push([
+        log.error,
+        'Failed to update next.config.(js|mjs|ts), please add next-video to your config manually.',
+      ]);
     }
   }
 
@@ -302,6 +309,7 @@ export async function handler(argv: Arguments) {
 
   changes.forEach(([loggerFn, change]) => loggerFn(change));
 
+  // Possibly redundant section now?
   log.space();
   log.info(`Why don't you try adding the component to a page?`);
   log.space();
@@ -317,6 +325,117 @@ export async function handler(argv: Arguments) {
   log.info(`NEXT STEP: Set up remote storage`);
   log.info(chalk.magenta.bold('https://next-video.dev/docs#remote-storage-and-optimization'));
   log.space();
+  //
+
+  const configureMux = await confirm({
+    message: 'Would you like to get started with remote storage through Mux?',
+    default: true,
+  });
+
+  if (configureMux) {
+    const haveAccount = await confirm({
+      message: 'Do you already have a Mux account?',
+      default: false,
+    });
+
+    if (!haveAccount) {
+      await openUrl('https://dashboard.mux.com/signup', 'Mux signup');
+    }
+
+    const configureTokens = await confirm({
+      message: 'Would you like to configure your Mux tokens now?',
+      default: true,
+    });
+
+    if (configureTokens) {
+      const haveTokens = await confirm({
+        message: 'Do you already have your Mux tokens?',
+        default: false,
+      });
+      if (!haveTokens) {
+        await openUrl('https://dashboard.mux.com/settings/access-tokens', 'Mux access token creation');
+        log.space();
+        log.info(chalk.magenta.bold('Create your Mux access token:'));
+        log.info(`1. Click ${chalk.yellow.bold('Create token')} in the Mux dashboard`);
+        log.info(`2. Enable ${chalk.yellow.bold('Mux Video')} permissions`);
+        log.info(`3. Give it a name (e.g., ${chalk.magenta.bold('next-video')})`);
+        log.info(`4. Copy the ${chalk.greenBright.bold('Token ID')} and ${chalk.greenBright.bold('Secret Key')}`);
+        log.space();
+      }
+
+      log.info(`Paste your credentials below:`);
+      log.space();
+
+      const tokenId = await password({
+        message: `${chalk.greenBright.bold('MUX_TOKEN_ID')}:`,
+        mask: true,
+        validate: (input) => (input.trim() ? true : 'Token ID is required'),
+      });
+
+      const tokenSecret = await password({
+        message: `${chalk.greenBright.bold('MUX_TOKEN_SECRET')}:`,
+        mask: true,
+        validate: (input) => (input.trim() ? true : 'Token secret is required'),
+      });
+
+      try {
+        await ensureEnvInGitignore();
+
+        await updateEnvFile({
+          MUX_TOKEN_ID: tokenId.trim(),
+          MUX_TOKEN_SECRET: tokenSecret.trim(),
+        });
+
+        log.success(`Mux credentials saved to ${chalk.cyan('.env.local')}!`);
+        changes.push([
+          log.add,
+          `Added ${chalk.magenta.bold('MUX_TOKEN_ID')} and ${chalk.magenta.bold('MUX_TOKEN_SECRET')} to ${chalk.cyan(
+            '.env.local'
+          )}`,
+        ]);
+      } catch (error: any) {
+        log.error(`Failed to save credentials to ${chalk.cyan('.env.local')}:`, error.message);
+        changes.push([log.error, `Failed to save Mux credentials to ${chalk.cyan('.env.local')}`]);
+      }
+    }
+    log.space();
+
+    const addTestVideo = await confirm({
+      message: 'Want to download a sample video and test your setup?',
+      default: true,
+    });
+
+    if (addTestVideo) {
+      const success = await prepareTestVideo(baseDir);
+      if (success) {
+        changes.push([log.add, `Added and processed sample video for testing`]);
+
+        const demoResult = await createDemoPage();
+        if (demoResult.success) {
+          changes.push([log.add, `Created demo page to test the setup`]);
+
+          log.space();
+          log.info(chalk.magenta.bold('Next steps to test your setup:'));
+          log.info('1. Build and start your Next.js app:');
+          log.info(chalk.cyan('   npm run build && npm run start'));
+          log.space();
+
+          if (demoResult.route === 'component') {
+            log.info('2. Import and use the DemoVideo component in any page:');
+            log.info(chalk.cyan('   import DemoVideo from "@/components/DemoVideo"'));
+            log.info(chalk.cyan('   // Then use <DemoVideo /> in your JSX'));
+          } else {
+            log.info(`2. Navigate to ${chalk.cyan(demoResult.route)} in your browser`);
+            log.info(chalk.cyan(`   http://localhost:3000${demoResult.route}`));
+          }
+          log.space();
+        }
+      } else {
+        changes.push([log.warning, `Sample video downloaded but processing failed`]);
+      }
+    }
+    log.space();
+  }
 }
 
 async function isCmd() {
@@ -324,7 +443,7 @@ async function isCmd() {
     try {
       await execPromise(`ls`);
     } catch (err) {
-      return true
+      return true;
     }
   }
   return false;
