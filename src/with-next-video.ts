@@ -45,8 +45,11 @@ export function withNextVideo(nextConfig: any, videoConfig?: VideoConfig) {
   }
 
   const nextVersion = getPackageVersion('next');
-
-  if (nextVersion && nextVersion.startsWith('15.')) {
+  
+  const majorVersion = nextVersion ? parseInt(nextVersion.split('.')[0], 10) : undefined;
+  
+  if (majorVersion && majorVersion >= 15) {
+    // Next.js 15+: set at top level
     nextConfig.outputFileTracingIncludes = {
       ...nextConfig.outputFileTracingIncludes,
       [path]: [`./${folder}/**/*.json`],
