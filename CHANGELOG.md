@@ -1,3 +1,14 @@
+## [2.5.1](https://github.com/muxinc/next-video/compare/v2.5.0...v2.5.1) (2025-11-07)
+
+
+### Bug Fixes
+
+* bump the prod-dependencies group across 1 directory with 2 updates ([#384](https://github.com/muxinc/next-video/issues/384)) ([d4e19db](https://github.com/muxinc/next-video/commit/d4e19db0f94b0fbbab00bfc522281c0389d503f0))
+* **deps:** update dependencies ([9a70b2c](https://github.com/muxinc/next-video/commit/9a70b2c0807902e585d999fdcb8ef5f87f096b52))
+* Support Next.js 16+ for outputFileTracingIncludes configuration ([#398](https://github.com/muxinc/next-video/issues/398)) ([dd205b0](https://github.com/muxinc/next-video/commit/dd205b069a905662a77a2e5501f55bf6a6a83513))
+
+
+
 # [2.5.0](https://github.com/muxinc/next-video/compare/v2.4.0...v2.5.0) (2025-09-22)
 
 
