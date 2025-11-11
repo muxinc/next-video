@@ -60,24 +60,59 @@ async function preInitCheck(dir: string) {
   }
 }
 
+/**
+ * Searches up the directory tree to find a file.
+ * Useful for monorepos where files might be at the root.
+ */
+async function findFileUpTree(filename: string): Promise<string | null> {
+  let currentDir = process.cwd();
+  const root = path.parse(currentDir).root;
+
+  while (currentDir !== root) {
+    const filePath = path.join(currentDir, filename);
+    try {
+      await access(filePath);
+      return filePath;
+    } catch {
+      // File doesn't exist in this directory, continue searching up
+    }
+    currentDir = path.dirname(currentDir);
+  }
+
+  // Check root directory as well
+  const rootPath = path.join(root, filename);
+  try {
+    await access(rootPath);
+    return rootPath;
+  } catch {
+    return null;
+  }
+}
+
 async function checkVersionManager() {
   try {
-    await access('package-lock.json');
-    return 'npm';
+    const lockfilePath = await findFileUpTree('package-lock.json');
+    if (lockfilePath) {
+      return 'npm';
+    }
   } catch {
     // not NPM
   }
 
   try {
-    await access('yarn.lock');
-    return 'yarn';
+    const lockfilePath = await findFileUpTree('yarn.lock');
+    if (lockfilePath) {
+      return 'yarn';
+    }
   } catch {
     // not Yarn
   }
 
   try {
-    await access('pnpm-lock.yaml');
-    return 'pnpm';
+    const lockfilePath = await findFileUpTree('pnpm-lock.yaml');
+    if (lockfilePath) {
+      return 'pnpm';
+    }
   } catch {
     // not PNPM
   }
