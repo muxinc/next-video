@@ -45,8 +45,11 @@ export function withNextVideo(nextConfig: any, videoConfig?: VideoConfig) {
   }
 
   const nextVersion = getPackageVersion('next');
-
-  if (nextVersion && nextVersion.startsWith('15.')) {
+  
+  const majorVersion = nextVersion ? parseInt(nextVersion.split('.')[0], 10) : undefined;
+  
+  if (majorVersion && majorVersion >= 15) {
+    // Next.js 15+: set at top level
     nextConfig.outputFileTracingIncludes = {
       ...nextConfig.outputFileTracingIncludes,
       [path]: [`./${folder}/**/*.json`],
@@ -60,19 +63,41 @@ export function withNextVideo(nextConfig: any, videoConfig?: VideoConfig) {
     nextConfig.experimental = experimental;
   }
 
-  if (!hasWarned && process.env.TURBOPACK && !process.env.NEXT_VIDEO_SUPPRESS_TURBOPACK_WARNING) {
-    hasWarned = true;
+  nextConfig.turbopack = {
+    ...nextConfig.turbopack,
+    rules: {
+      ...nextConfig.turbopack?.rules,
+      '*.mp4': {
+        loaders: [
+          'next-video/webpack/video-raw-loader.js',
+        ],
+        as: '*.json',
+      },
+      '*.json': {
+        loaders: [
+          'next-video/webpack/video-json-loader.js',
+        ],
+        as: '*.json',
+      },
+    },
+  };
 
-    const nextVideoVersion = getPackageVersion('next-video');
+  const nextVideoVersion = getPackageVersion('next-video');
+
+  if (
+    !hasWarned &&
+    process.env.TURBOPACK &&
+    !process.env.NEXT_VIDEO_SUPPRESS_TURBOPACK_WARNING &&
+    nextVersion &&
+    isVersionLessThan(nextVersion, '15.5.0')
+  ) {
+    hasWarned = true;
 
     logger.space(logger.label(`▶︎ next-video ${nextVideoVersion}\n`));
     logger.warning(
       `You are using next-video with \`next ${
         process.env.NODE_ENV === 'development' ? 'dev' : 'build'
-      } --turbo\`. next-video doesn't yet fully support Turbopack.\n  We recommend temporarily removing the \`--turbo\` flag for use with next-video.\n`
-    );
-    logger.warning(
-      `Follow this issue for progress on next-video + Turbopack: https://github.com/muxinc/next-video/issues/266.\n  (You can suppress this warning by setting NEXT_VIDEO_SUPPRESS_TURBOPACK_WARNING=1 as environment variable)\n`
+      } --turbo\`. next-video doesn't support Turbopack on Next.js 15.5.0 and below.\n  We recommend removing the \`--turbo\` flag for use with next-video.\n`
     );
   }
 
@@ -139,3 +164,19 @@ export function withNextVideo(nextConfig: any, videoConfig?: VideoConfig) {
     },
   });
 }
+
+// Helper function to compare version strings
+const isVersionLessThan = (version: string, target: string) => {
+  const parseVersion = (v: string) => v.split('.').map((n) => parseInt(n, 10));
+  const versionParts = parseVersion(version);
+  const targetParts = parseVersion(target);
+
+  for (let i = 0; i < Math.max(versionParts.length, targetParts.length); i++) {
+    const vPart = versionParts[i] || 0;
+    const tPart = targetParts[i] || 0;
+
+    if (vPart < tPart) return true;
+    if (vPart > tPart) return false;
+  }
+  return false;
+};

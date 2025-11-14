@@ -8,4 +8,10 @@ export const { GET, POST, handler, withNextVideo } = NextVideo({
     const asset = JSON.parse(file.toString());
     return asset;
   },
+  provider: 'mux',
+  providerConfig: {
+    mux: {
+      videoQuality: 'premium',
+    },
+  },
 });

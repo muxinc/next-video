@@ -33,9 +33,16 @@ export type VideoConfigComplete = {
   remoteSourceAssetPath?: (url: string) => string;
 };
 
+export type NewAssetSettings = {
+  videoQuality?: 'basic' | 'plus' | 'premium';
+  maxResolutionTier?: '1080p' | '1440p' | '2160p';
+};
+
 export type ProviderConfig = {
   mux?: {
     generateAssetKey: undefined;
+    videoQuality?: 'basic' | 'plus' | 'premium';
+    newAssetSettings?: Record<string, NewAssetSettings>;
   };
 
   'vercel-blob'?: {
@@ -132,9 +139,13 @@ export function setVideoConfig(videoConfig?: VideoConfig): VideoConfigComplete {
 export async function getVideoConfig(): Promise<VideoConfigComplete> {
   // This condition is only true for the next-video CLI commands.
   if (!globalThis.__nextVideo.configIsDefined) {
-    const nextConfigModule = (await import(/* webpackIgnore: true */ 'next/dist/server/config.js')).default;
-    const loadNextConfig = ((nextConfigModule as any).default ?? nextConfigModule) as typeof nextConfigModule;
-    await loadNextConfig('phase-development-server', cwd());
+    try {
+      const nextConfigModule = (await import(/* webpackIgnore: true */ 'next/dist/server/config.js')).default;
+      const loadNextConfig = ((nextConfigModule as any).default ?? nextConfigModule) as typeof nextConfigModule;
+      await loadNextConfig('phase-development-server', cwd());
+    } catch (err) {
+      console.error(err);
+    }
   }
   return globalThis.__nextVideo.configComplete;
 }

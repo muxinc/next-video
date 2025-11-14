@@ -7,10 +7,10 @@ import { svgBlurImage } from '../utils.js';
 import Media from './media/index.js';
 
 import type { MediaProps } from './media/index.js';
-import type { PlayerProps } from '../types.js';
+import type { PlayerProps, CSSPropertiesWithVars } from '../types.js';
 import Preview from '../preview.js';
 
-const DefaultPlayer = forwardRef<HTMLVideoElement, Omit<MediaProps, 'ref'> & PlayerProps & { light?: string | React.ReactElement }>((allProps, forwardedRef) => {
+const DefaultPlayer = forwardRef<HTMLVideoElement, Omit<MediaProps, 'ref'> & PlayerProps & { style?: CSSPropertiesWithVars, light?: string | React.ReactElement }>((allProps, forwardedRef) => {
 
   let {
     style,

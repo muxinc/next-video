@@ -149,12 +149,14 @@ footer .inner {
 aside nav ul {
   list-style: none;
   padding: 0;
+  padding-left: 0 !important;
   margin: 0;
   line-height: 1.25;
 }
 
 aside nav li {
   padding: 0;
+  padding-left: 0 !important;
 }
 
 aside nav a {
