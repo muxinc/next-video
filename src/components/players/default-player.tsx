@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, Suspense, Children, isValidElement } from 'react';
+import { forwardRef, Suspense, Children, isValidElement, useState, useEffect } from 'react';
 import Sutro from 'player.style/sutro/react';
 import { getPlaybackId, getPosterURLFromPlaybackId } from '../../providers/mux/transformer.js';
 import { svgBlurImage } from '../utils.js';
@@ -8,8 +8,10 @@ import Media from './media/index.js';
 
 import type { MediaProps } from './media/index.js';
 import type { PlayerProps } from '../types.js';
+import Preview from '../preview.js';
 
-const DefaultPlayer = forwardRef<HTMLVideoElement, Omit<MediaProps, 'ref'> & PlayerProps>((allProps, forwardedRef) => {
+const DefaultPlayer = forwardRef<HTMLVideoElement, Omit<MediaProps, 'ref'> & PlayerProps & { light?: string | React.ReactElement }>((allProps, forwardedRef) => {
+
   let {
     style,
     children,
@@ -18,6 +20,7 @@ const DefaultPlayer = forwardRef<HTMLVideoElement, Omit<MediaProps, 'ref'> & Pla
     poster,
     blurDataURL,
     theme: Theme = Sutro,
+    light = false,
     ...rest
   } = allProps;
 
@@ -82,6 +85,16 @@ const DefaultPlayer = forwardRef<HTMLVideoElement, Omit<MediaProps, 'ref'> & Pla
   // Remove props that are not supported by MuxVideo.
   delete props.thumbnailTime;
 
+  const [showPreview, setShowPreview] = useState(!!light);
+
+  useEffect(() => {
+    if (!!light) {
+      setShowPreview(true);
+    } else {
+      setShowPreview(false);
+    }
+  }, [light]);
+
   if (controls && Theme) {
     // @ts-ignore
     const dataNextVideo = props['data-next-video'];
@@ -102,35 +115,47 @@ const DefaultPlayer = forwardRef<HTMLVideoElement, Omit<MediaProps, 'ref'> & Pla
     }
 
     return (
-      <Theme data-next-video={dataNextVideo} style={{
-        display: 'grid',
-        ...style,
-      }}>
-        {slottedPosterImg}
-        <Suspense fallback={null}>
-          <Media
-            suppressHydrationWarning
-            ref={forwardedRef}
+      <>
+        {showPreview ? (
+          <Preview           
+          light={light}
+          onClickPreview={(prev: boolean)=> setShowPreview(!prev)}
+          />
+        ) : (
+          <Theme
+            data-next-video={dataNextVideo}
             style={{
-              gridArea: '1/1',
-            }}
-            slot="media"
-            poster={poster}
-            crossOrigin=""
-            {...props}
-          >
-            {playbackId && (
-              <track
-                default
-                kind="metadata"
-                label="thumbnails"
-                src={`https://image.mux.com/${playbackId}/storyboard.vtt`}
-              />
-            )}
-            {children}
-          </Media>
-        </Suspense>
-      </Theme>
+              display: 'grid',
+              ...style,
+            }}>
+            {slottedPosterImg}
+            <Suspense fallback={null}>
+              <Media
+                suppressHydrationWarning
+                ref={forwardedRef}
+                style={{
+                  gridArea: '1/1',
+                }}
+                slot="media"
+                poster={poster}
+                crossOrigin=""
+                {...props}
+                autoPlay={light ? true : !!props.autoPlay}
+              >
+                {playbackId && (
+                  <track
+                    default
+                    kind="metadata"
+                    label="thumbnails"
+                    src={`https://image.mux.com/${playbackId}/storyboard.vtt`}
+                  />
+                )}
+                {children}
+              </Media>
+            </Suspense>
+          </Theme>
+        )}
+      </>
     );
   }
 
