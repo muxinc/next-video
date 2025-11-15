@@ -64,6 +64,7 @@ export type ProviderConfig = {
     bucket?: string;
     accessKeyId?: string;
     secretAccessKey?: string;
+    region: string;
     /* An optional function to generate the bucket asset key. */
     generateAssetKey?: (filePathOrURL: string, folder: string) => string;
   };
