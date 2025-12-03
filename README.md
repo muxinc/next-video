@@ -498,6 +498,42 @@ export { GET, POST } from '@/next-video';
 export { handler as default } from '@/next-video';
 ```
 
+### Lazy Load Player Based on User Interaction (Demo)
+
+You can delay loading the full video player until the user shows real intent to watch. This reduces initial data usage and improves performance, especially when rendering multiple videos.
+Below is a simple wrapper component that displays a poster and a play button, and only mounts the actual video element when the user clicks (you can also adapt it for hover or other interactions).
+
+```js
+import { useState } from "react";
+
+export default function LazyVideo({ poster, children, ...videoProps }) {
+  const [active, setActive] = useState(false);
+
+  return (
+    <div>
+      {!active && (
+        <div className="placeholder" onClick={() => setActive(true)}>
+          <img src={poster} alt="" />
+          <button
+            className="play-button"
+            aria-label="Play video"
+          >
+            ▶
+          </button>
+        </div>
+      )}
+
+      {active && (
+        <Video {...videoProps}>
+          {children}
+        </Video>
+      )}
+    </div>
+  );
+}
+```
+
+How It Works: The wrapper first shows only a poster and play button (the ``<Video>`` element isn’t in the DOM yet). When the user interacts (click) mounts the real player, ensuring no data is spent loading video metadata or UI until the user actually wants to watch. You can customize the wrapper to use your own controls or UI components.
 
 ## Default Player
 
