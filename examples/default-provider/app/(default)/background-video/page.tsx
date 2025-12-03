@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import BackgroundVideo from 'next-video/background-video';
-import countryClouds from '/videos/country-clouds.mp4?thumbnailTime=0';
+import countryClouds from '../../../videos/country-clouds.mp4?thumbnailTime=0';
 
 export const metadata: Metadata = {
   title: 'next-video - Background Video',

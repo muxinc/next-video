@@ -1,3 +1,102 @@
+## [2.5.1](https://github.com/muxinc/next-video/compare/v2.5.0...v2.5.1) (2025-11-07)
+
+
+### Bug Fixes
+
+* bump the prod-dependencies group across 1 directory with 2 updates ([#384](https://github.com/muxinc/next-video/issues/384)) ([d4e19db](https://github.com/muxinc/next-video/commit/d4e19db0f94b0fbbab00bfc522281c0389d503f0))
+* **deps:** update dependencies ([9a70b2c](https://github.com/muxinc/next-video/commit/9a70b2c0807902e585d999fdcb8ef5f87f096b52))
+* Support Next.js 16+ for outputFileTracingIncludes configuration ([#398](https://github.com/muxinc/next-video/issues/398)) ([dd205b0](https://github.com/muxinc/next-video/commit/dd205b069a905662a77a2e5501f55bf6a6a83513))
+
+
+
+# [2.5.0](https://github.com/muxinc/next-video/compare/v2.4.0...v2.5.0) (2025-09-22)
+
+
+### Features
+
+* Add video params on uploads for Mux ([#390](https://github.com/muxinc/next-video/issues/390)) ([6f0c16d](https://github.com/muxinc/next-video/commit/6f0c16dca0ed0810554a5ae76a91a66f490f1c46))
+
+
+
+# [2.4.0](https://github.com/muxinc/next-video/compare/v2.3.0...v2.4.0) (2025-09-18)
+
+
+### Features
+
+* add Mux adopt command ([#387](https://github.com/muxinc/next-video/issues/387)) ([7404f7a](https://github.com/muxinc/next-video/commit/7404f7ad39afd96c1dfc254bb0e8e0fc02f56a52))
+
+
+
+# [2.3.0](https://github.com/muxinc/next-video/compare/v2.2.3...v2.3.0) (2025-09-03)
+
+
+### Features
+
+* add turbopack support ([#382](https://github.com/muxinc/next-video/issues/382)) ([1edf581](https://github.com/muxinc/next-video/commit/1edf581f92cfbbcabc7a6f25cde011bd242a6a59)), closes [#266](https://github.com/muxinc/next-video/issues/266)
+
+
+
+## [2.2.3](https://github.com/muxinc/next-video/compare/v2.2.2...v2.2.3) (2025-08-07)
+
+
+### Bug Fixes
+
+* set object-fit to cover for background video ([#383](https://github.com/muxinc/next-video/issues/383)) ([8df6efb](https://github.com/muxinc/next-video/commit/8df6efb646526c6acca3e08a81b7ac93e910a219))
+
+
+
+## [2.2.2](https://github.com/muxinc/next-video/compare/v2.2.1...v2.2.2) (2025-08-04)
+
+
+
+## [2.2.1](https://github.com/muxinc/next-video/compare/v2.2.0...v2.2.1) (2025-07-09)
+
+
+### Bug Fixes
+
+* add a queue to throttle requests and avoid 429 errors ([#362](https://github.com/muxinc/next-video/issues/362)) ([21db7dd](https://github.com/muxinc/next-video/commit/21db7dd2908829160e14b8231f0ca5852616a9be))
+* bump the prod-dependencies group across 1 directory with 2 updates ([#366](https://github.com/muxinc/next-video/issues/366)) ([ae98ca7](https://github.com/muxinc/next-video/commit/ae98ca75b235bc1f7fde4b937e0909f5e884de1e))
+* upgrade player pkgs ([#380](https://github.com/muxinc/next-video/issues/380)) ([729f6d2](https://github.com/muxinc/next-video/commit/729f6d28d68e1d0d97f6c7bdbd86343559144af2))
+
+
+
+# [2.2.0](https://github.com/muxinc/next-video/compare/v2.1.0...v2.2.0) (2025-03-17)
+
+
+### Bug Fixes
+
+* bump the prod-dependencies group across 1 directory with 2 updates ([#354](https://github.com/muxinc/next-video/issues/354)) ([92d91e3](https://github.com/muxinc/next-video/commit/92d91e30f6b69efa0e2e2d1a471eaae680e0909b))
+* bump the prod-dependencies group across 1 directory with 2 updates ([#361](https://github.com/muxinc/next-video/issues/361)) ([1eca8ab](https://github.com/muxinc/next-video/commit/1eca8ab3a161828dc0d91c33483367a5811f5505))
+
+
+### Features
+
+* handle missing token errors ([#359](https://github.com/muxinc/next-video/issues/359)) ([d134d21](https://github.com/muxinc/next-video/commit/d134d21f3cf6f2f5562fe5085eab006d1e6c7a7e))
+
+
+
+# [2.1.0](https://github.com/muxinc/next-video/compare/v2.0.4...v2.1.0) (2025-02-19)
+
+
+### Features
+
+* add `videoQuality` Mux config ([#346](https://github.com/muxinc/next-video/issues/346)) ([2991cd2](https://github.com/muxinc/next-video/commit/2991cd2aec079286f6a555bb244fb1f8d5100335)), closes [#336](https://github.com/muxinc/next-video/issues/336)
+
+
+
+## [2.0.4](https://github.com/muxinc/next-video/compare/v2.0.3...v2.0.4) (2025-01-31)
+
+
+
+## [2.0.3](https://github.com/muxinc/next-video/compare/v2.0.2...v2.0.3) (2025-01-29)
+
+
+### Bug Fixes
+
+* upgrade MC + player.style ([#337](https://github.com/muxinc/next-video/issues/337)) ([36b6602](https://github.com/muxinc/next-video/commit/36b6602308100e936105443497fee204be0368c1))
+
+
+
 ## [2.0.2](https://github.com/muxinc/next-video/compare/v2.0.1...v2.0.2) (2025-01-28)
 
 
