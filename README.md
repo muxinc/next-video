@@ -517,29 +517,28 @@ export { handler as default } from '@/next-video';
 ### Lazy Load Player Based on User Interaction (Demo)
 
 You can delay loading the full video player until the user shows real intent to watch. This reduces initial data usage and improves performance, especially when rendering multiple videos.
-Below is a simple wrapper component that displays a poster and a play button, and only mounts the actual video element when the user clicks (you can also adapt it for hover or other interactions).
+
+Below is a simple wrapper component that displays a poster and a play button, and only mounts the actual video element when the user clicks. This uses dynamic import to ensure the <Video> component is lazy-loaded and not included in the initial bundle.
 
 ```js
-import { useState } from "react";
+"use client";
 
-export default function LazyVideo({ poster, children, ...videoProps }) {
+import { useState } from "react";
+import dynamic from "next/dynamic";
+
+const Video = dynamic(() => import("next-video"), { ssr: false });
+
+export default function VideoExample() {
   const [active, setActive] = useState(false);
 
   return (
     <div>
-      {!active && (
-        <div className="placeholder" onClick={() => setActive(true)}>
-          <img src={poster} alt="" />
-          <button
-            className="play-button"
-            aria-label="Play video"
-          >
-            ▶
-          </button>
+      {!active ? (
+        <div onClick={() => setActive(true)}>
+          <img src={poster} alt="Video poster" />
+          <button>▶</button>
         </div>
-      )}
-
-      {active && (
+      ) : (
         <Video {...videoProps}>
           {children}
         </Video>
@@ -549,7 +548,14 @@ export default function LazyVideo({ poster, children, ...videoProps }) {
 }
 ```
 
-How It Works: The wrapper first shows only a poster and play button (the ``<Video>`` element isn’t in the DOM yet). When the user interacts (click) mounts the real player, ensuring no data is spent loading video metadata or UI until the user actually wants to watch. You can customize the wrapper to use your own controls or UI components.
+How It Works: 	
+  
+  •	The wrapper initially renders only the poster image and play button.
+	•	The <Video> element is not mounted until the user clicks the play button.
+	•	This ensures no network requests or DOM elements for the video are loaded until necessary.
+	•	You can adapt this pattern for hover, scroll, or other interactions to trigger lazy loading.
+
+ [Live Demo](https://codesandbox.io/p/devbox/2w5n52)
 
 ## Default Player
 
