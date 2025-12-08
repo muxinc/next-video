@@ -1,3 +1,17 @@
+# [2.6.0](https://github.com/muxinc/next-video/compare/v2.5.1...v2.6.0) (2025-12-04)
+
+
+### Bug Fixes
+
+* Upgraded players and media chrome to use new ce-la-react ([#403](https://github.com/muxinc/next-video/issues/403)) ([9af5735](https://github.com/muxinc/next-video/commit/9af5735bf3e8278747c426d3638d3a1d4e2f8779))
+
+
+### Features
+
+* support for init command in monorepos ([#399](https://github.com/muxinc/next-video/issues/399)) ([e5bef63](https://github.com/muxinc/next-video/commit/e5bef6391c15c1474142079f137a098c7e471c03))
+
+
+
 ## [2.5.1](https://github.com/muxinc/next-video/compare/v2.5.0...v2.5.1) (2025-11-07)
 
 
