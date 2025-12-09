@@ -514,7 +514,7 @@ export { GET, POST } from '@/next-video';
 export { handler as default } from '@/next-video';
 ```
 
-### Lazy Load Player Based on User Interaction (Demo)
+### Lazy Load Player Based on User Interaction ([Demo](https://codesandbox.io/p/devbox/2w5n52))
 
 You can delay loading the full video player until the user shows real intent to watch. This reduces initial data usage and improves performance, especially when rendering multiple videos.
 
