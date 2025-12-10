@@ -514,6 +514,49 @@ export { GET, POST } from '@/next-video';
 export { handler as default } from '@/next-video';
 ```
 
+### Lazy Load Player Based on User Interaction ([Demo](https://codesandbox.io/p/devbox/next-video-lazy-load-based-on-user-interaction-w857r5))
+
+You can delay loading the full video player until the user shows real intent to watch. This reduces initial data usage and improves performance, especially when rendering multiple videos.
+
+Below is a simple wrapper component that displays a poster and a play button, and only mounts the actual video element when the user clicks. This uses dynamic import to ensure the <Video> component is lazy-loaded and not included in the initial bundle.
+
+```js
+"use client";
+
+import { useState } from "react";
+import dynamic from "next/dynamic";
+
+const Video = dynamic(() => import("next-video"), { ssr: false });
+
+export default function VideoExample() {
+  const [active, setActive] = useState(false);
+
+  return (
+    <div>
+      {!active ? (
+        <div onClick={() => setActive(true)}>
+          <img src={poster} alt="Video poster" />
+          <button>▶</button>
+        </div>
+      ) : (
+        <Video {...videoProps}>
+          {children}
+        </Video>
+      )}
+    </div>
+  );
+}
+```
+
+How It Works: 	
+  
+  •	The wrapper initially renders only the poster image and play button.
+	•	The <Video> element is not mounted until the user clicks the play button.
+	•	This ensures no network requests or DOM elements for the video are loaded until necessary.
+	•	You can adapt this pattern for hover, scroll, or other interactions to trigger lazy loading.
+
+ [Live Demo](https://codesandbox.io/p/devbox/next-video-lazy-load-based-on-user-interaction-w857r5)
+
 ## Default Player
 
 The default player is built with [Media Chrome](https://github.com/muxinc/media-chrome).
