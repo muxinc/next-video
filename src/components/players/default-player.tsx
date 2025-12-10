@@ -107,7 +107,6 @@ const DefaultPlayer = forwardRef<HTMLVideoElement, Omit<MediaProps, 'ref'> & Pla
         ...style,
       }}>
         {slottedPosterImg}
-        <Suspense fallback={null}>
           <Media
             suppressHydrationWarning
             ref={forwardedRef}
@@ -129,13 +128,11 @@ const DefaultPlayer = forwardRef<HTMLVideoElement, Omit<MediaProps, 'ref'> & Pla
             )}
             {children}
           </Media>
-        </Suspense>
       </Theme>
     );
   }
 
   return (
-    <Suspense fallback={null}>
       <Media
         suppressHydrationWarning
         ref={forwardedRef}
@@ -158,7 +155,6 @@ const DefaultPlayer = forwardRef<HTMLVideoElement, Omit<MediaProps, 'ref'> & Pla
         )}
         {children}
       </Media>
-    </Suspense>
   );
 });
 
