@@ -88,8 +88,8 @@
     "esbuild": "^0.24.2",
     "glob": "^11.0.0",
     "next": "^15.5.9",
-    "react": "^19.2.1",
-    "react-test-renderer": "^19.2.1",
+    "react": "^19.2.2",
+    "react-test-renderer": "^19.2.2",
     "tsx": "3.13.0",
     "typescript": "^5.7.2"
   },
