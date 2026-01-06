@@ -86,7 +86,7 @@ async function putAsset(filePath: string, size: number, stream: ReadStream | Rea
   let blob;
   try {
     key = await createAssetKey(filePath, 'vercel-blob');
-    blob = await put(key, stream, { access: 'public' });
+    blob = await put(key, stream, { access: 'public', addRandomSuffix: true });
 
     if (stream instanceof ReadStream) {
       stream.close();
