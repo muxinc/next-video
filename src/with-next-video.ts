@@ -12,17 +12,17 @@ let hasWarned = false;
 
 export function withNextVideo(nextConfig: any, videoConfig?: VideoConfig) {
   const videoConfigComplete = setVideoConfig(videoConfig);
-  const { path, folder, provider } = videoConfigComplete;
+  const { path, folder, provider, devMode = false } = videoConfigComplete;
 
   // env VARS have to be set before the async function return!!
 
   // Don't use `process.env` here because Next.js replaces public env vars during build.
-  env['NEXT_PUBLIC_VIDEO_OPTS'] = JSON.stringify({ path, folder, provider });
+  env['NEXT_PUBLIC_VIDEO_OPTS'] = JSON.stringify({ path, folder, provider, devMode });
 
   // We should probably switch to using `phase` here, just a bit concerned about backwards compatibility.
   if (process.argv[2] === 'dev') {
     // Don't use `process.env` here because Next.js replaces public env vars during build.
-    env['NEXT_PUBLIC_DEV_VIDEO_OPTS'] = JSON.stringify({ path, folder, provider });
+    env['NEXT_PUBLIC_DEV_VIDEO_OPTS'] = JSON.stringify({ path, folder, provider, devMode });
   }
 
   if (typeof nextConfig === 'function') {
