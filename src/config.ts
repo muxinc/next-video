@@ -31,6 +31,9 @@ export type VideoConfigComplete = {
 
   /* An optional function to generate the local asset path for remote sources. */
   remoteSourceAssetPath?: (url: string) => string;
+
+  /** Whether to show development alerts and enable dev-only features. Defaults to false. */
+  devMode?: boolean;
 };
 
 export type NewAssetSettings = {
@@ -87,6 +90,7 @@ export const videoConfigDefault: VideoConfigComplete = {
   path: '/api/video',
   provider: 'mux',
   providerConfig: {},
+  devMode: false,
   loadAsset: async function (assetPath: string): Promise<Asset | undefined> {
     const file = await readFile(assetPath);
     const asset = JSON.parse(file.toString());

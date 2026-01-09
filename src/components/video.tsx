@@ -20,7 +20,7 @@ export type * from './types.js';
 
 const NextVideo = forwardRef<HTMLVideoElement, VideoProps & { style?: CSSPropertiesWithVars }>((props, forwardedRef) => {
   // Keep in component so we can emulate the DEV_MODE.
-  const DEV_MODE = process.env.NODE_ENV === 'development';
+  const DEV_MODE = config.devMode ?? false;
 
   let {
     as: VideoPlayer = DefaultPlayer,
