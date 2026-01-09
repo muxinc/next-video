@@ -206,6 +206,73 @@ export default function Page() {
 
 </details>
 
+### Adopt existing Mux videos
+
+If you've already uploaded videos to Mux (for example, through the Mux dashboard) and want to use them with `next-video`, you can use the `adopt` command to create local asset metadata files without re-uploading.
+
+```bash
+npx next-video adopt <playbackId>
+```
+
+The command will:
+- Fetch metadata from Mux (including the video title)
+- Prompt you for the asset name and configuration (in interactive mode)
+- Generate the asset JSON file with all necessary metadata
+- Provide ready-to-use import code for your Next.js application
+
+#### Interactive mode (default)
+
+```bash
+npx next-video adopt abc123XYZ456def789ghi0
+```
+
+You'll be prompted for:
+- Asset name (defaults to the video title from Mux or a generated name)
+- Whether to configure a custom thumbnail time
+- Confirmation to proceed if not using Mux as the default provider
+
+#### Non-interactive mode
+
+For automation or CI/CD, you can provide all options via flags:
+
+```bash
+npx next-video adopt abc123XYZ456def789ghi0 \
+  --name my-video \
+  --dir videos \
+  --thumbnail-time 5.5 \
+  --no-interactive
+```
+
+#### Options
+
+| Option | Alias | Description | Default |
+|--------|-------|-------------|---------|
+| `playbackId` | - | The Mux playback ID of the asset to adopt (required) | - |
+| `--dir` | `-d` | Directory to save the asset metadata file | `videos` |
+| `--name` | `-n` | Custom name for the asset file (without extension) | Video title or `adopted-{playbackId}` |
+| `--thumbnail-time` | `-t` | Thumbnail time in seconds for the poster image | - |
+| `--interactive` | `-i` | Run in interactive mode | `true` |
+
+#### Example output
+
+After running the command, you'll get a file like `videos/my-video.mp4.json` and usage instructions:
+
+```tsx
+import Video from 'next-video';
+import myVideo from '/videos/my-video.mp4';
+
+export default function Page() {
+  return <Video src={myVideo} />;
+}
+```
+
+#### Notes
+
+- The `adopt` command currently only works with Mux assets
+- You need a valid Mux playback ID
+- The video must already exist and be ready in your Mux account
+- For other providers, use the [remote video import](#remote-videos) method
+
 ### Change player theme ([Demo](https://next-video-demo.vercel.app/custom-theme))
 
 You can change the player theme by passing the `theme` prop to the `<Video>` component.  
