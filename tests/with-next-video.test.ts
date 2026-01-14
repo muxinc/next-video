@@ -71,7 +71,6 @@ describe('withNextVideo', () => {
       folder: 'video-files',
       provider: 'vercel-blob',
       providerConfig: {},
-      devMode: false,
       loadAsset: fakeLoadAsset,
       saveAsset: fakeSaveAsset,
       updateAsset: fakeUpdateAsset
