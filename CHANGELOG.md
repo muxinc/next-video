@@ -1,3 +1,46 @@
+# [2.6.0](https://github.com/muxinc/next-video/compare/v2.5.1...v2.6.0) (2025-12-04)
+
+
+### Bug Fixes
+
+* Upgraded players and media chrome to use new ce-la-react ([#403](https://github.com/muxinc/next-video/issues/403)) ([9af5735](https://github.com/muxinc/next-video/commit/9af5735bf3e8278747c426d3638d3a1d4e2f8779))
+
+
+### Features
+
+* support for init command in monorepos ([#399](https://github.com/muxinc/next-video/issues/399)) ([e5bef63](https://github.com/muxinc/next-video/commit/e5bef6391c15c1474142079f137a098c7e471c03))
+
+
+
+## [2.5.1](https://github.com/muxinc/next-video/compare/v2.5.0...v2.5.1) (2025-11-07)
+
+
+### Bug Fixes
+
+* bump the prod-dependencies group across 1 directory with 2 updates ([#384](https://github.com/muxinc/next-video/issues/384)) ([d4e19db](https://github.com/muxinc/next-video/commit/d4e19db0f94b0fbbab00bfc522281c0389d503f0))
+* **deps:** update dependencies ([9a70b2c](https://github.com/muxinc/next-video/commit/9a70b2c0807902e585d999fdcb8ef5f87f096b52))
+* Support Next.js 16+ for outputFileTracingIncludes configuration ([#398](https://github.com/muxinc/next-video/issues/398)) ([dd205b0](https://github.com/muxinc/next-video/commit/dd205b069a905662a77a2e5501f55bf6a6a83513))
+
+
+
+# [2.5.0](https://github.com/muxinc/next-video/compare/v2.4.0...v2.5.0) (2025-09-22)
+
+
+### Features
+
+* Add video params on uploads for Mux ([#390](https://github.com/muxinc/next-video/issues/390)) ([6f0c16d](https://github.com/muxinc/next-video/commit/6f0c16dca0ed0810554a5ae76a91a66f490f1c46))
+
+
+
+# [2.4.0](https://github.com/muxinc/next-video/compare/v2.3.0...v2.4.0) (2025-09-18)
+
+
+### Features
+
+* add Mux adopt command ([#387](https://github.com/muxinc/next-video/issues/387)) ([7404f7a](https://github.com/muxinc/next-video/commit/7404f7ad39afd96c1dfc254bb0e8e0fc02f56a52))
+
+
+
 # [2.3.0](https://github.com/muxinc/next-video/compare/v2.2.3...v2.3.0) (2025-09-03)
 
 

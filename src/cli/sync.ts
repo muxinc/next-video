@@ -35,7 +35,7 @@ export function builder(yargs: Argv) {
 
 function watcher(dir: string) {
   const watcher = chokidar.watch(dir, {
-    ignored: /(^|[\/\\])\..*|\.json$/,
+    ignored: /(^|[\/\\])\..*|\.json$|\.ts$/,
     persistent: true,
   });
 
@@ -66,9 +66,7 @@ export async function handler(argv: Arguments) {
       .map((file) => path.relative(directoryPath, file));
 
     const jsonFiles = files.filter((file) => file.endsWith('.json'));
-    const otherFiles = files.filter(
-      (file) => !file.match(/(^|[\/\\])\..*|\.json$/)
-    );
+    const otherFiles = files.filter((file) => !file.match(/(^|[\/\\])\..*|\.json$|\.ts$/));
 
     const newFileProcessor = async (file: string) => {
       log.info(log.label('Processing file:'), file);
@@ -154,7 +152,7 @@ export async function handler(argv: Arguments) {
     if(err.message.includes("MUX_TOKEN_ID environment variable is missing or empty") || err.message.includes("MUX_TOKEN_SECRET environment variable is missing or empty")){
       log.error(`Mux MUX_TOKEN_ID or MUX_TOKEN_SECRET can't be found. Visit \x1b[4;34mhttps://next-video.dev/docs#remote-storage-and-optimization\x1b[0m for more information.`);
       return;
-    }    
+    }
 
     log.error('An unknown error occurred', err);
   }
@@ -164,8 +162,8 @@ async function getFiles(dir: string): Promise<string[]> {
   const dirents = await readdir(dir, { withFileTypes: true });
 
   const files = await Promise.all(dirents.map((dirent) => {
-    const res = path.resolve(dir, dirent.name);
-    return dirent.isDirectory() ? getFiles(res) : res;
+      const res = path.resolve(dir, dirent.name);
+      return dirent.isDirectory() ? getFiles(res) : res;
   }));
   return files.flat();
 }

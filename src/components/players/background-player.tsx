@@ -5,10 +5,10 @@ import Media from './media/index.js';
 import { getPlaybackId, getPosterURLFromPlaybackId } from '../../providers/mux/transformer.js';
 import { svgBlurImage } from '../utils.js';
 
-import type { PlayerProps } from '../types.js';
+import type { PlayerProps, CSSPropertiesWithVars } from '../types.js';
 import type { MediaProps } from './media/index.js';
 
-const BackgroundPlayer = forwardRef<HTMLVideoElement, Omit<MediaProps, 'ref'> & PlayerProps>(
+const BackgroundPlayer = forwardRef<HTMLVideoElement, Omit<MediaProps, 'ref'> & PlayerProps & { style?: CSSPropertiesWithVars }>(
   (allProps, forwardedRef) => {
     let { style, className, children, asset, poster, blurDataURL, onPlaying, onLoadStart, ...rest } = allProps;
 

@@ -206,6 +206,73 @@ export default function Page() {
 
 </details>
 
+### Adopt existing Mux videos
+
+If you've already uploaded videos to Mux (for example, through the Mux dashboard) and want to use them with `next-video`, you can use the `adopt` command to create local asset metadata files without re-uploading.
+
+```bash
+npx next-video adopt <playbackId>
+```
+
+The command will:
+- Fetch metadata from Mux (including the video title)
+- Prompt you for the asset name and configuration (in interactive mode)
+- Generate the asset JSON file with all necessary metadata
+- Provide ready-to-use import code for your Next.js application
+
+#### Interactive mode (default)
+
+```bash
+npx next-video adopt abc123XYZ456def789ghi0
+```
+
+You'll be prompted for:
+- Asset name (defaults to the video title from Mux or a generated name)
+- Whether to configure a custom thumbnail time
+- Confirmation to proceed if not using Mux as the default provider
+
+#### Non-interactive mode
+
+For automation or CI/CD, you can provide all options via flags:
+
+```bash
+npx next-video adopt abc123XYZ456def789ghi0 \
+  --name my-video \
+  --dir videos \
+  --thumbnail-time 5.5 \
+  --no-interactive
+```
+
+#### Options
+
+| Option | Alias | Description | Default |
+|--------|-------|-------------|---------|
+| `playbackId` | - | The Mux playback ID of the asset to adopt (required) | - |
+| `--dir` | `-d` | Directory to save the asset metadata file | `videos` |
+| `--name` | `-n` | Custom name for the asset file (without extension) | Video title or `adopted-{playbackId}` |
+| `--thumbnail-time` | `-t` | Thumbnail time in seconds for the poster image | - |
+| `--interactive` | `-i` | Run in interactive mode | `true` |
+
+#### Example output
+
+After running the command, you'll get a file like `videos/my-video.mp4.json` and usage instructions:
+
+```tsx
+import Video from 'next-video';
+import myVideo from '/videos/my-video.mp4';
+
+export default function Page() {
+  return <Video src={myVideo} />;
+}
+```
+
+#### Notes
+
+- The `adopt` command currently only works with Mux assets
+- You need a valid Mux playback ID
+- The video must already exist and be ready in your Mux account
+- For other providers, use the [remote video import](#remote-videos) method
+
 ### Change player theme ([Demo](https://next-video-demo.vercel.app/custom-theme))
 
 You can change the player theme by passing the `theme` prop to the `<Video>` component.  
@@ -414,7 +481,7 @@ Supported providers with their required environment variables:
 | [`mux`](https://mux.com?utm_source=next-video.dev) (default) | `MUX_TOKEN_ID`<br/>`MUX_TOKEN_SECRET`                                                                     | [`videoQuality`](https://www.mux.com/docs/guides/use-video-quality-levels?utm_source=next-video.dev): `'basic' \| 'plus' \| 'premium'` (optional) | [Pricing](https://www.mux.com/pricing/video?utm_source=next-video.dev)   |
 | [`vercel-blob`](https://vercel.com/docs/storage/vercel-blob) | `BLOB_READ_WRITE_TOKEN`                                                                                   |                                                                                                                                                   | [Pricing](https://vercel.com/docs/storage/vercel-blob/usage-and-pricing) |
 | [`backblaze`](https://www.backblaze.com/cloud-storage)       | `BACKBLAZE_ACCESS_KEY_ID`<br/>`BACKBLAZE_SECRET_ACCESS_KEY`                                               | `endpoint`<br/>`bucket` (optional)                                                                                                                | [Pricing](https://www.backblaze.com/cloud-storage/pricing)               |
-| [`amazon-s3`](https://aws.amazon.com/s3)                     | `AWS_ACCESS_KEY_ID`<br/>`AWS_SECRET_ACCESS_KEY`                                                           | `endpoint`<br/>`bucket` (optional)                                                                                                                | [Pricing](https://aws.amazon.com/s3/pricing/)                            |
+| [`amazon-s3`](https://aws.amazon.com/s3)                     | `AWS_ACCESS_KEY_ID`<br/>`AWS_SECRET_ACCESS_KEY`                                                           | `endpoint`<br/>`bucket` (optional)<br/>`region` (optional, defaults to `us-east-1` or auto-extracted from endpoint)                                                                                                                | [Pricing](https://aws.amazon.com/s3/pricing/)                            |
 | [`cloudflare-r2`](https://developers.cloudflare.com/r2/)     | `R2_ACCESS_KEY_ID`<br/>`R2_SECRET_ACCESS_KEY`<br/>`R2_CF_API_TOKEN` (optional when `bucketUrlPublic` set) | `bucket` (optional)<br/>`bucketUrlPublic` (optional when `R2_CF_API_TOKEN` set)                                                                   | [Pricing](https://developers.cloudflare.com/r2/pricing/)                 |
 
 #### Provider feature set
@@ -513,6 +580,49 @@ export { GET, POST } from '@/next-video';
 // pages/api/video/[[...handler]].js
 export { handler as default } from '@/next-video';
 ```
+
+### Lazy Load Player Based on User Interaction ([Demo](https://codesandbox.io/p/devbox/next-video-lazy-load-based-on-user-interaction-w857r5))
+
+You can delay loading the full video player until the user shows real intent to watch. This reduces initial data usage and improves performance, especially when rendering multiple videos.
+
+Below is a simple wrapper component that displays a poster and a play button, and only mounts the actual video element when the user clicks. This uses dynamic import to ensure the <Video> component is lazy-loaded and not included in the initial bundle.
+
+```js
+"use client";
+
+import { useState } from "react";
+import dynamic from "next/dynamic";
+
+const Video = dynamic(() => import("next-video"), { ssr: false });
+
+export default function VideoExample() {
+  const [active, setActive] = useState(false);
+
+  return (
+    <div>
+      {!active ? (
+        <div onClick={() => setActive(true)}>
+          <img src={poster} alt="Video poster" />
+          <button>▶</button>
+        </div>
+      ) : (
+        <Video {...videoProps}>
+          {children}
+        </Video>
+      )}
+    </div>
+  );
+}
+```
+
+How It Works: 	
+  
+  •	The wrapper initially renders only the poster image and play button.
+	•	The <Video> element is not mounted until the user clicks the play button.
+	•	This ensures no network requests or DOM elements for the video are loaded until necessary.
+	•	You can adapt this pattern for hover, scroll, or other interactions to trigger lazy loading.
+
+ [Live Demo](https://codesandbox.io/p/devbox/next-video-lazy-load-based-on-user-interaction-w857r5)
 
 ## Default Player
 

@@ -3,11 +3,9 @@ import type { Asset } from '../assets.js';
 import { StaticImageData } from 'next/image.js';
 import type { MediaProps, NativeVideoProps, MuxVideoProps } from './players/media/index.js';
 
-declare module 'react' {
-  interface CSSProperties {
-    [key: `--${string}`]: any;
-  }
-}
+export type CSSPropertiesWithVars = React.CSSProperties & {
+  [key: `--${string}`]: string | number;
+};
 
 export type VideoLoader = (p: VideoLoaderProps) => Promise<string>;
 export type VideoLoaderWithConfig = (p: VideoLoaderPropsWithConfig) => Promise<string>;
@@ -29,13 +27,13 @@ export interface PosterProps {
   domain?: string;
 }
 
-type DefaultPlayerProps = Omit<MediaProps, 'ref'> & PlayerProps;
+type DefaultPlayerProps = Omit<MediaProps, 'ref'> & PlayerProps & { style?: CSSPropertiesWithVars };
 
 // Keep in mind the hierarchy is Video(Player(Media))
 
 export type VideoProps<TPlaybackId = string | undefined> = TPlaybackId extends string
-  ? Omit<Partial<MuxVideoProps> & PlayerProps, 'src' | 'poster'> & SuperVideoProps & { playbackId?: TPlaybackId }
-  : Omit<NativeVideoProps & PlayerProps, 'src' | 'poster'> & SuperVideoProps & { playbackId?: undefined };
+  ? Omit<Partial<MuxVideoProps> & PlayerProps, 'src' | 'poster'> & SuperVideoProps & { playbackId?: TPlaybackId } & { style?: CSSPropertiesWithVars }
+  : Omit<NativeVideoProps & PlayerProps, 'src' | 'poster'> & SuperVideoProps & { playbackId?: undefined } & { style?: CSSPropertiesWithVars };
 
 type SuperVideoProps = {
   /**

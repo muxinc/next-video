@@ -7,6 +7,7 @@ import fs from 'node:fs/promises';
 import chalk from 'chalk';
 import Mux from '@mux/mux-node';
 import { fetch as uFetch } from 'undici';
+import { minimatch } from 'minimatch';
 
 import { updateAsset, Asset } from '../../assets.js';
 import { getVideoConfig } from '../../config.js';
@@ -18,6 +19,69 @@ export type MuxMetadata = {
   uploadId?: string;
   assetId?: string;
   playbackId?: string;
+};
+
+export function validateNewAssetSettings(newAssetSettings: any): { valid: boolean; errors: string[] } {
+  const errors: string[] = [];
+
+  if (!newAssetSettings || typeof newAssetSettings !== 'object') {
+    errors.push('newAssetSettings must be an object');
+    return { valid: false, errors };
+  }
+
+  if (newAssetSettings.maxResolutionTier !== undefined) {
+    const validResolutions = ['1080p', '1440p', '2160p'];
+    if (!validResolutions.includes(newAssetSettings.maxResolutionTier)) {
+      errors.push(`maxResolutionTier must be one of: ${validResolutions.join(', ')}`);
+    }
+  }
+
+  if (newAssetSettings.videoQuality !== undefined) {
+    const validQualities = ['basic', 'plus', 'premium'];
+    if (!validQualities.includes(newAssetSettings.videoQuality)) {
+      errors.push(`videoQuality must be one of: ${validQualities.join(', ')}`);
+    }
+  }
+
+  const validProperties = ['maxResolutionTier', 'videoQuality'];
+  const unknownProperties = Object.keys(newAssetSettings).filter((key) => !validProperties.includes(key));
+  if (unknownProperties.length > 0) {
+    errors.push(`Unknown properties: ${unknownProperties.join(', ')}. Valid properties: ${validProperties.join(', ')}`);
+  }
+
+  return { valid: errors.length === 0, errors };
+}
+
+function getNewAssetSettings(filePath: string, muxConfig: any) {
+  try {
+    if (!filePath) {
+      return undefined;
+    }
+
+    const normalizedFilePath = filePath.replace(/\\/g, '/');
+
+    // 1. Check exact file path match in newAssetSettings
+    if (muxConfig?.newAssetSettings?.[filePath] || muxConfig?.newAssetSettings?.[normalizedFilePath]) {
+      const newAssetSettings = muxConfig.newAssetSettings[filePath] || muxConfig.newAssetSettings[normalizedFilePath];
+      log.info(log.label('Asset settings:'), 'Using exact path match');
+      return newAssetSettings;
+    }
+
+    // 2. Check glob pattern matches in newAssetSettings
+    if (muxConfig?.newAssetSettings) {
+      for (const [pattern, newAssetSettings] of Object.entries(muxConfig.newAssetSettings)) {
+        if (minimatch(normalizedFilePath, pattern)) {
+          log.info(log.label('Asset settings:'), 'Using pattern match');
+          return newAssetSettings;
+        }
+      }
+    }
+
+    return undefined;
+  } catch (e) {
+    log.error('Error retrieving asset settings for file:', filePath);
+    return undefined;
+  }
 }
 
 // We don't want to blow things up immediately if Mux isn't configured,
@@ -52,7 +116,7 @@ async function pollForAssetReady(filePath: string, asset: Asset) {
       providerMetadata: {
         mux: {
           playbackId,
-        }
+        },
       },
     });
   }
@@ -84,7 +148,7 @@ async function pollForAssetReady(filePath: string, asset: Asset) {
       providerMetadata: {
         mux: {
           playbackId,
-        }
+        },
       },
     });
 
@@ -119,7 +183,7 @@ async function pollForUploadAsset(filePath: string, asset: Asset) {
       providerMetadata: {
         mux: {
           assetId: muxUpload.asset_id,
-        }
+        },
       },
     });
 
@@ -131,22 +195,25 @@ async function pollForUploadAsset(filePath: string, asset: Asset) {
   }
 }
 
-async function createUploadURL() : Promise<Mux.Video.Uploads.Upload | undefined> {
+async function createUploadURL(filePath: string): Promise<Mux.Video.Uploads.Upload | undefined> {
   try {
     const { providerConfig } = await getVideoConfig();
     const muxConfig = providerConfig.mux;
+    const newAssetSettings = getNewAssetSettings(filePath, muxConfig);
+
     // Create a direct upload url
     const upload = await mux.video.uploads.create({
       cors_origin: '*',
       new_asset_settings: {
         playback_policy: ['public'],
-        video_quality: muxConfig?.videoQuality,
+        video_quality: newAssetSettings?.videoQuality || muxConfig?.videoQuality,
+        max_resolution_tier: newAssetSettings?.maxResolutionTier,
       },
     });
-    return upload
+    return upload;
   } catch (e) {
     if (e instanceof Error && 'status' in e && e.status === 401) {
-      log.error("Unauthorized request. Check that your MUX_TOKEN_ID and MUX_TOKEN_SECRET credentials are valid.");
+      log.error('Unauthorized request. Check that your MUX_TOKEN_ID and MUX_TOKEN_SECRET credentials are valid.');
     } else {
       log.error('Error creating a Mux Direct Upload');
       console.error(e);
@@ -182,7 +249,7 @@ export async function uploadLocalFile(asset: Asset) {
     return uploadRequestedFile(asset);
   }
 
-  const upload: Mux.Video.Uploads.Upload | undefined = await queue.enqueue(() => createUploadURL());
+  const upload: Mux.Video.Uploads.Upload | undefined = await queue.enqueue(() => createUploadURL(filePath));
   if (!upload) {
     return;
   }
@@ -192,7 +259,7 @@ export async function uploadLocalFile(asset: Asset) {
     providerMetadata: {
       mux: {
         uploadId: upload.id as string, // more typecasting while we use the beta mux sdk
-      }
+      },
     },
   });
 
@@ -245,13 +312,17 @@ export async function uploadRequestedFile(asset: Asset) {
 
   const { providerConfig } = await getVideoConfig();
   const muxConfig = providerConfig.mux;
+  const newAssetSettings = getNewAssetSettings(filePath, muxConfig);
 
   const assetObj = await mux.video.assets.create({
-    input: [{
-      url: filePath
-    }],
+    input: [
+      {
+        url: filePath,
+      },
+    ],
     playback_policy: ['public'],
-    video_quality: muxConfig?.videoQuality,
+    video_quality: newAssetSettings?.videoQuality || muxConfig?.videoQuality,
+    max_resolution_tier: newAssetSettings?.maxResolutionTier,
   });
 
   log.info(log.label('Asset is processing:'), filePath);
@@ -262,7 +333,7 @@ export async function uploadRequestedFile(asset: Asset) {
     providerMetadata: {
       mux: {
         assetId: assetObj.id!,
-      }
+      },
     },
   });
 
