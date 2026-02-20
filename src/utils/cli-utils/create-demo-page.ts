@@ -40,44 +40,45 @@ export async function detectRoutingType(): Promise<{ type: RoutingType; basePath
   }
 }
 
-const DEMO_CONTENT = `import Video from 'next-video';
-import sampleVideo from '/videos/sample-video.mp4';
+function getDemoContent(videoImportPrefix: string): string {
+  return `import Video from 'next-video';
+import sampleVideo from '${videoImportPrefix}/sample-video.mp4';
 
 export default function DemoVideo() {
   return (
-    <div style={{ 
-      display: 'flex', 
-      justifyContent: 'center', 
-      alignItems: 'center', 
+    <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
       minHeight: '100vh',
       backgroundColor: '#f5f5f5',
       padding: '20px'
     }}>
-      <div style={{ 
-        maxWidth: '800px', 
+      <div style={{
+        maxWidth: '800px',
         width: '100%',
         backgroundColor: 'white',
         borderRadius: '8px',
         padding: '20px',
         boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
       }}>
-        <h1 style={{ 
-          textAlign: 'center', 
+        <h1 style={{
+          textAlign: 'center',
           marginBottom: '20px',
           color: '#333'
         }}>
           Next-Video Demo
         </h1>
-        <Video 
-          src={sampleVideo} 
-          style={{ 
-            width: '100%', 
+        <Video
+          src={sampleVideo}
+          style={{
+            width: '100%',
             height: 'auto',
             borderRadius: '4px'
           }}
         />
-        <p style={{ 
-          textAlign: 'center', 
+        <p style={{
+          textAlign: 'center',
           marginTop: '20px',
           color: '#666',
           fontSize: '14px'
@@ -89,27 +90,31 @@ export default function DemoVideo() {
   );
 }
 `;
+}
 
-export async function createDemoPage(): Promise<{ success: boolean; route: string }> {
+export async function createDemoPage(options?: { videoImportPrefix?: string }): Promise<{ success: boolean; route: string }> {
+  const videoImportPrefix = options?.videoImportPrefix ?? '/videos';
+  const content = getDemoContent(videoImportPrefix);
+
   try {
     const { type: routingType, basePath } = await detectRoutingType();
 
     if (routingType === 'app') {
       const appPath = path.join(basePath, 'app', 'demo-video');
       await mkdir(appPath, { recursive: true });
-      await writeFile(path.join(appPath, 'page.tsx'), DEMO_CONTENT);
+      await writeFile(path.join(appPath, 'page.tsx'), content);
       log.info(`Created demo page: ${path.join(basePath, 'app', 'demo-video', 'page.tsx')}`);
       return { success: true, route: '/demo-video' };
     } else if (routingType === 'pages') {
       const pagesPath = path.join(basePath, 'pages');
       await mkdir(pagesPath, { recursive: true });
-      await writeFile(path.join(pagesPath, 'demo-video.tsx'), DEMO_CONTENT);
+      await writeFile(path.join(pagesPath, 'demo-video.tsx'), content);
       log.info(`Created demo page: ${path.join(basePath, 'pages', 'demo-video.tsx')}`);
       return { success: true, route: '/demo-video' };
     } else {
       const componentPath = path.join(basePath, 'components');
       await mkdir(componentPath, { recursive: true });
-      await writeFile(path.join(componentPath, 'DemoVideo.tsx'), DEMO_CONTENT);
+      await writeFile(path.join(componentPath, 'DemoVideo.tsx'), content);
       log.info(`Created demo component: ${path.join(basePath, 'components', 'DemoVideo.tsx')}`);
       log.info('You can import and use this component in any page');
       return { success: true, route: 'component' };
