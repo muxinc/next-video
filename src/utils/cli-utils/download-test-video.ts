@@ -143,7 +143,7 @@ export async function syncVideo(videoPath: string, videosDir: string, timeoutMs:
   });
 }
 
-const TEST_VIDEO_URL = 'https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4';
+const TEST_VIDEO_URL = 'https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4';
 const TEST_VIDEO_FILENAME = 'sample-video.mp4';
 
 export async function prepareTestVideo(videosDir: string): Promise<boolean> {
