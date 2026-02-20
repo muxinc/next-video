@@ -1,7 +1,7 @@
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
 
-import { checkPackageJsonForNextVideo, updateTSConfigFileContent } from '../../../src/cli/lib/json-configs.js';
+import { addTSConfigPaths, checkPackageJsonForNextVideo, updateTSConfigFileContent } from '../../../src/cli/lib/json-configs.js';
 
 describe('json-configs', () => {
   describe('updateTSConfigFileContent', () => {
@@ -50,6 +50,65 @@ describe('json-configs', () => {
       const actual = updateTSConfigFileContent(tsContents);
 
       assert.equal(actual, expected);
+    });
+  });
+
+  describe('addTSConfigPaths', () => {
+    it('should add @videos/* path to tsconfig with existing compilerOptions', () => {
+      const tsContents = JSON.stringify({
+        compilerOptions: {
+          target: 'es2015',
+        },
+        include: ['src/**/*'],
+      }, null, 2);
+
+      const result = addTSConfigPaths(tsContents, 'videos');
+      const parsed = JSON.parse(result);
+
+      assert.deepStrictEqual(parsed.compilerOptions.paths, {
+        '@videos/*': ['./videos/*'],
+      });
+      assert.equal(parsed.compilerOptions.target, 'es2015');
+    });
+
+    it('should add @videos/* path when compilerOptions has existing paths', () => {
+      const tsContents = JSON.stringify({
+        compilerOptions: {
+          paths: {
+            '@/*': ['./src/*'],
+          },
+        },
+      }, null, 2);
+
+      const result = addTSConfigPaths(tsContents, 'videos');
+      const parsed = JSON.parse(result);
+
+      assert.deepStrictEqual(parsed.compilerOptions.paths, {
+        '@/*': ['./src/*'],
+        '@videos/*': ['./videos/*'],
+      });
+    });
+
+    it('should create compilerOptions and paths when missing', () => {
+      const tsContents = JSON.stringify({
+        include: ['src/**/*'],
+      }, null, 2);
+
+      const result = addTSConfigPaths(tsContents, 'videos');
+      const parsed = JSON.parse(result);
+
+      assert.deepStrictEqual(parsed.compilerOptions.paths, {
+        '@videos/*': ['./videos/*'],
+      });
+    });
+
+    it('should use the provided videosDir in the path', () => {
+      const tsContents = JSON.stringify({ compilerOptions: {} }, null, 2);
+
+      const result = addTSConfigPaths(tsContents, 'my-videos');
+      const parsed = JSON.parse(result);
+
+      assert.deepStrictEqual(parsed.compilerOptions.paths['@videos/*'], ['./my-videos/*']);
     });
   });
 

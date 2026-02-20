@@ -35,6 +35,22 @@ export function updateTSConfigFileContent(tsContents: string) {
   return updatedContents;
 }
 
+export function addTSConfigPaths(tsContents: string, videosDir: string): string {
+  const parsed = JSON.parse(tsContents);
+
+  if (!parsed.compilerOptions) {
+    parsed.compilerOptions = {};
+  }
+
+  if (!parsed.compilerOptions.paths) {
+    parsed.compilerOptions.paths = {};
+  }
+
+  parsed.compilerOptions.paths[`@videos/*`] = [`./${videosDir}/*`];
+
+  return JSON.stringify(parsed, null, 2) + '\n';
+}
+
 export async function checkPackageJsonForNextVideo(packagePath: string = './package.json') {
   const pkg = await readFile(packagePath, 'utf-8');
 
