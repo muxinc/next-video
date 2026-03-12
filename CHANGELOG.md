@@ -1,3 +1,17 @@
+# [2.7.0](https://github.com/muxinc/next-video/compare/v2.6.0...v2.7.0) (2026-03-12)
+
+
+### Bug Fixes
+
+* infer dev mode from `NODE_ENV` ([#410](https://github.com/muxinc/next-video/issues/410)) ([55ea448](https://github.com/muxinc/next-video/commit/55ea4482fca04f703b32a32b348bf3f96344d586))
+
+
+### Features
+
+* support for self-hosted compatible services ([#396](https://github.com/muxinc/next-video/issues/396)) ([bc3eadd](https://github.com/muxinc/next-video/commit/bc3eadd82620bbdb024efc7999c52b7286f53439))
+
+
+
 # [2.6.0](https://github.com/muxinc/next-video/compare/v2.5.1...v2.6.0) (2025-12-04)
 
 
