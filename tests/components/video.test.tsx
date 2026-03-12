@@ -1,10 +1,13 @@
 import assert from 'node:assert';
 import { test } from 'node:test';
 import { setTimeout } from 'node:timers/promises';
+import { createRequire } from 'node:module';
 import { create } from 'react-test-renderer';
 import React from 'react';
-import asset from '../factories/BBB-720p-1min.mp4.json' assert { type: "json" };
 import Video from '../../src/components/video.js';
+
+const require = createRequire(import.meta.url);
+const asset = require('../factories/BBB-720p-1min.mp4.json');
 
 test('renders a video container', async () => {
   const wrapper = create(<Video />);
