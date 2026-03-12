@@ -12,6 +12,7 @@ import {
   usePolling,
   isReactComponent,
   getUrlExtension,
+  isDevMode,
 } from './utils.js';
 
 import type { Asset } from '../assets.js';
@@ -19,8 +20,7 @@ import type { VideoLoaderProps, VideoProps, VideoPropsInternal, CSSPropertiesWit
 export type * from './types.js';
 
 const NextVideo = forwardRef<HTMLVideoElement, VideoProps & { style?: CSSPropertiesWithVars }>((props, forwardedRef) => {
-  // Keep in component so we can emulate the DEV_MODE.
-  const DEV_MODE = process.env.NODE_ENV === 'development';
+  const DEV_MODE = isDevMode();
 
   let {
     as: VideoPlayer = DefaultPlayer,
