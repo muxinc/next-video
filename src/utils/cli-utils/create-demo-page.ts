@@ -32,7 +32,7 @@ export async function detectRoutingType(): Promise<{ type: RoutingType; basePath
           return { type: 'app', basePath };
         }
       } catch {
-        // Can't read package.json
+        log.warning('Failed to read package.json while detecting routing type');
       }
 
       return { type: 'unknown', basePath };
