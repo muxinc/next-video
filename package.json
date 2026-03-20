@@ -102,7 +102,7 @@
     "@mux/playback-core": "^0.31.4",
     "@next/env": "15.5.9",
     "@paralleldrive/cuid2": "^2.2.2",
-    "@vercel/blob": "^2.0.0",
+    "@vercel/blob": "^2.0.1",
     "chalk": "^4.1.2",
     "chokidar": "^4.0.3",
     "dash-video-element": "^0.3.1",
@@ -113,7 +113,7 @@
     "player.style": "^0.3.1",
     "resolve": "^1.22.10",
     "symlink-dir": "^6.0.3",
-    "undici": "^5.28.4",
+    "undici": "^6.23.0",
     "yargs": "^17.7.2"
   },
   "prettier": {
