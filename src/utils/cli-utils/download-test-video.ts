@@ -8,12 +8,16 @@ import { readFile } from 'node:fs/promises';
 import { config } from 'dotenv';
 import type { Asset } from '../../assets.js';
 
-export async function syncVideo(videoPath: string, videosDir: string, timeoutMs: number = 60000): Promise<boolean> {
+const SYNC_TIMEOUT_MS = 60_000;
+const ENV_LOAD_DELAY_MS = 100;
+const POLL_INTERVAL_MS = 2_000;
+
+export async function syncVideo(videoPath: string, videosDir: string, timeoutMs: number = SYNC_TIMEOUT_MS): Promise<boolean> {
   const videoFileName = path.basename(videoPath);
   const jsonPath = path.join(videosDir, `${videoFileName}.json`);
 
   // Load environment variables for the sync process
-  await new Promise((resolve) => setTimeout(resolve, 100));
+  await new Promise((resolve) => setTimeout(resolve, ENV_LOAD_DELAY_MS));
   config({ path: '.env.local' });
 
   log.info('Processing video...');
@@ -132,7 +136,7 @@ export async function syncVideo(videoPath: string, videosDir: string, timeoutMs:
       pollInterval = setInterval(async () => {
         if (isResolved) return;
         await checkVideoStatus();
-      }, 2000);
+      }, POLL_INTERVAL_MS);
     } catch (error: any) {
       if (isResolved) return;
       log.error('Failed to start sync process:', error.message);

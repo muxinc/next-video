@@ -305,11 +305,9 @@ export async function handler(argv: Arguments) {
     default: true,
   });
 
-  let videoImportPrefix = `/${baseDir}`;
+  const videoImportPrefix = useTurbopack ? '@videos' : `/${baseDir}`;
 
   if (useTurbopack) {
-    videoImportPrefix = `@videos`;
-
     try {
       const tsConfigPath = path.join(process.cwd(), 'tsconfig.json');
       const tsConfigContents = await readFile(tsConfigPath, 'utf-8');
@@ -380,9 +378,7 @@ export async function handler(argv: Arguments) {
 
   if (!configureMux) {
     logManualSetupHint();
-  }
-
-  if (configureMux) {
+  } else {
     const haveAccount = await confirm({
       message: 'Do you already have a Mux account?',
       default: false,
