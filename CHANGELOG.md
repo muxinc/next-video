@@ -1,3 +1,13 @@
+## [2.7.1](https://github.com/muxinc/next-video/compare/v2.7.0...v2.7.1) (2026-03-26)
+
+
+### Bug Fixes
+
+* patch moderate/high security vulnerabilities in dependencies ([#416](https://github.com/muxinc/next-video/issues/416)) ([4f95cfa](https://github.com/muxinc/next-video/commit/4f95cfa852ffeaceaa3d6151a6d7f6a8ca244bc4))
+* Updated media-chrome, mux-video, playback-core ([#419](https://github.com/muxinc/next-video/issues/419)) ([f259327](https://github.com/muxinc/next-video/commit/f2593276d276affc3143af7f55b5235ee21bb91a))
+
+
+
 # [2.7.0](https://github.com/muxinc/next-video/compare/v2.6.0...v2.7.0) (2026-03-12)
 
 
