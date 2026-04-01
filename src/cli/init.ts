@@ -305,7 +305,7 @@ export async function handler(argv: Arguments) {
     default: true,
   });
 
-  const videoImportPrefix = useTurbopack ? '@videos' : `/${baseDir}`;
+  let videoImportPrefix = useTurbopack ? '@videos' : `/${baseDir}`;
 
   if (useTurbopack) {
     try {
@@ -315,6 +315,7 @@ export async function handler(argv: Arguments) {
       await writeFile(tsConfigPath, updatedContents);
       changes.push([log.add, `Added ${chalk.cyan(`@videos/*`)} path alias to tsconfig.json for Turbopack compatibility.`]);
     } catch (err: any) {
+      videoImportPrefix = `/${baseDir}`;
       changes.push([log.error, `Failed to update tsconfig.json paths. Please add ${chalk.cyan(`"@videos/*": ["./${baseDir}/*"]`)} to compilerOptions.paths manually. See: ${chalk.cyan(MANUAL_SETUP_URL)}`]);
     }
   }
