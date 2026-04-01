@@ -120,8 +120,10 @@ export async function syncVideo(videoPath: string, videosDir: string, timeoutMs:
         if (code !== 0) {
           log.warning(`Sync process exited with code ${code}`);
           log.info('This might be because Mux credentials are not configured yet');
+          isResolved = true;
+          cleanup();
+          resolve(false);
         }
-        // Don't resolve here, let the timeout handle it
       });
 
       // Handle stderr output
