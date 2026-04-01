@@ -61,4 +61,16 @@ describe('updateNextConfig', () => {
     const updatedContents = await fs.readFile(path.join(dirPath, 'next.config.ts'), 'utf-8');
     assert(updatedContents.includes('next-video'));
   });
+
+  it('should inject withNextVideo inside existing plugin wrappers', async () => {
+    const dir = await fs.mkdtemp(path.join('tests', 'tmp-configs-'));
+    tmpDirs.push(dir);
+    await fs.copyFile(path.join('tests', 'factories', 'next.wrapped.config.ts'), path.join(dir, 'next.config.ts'));
+
+    await updateNextConfigFile(dir);
+
+    const updatedContents = await fs.readFile(path.join(dir, 'next.config.ts'), 'utf-8');
+    // withNextVideo should wrap the base config, not the outer withSentryConfig call
+    assert(updatedContents.includes('withSentryConfig(withNextVideo(nextConfig))'));
+  });
 });

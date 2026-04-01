@@ -369,8 +369,6 @@ export async function handler(argv: Arguments) {
 
   log.success(`${chalk.magenta.bold('next-video')} initialized!`);
 
-  changes.forEach(([loggerFn, change]) => loggerFn(change));
-
   const configureMux = await confirm({
     message: 'Would you like to get started with remote storage through Mux?',
     default: true,
@@ -489,6 +487,8 @@ export async function handler(argv: Arguments) {
     }
     log.space();
   }
+
+  changes.forEach(([loggerFn, change]) => loggerFn(change));
 }
 
 async function isCmd() {

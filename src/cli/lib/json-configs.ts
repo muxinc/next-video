@@ -48,7 +48,8 @@ export function addTSConfigPaths(tsContents: string, videosDir: string): string 
 
   parsed.compilerOptions.paths[`@videos/*`] = [`./${videosDir}/*`];
 
-  return JSON.stringify(parsed, null, 2) + '\n';
+  const indent = tsContents.match(/^(\s+)/m)?.[1] ?? '  ';
+  return JSON.stringify(parsed, null, indent) + '\n';
 }
 
 export async function checkPackageJsonForNextVideo(packagePath: string = './package.json') {
