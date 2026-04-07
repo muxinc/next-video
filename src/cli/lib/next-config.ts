@@ -92,13 +92,40 @@ ${generateCode(mod).code}
       local: 'withNextVideo',
     });
 
-    const expressionToWrap = generateCode(mod.exports.default.$ast).code;
-    mod.exports.default = wrapWithNextVideo(expressionToWrap, videoConfig);
+    const defaultAst = mod.exports.default.$ast;
+
+    if (defaultAst.type === 'CallExpression') {
+      // Inject withNextVideo as the innermost wrapper so other plugins (e.g. withSentryConfig)
+      // wrap on top of it. Mutate the AST in place so the outer call chain is preserved.
+      injectIntoInnermostCallArg(defaultAst, videoConfig);
+    } else {
+      const expressionToWrap = generateCode(defaultAst).code;
+      mod.exports.default = wrapWithNextVideo(expressionToWrap, videoConfig);
+    }
 
     // @ts-ignore
     writeFile(mod, configPath);
 
     return { type, configPath };
+  }
+}
+
+/**
+ * Recursively walks a CallExpression chain and injects withNextVideo around
+ * the innermost first argument (the base Next.js config).
+ *
+ * withSentryConfig(nextConfig) → withSentryConfig(withNextVideo(nextConfig))
+ * withSentryConfig(withA(nextConfig)) → withSentryConfig(withA(withNextVideo(nextConfig)))
+ */
+function injectIntoInnermostCallArg(callExpr: any, videoConfig?: VideoConfig): void {
+  const firstArg = callExpr.arguments?.[0];
+  if (!firstArg) return;
+
+  if (firstArg.type === 'CallExpression') {
+    injectIntoInnermostCallArg(firstArg, videoConfig);
+  } else {
+    const innerCode = generateCode(firstArg).code;
+    callExpr.arguments[0] = wrapWithNextVideo(innerCode, videoConfig).$ast;
   }
 }
 

@@ -36,9 +36,12 @@ npx -y next-video init
 This will (with prompting):
 
 - install `next-video` as a dependency
+- create a `/videos` directory and update `.gitignore`
 - update your `next.config.js` file
 - if you're using TypeScript, add types for your video file imports
-- create a `/videos` directory in your project which is where you will put all video source files.
+- add `next-video sync -w` to your dev script in `package.json`
+- set up Mux credentials in `.env.local` for remote storage
+- add a sample video and demo page to test your setup
 
 It will also update your `.gitignore` file to ignore video files in the `/videos` directory. Videos, particularly any of reasonable size, shouldn't be stored/tracked by git. Alternatively, if you'd like to store the original files you can remove the added gitignore lines and install [git-lfs](https://git-lfs.github.com/).
 
@@ -76,6 +79,27 @@ yarn add next-video
 pnpm add next-video
 ```
 
+#### Create the videos directory
+
+Create a `/videos` directory in your project root. This is where you'll store your video source files.
+
+```bash
+mkdir videos
+```
+
+Add the following to your `.gitignore` to keep video files out of your repo while still tracking their JSON metadata:
+
+```
+# next-video
+videos/*
+!videos/*.json
+!videos/*.js
+!videos/*.ts
+public/_next-video
+```
+
+Videos, particularly any of reasonable size, shouldn't be stored/tracked by git. Alternatively, if you'd like to store the original files you can remove the added gitignore lines and install [git-lfs](https://git-lfs.github.com/).
+
 #### Add Next Video to your Next.js config
 
 **`next.config.js`**
@@ -106,7 +130,7 @@ export default withNextVideo(nextConfig);
 
 #### Add video import types to `tsconfig.json`
 
-This is only required if you're using TypeScript, and makes sure your video file imports don't yell at you for missing types. `video.d.ts` should have been created in your project root when you ran `npx next-video init`, if not you can create it manually:
+This is only required if you're using TypeScript, and makes sure your video file imports don't yell at you for missing types. Create a `video.d.ts` file in your project root:
 
 ```ts
 // video.d.ts
@@ -121,6 +145,81 @@ Then add that file to the `include` array in `tsconfig.json`.
   "include": ["video.d.ts", "next-env.d.ts", /* ... */ ]
   // ...
 }
+```
+
+If you're using **Turbopack** (the default dev server in recent versions of Next.js), you'll also need to add a path alias so that `/videos` imports resolve correctly. Add the following to `compilerOptions.paths` in your `tsconfig.json`:
+
+```json
+{
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"],
+      "@videos/*": ["./videos/*"]
+    }
+  }
+}
+```
+
+Then use `@videos/` instead of `/videos/` in your imports:
+
+```tsx
+import getStarted from '@videos/get-started.mp4';
+```
+
+> **Note:** If you're using **webpack** (i.e. running `next dev --webpack`), `/videos` imports work without any additional path configuration.
+
+#### Add the watch command to your dev script
+
+Update your `package.json` dev script to automatically sync videos while the dev server is running:
+
+```json
+// package.json
+"scripts": {
+  "dev": "next dev & npx next-video sync -w"
+}
+```
+
+#### Set up remote storage with Mux
+
+1. [Sign up for Mux](https://dashboard.mux.com/signup) if you don't have an account
+2. [Create an access token](https://dashboard.mux.com/settings/access-tokens) with **Mux Video** permissions
+3. Add your credentials to `.env.local`:
+
+```bash
+# .env.local
+MUX_TOKEN_ID=[YOUR_TOKEN_ID]
+MUX_TOKEN_SECRET=[YOUR_TOKEN_SECRET]
+```
+
+Make sure `.env.local` is in your `.gitignore`.
+
+#### Add a test video
+
+Add a video file (e.g. `sample-video.mp4`) to the `/videos` directory and run the sync command to upload and process it:
+
+```bash
+npx next-video sync
+```
+
+#### Create a demo page
+
+Create a page to verify your setup is working (`app/demo-video/page.tsx` or `pages/demo-video.tsx`):
+
+```tsx
+import Video from 'next-video';
+import sampleVideo from '/videos/sample-video.mp4';
+
+export default function DemoVideo() {
+  return <Video src={sampleVideo} />;
+}
+```
+
+> **Turbopack users:** If you configured the `@videos/*` path alias [above](#add-video-import-types-to-tsconfigjson), use `@videos/sample-video.mp4` instead of `/videos/sample-video.mp4` in your imports.
+
+Then build and start your app, and navigate to `/demo-video`:
+
+```bash
+npm run dev
 ```
 
 </details>
@@ -154,6 +253,17 @@ export default function Page() {
   return <Video src={awesomeVideo} />;
 }
 ```
+
+> **Turbopack users:** Recent versions of Next.js use Turbopack as the default dev server. Turbopack doesn't resolve `/videos` imports out of the box. You'll need to add a path alias in your `tsconfig.json`:
+>
+> ```json
+> "paths": {
+>   "@/*": ["./src/*"],
+>   "@videos/*": ["./videos/*"]
+> }
+> ```
+>
+> Then use `@videos/awesome-video.mp4` instead of `/videos/awesome-video.mp4` in your imports. This is not needed if you're using webpack.
 
 While a video is being uploaded and processed, `<Video>` will attempt to play the local file. This only happens during local development because the local file is never uploaded to your git repo.
 
