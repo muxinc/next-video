@@ -25,7 +25,6 @@ export async function syncVideo(videoPath: string, videosDir: string, timeoutMs:
   return new Promise((resolve) => {
     let syncProcess: ChildProcess | null = null;
     let timeoutId: NodeJS.Timeout | null = null;
-    let watcher: any = null;
     let pollInterval: NodeJS.Timeout | null = null;
     let isResolved = false;
 
@@ -37,10 +36,6 @@ export async function syncVideo(videoPath: string, videosDir: string, timeoutMs:
       if (timeoutId) {
         clearTimeout(timeoutId);
         timeoutId = null;
-      }
-      if (watcher) {
-        watcher.close();
-        watcher = null;
       }
       if (pollInterval) {
         clearInterval(pollInterval);
