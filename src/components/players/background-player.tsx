@@ -10,7 +10,7 @@ import type { MediaProps } from './media/index.js';
 
 const BackgroundPlayer = forwardRef<HTMLVideoElement, Omit<MediaProps, 'ref'> & PlayerProps & { style?: CSSPropertiesWithVars }>(
   (allProps, forwardedRef) => {
-    let { style, className, children, asset, poster, blurDataURL, onPlaying, onLoadStart, ...rest } = allProps;
+    let { style, className, children, asset, poster, posterFetchPriority="auto", blurDataURL, onPlaying, onLoadStart, ...rest } = allProps;
 
     const slottedPoster = Children.toArray(children).find((child) => {
       return typeof child === 'object' && 'type' in child && (child.props as any).slot === 'poster';
@@ -138,6 +138,7 @@ const BackgroundPlayer = forwardRef<HTMLVideoElement, Omit<MediaProps, 'ref'> & 
                 hidden={posterHidden}
                 decoding="async"
                 aria-hidden="true"
+                fetchPriority={posterFetchPriority}
               />
             )}
             <div className="next-video-bg-text">{children}</div>
