@@ -103,7 +103,5 @@ export function svgBlurImage(blurDataURL: string) {
 }
 
 export function isDevMode(): boolean {
-  // Indirect access prevents esbuild/webpack from replacing NODE_ENV at build time
-  const env = process.env;
-  return env.NODE_ENV === 'development';
+  return process.env.NODE_ENV === 'development';
 }
