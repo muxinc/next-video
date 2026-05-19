@@ -1,3 +1,18 @@
+# [2.8.0](https://github.com/muxinc/next-video/compare/v2.7.1...v2.8.0) (2026-05-19)
+
+
+### Bug Fixes
+
+* streamline NODE_ENV access in isDevMode and update build script for environment variable definition ([#423](https://github.com/muxinc/next-video/issues/423)) ([41f2bea](https://github.com/muxinc/next-video/commit/41f2beaf1286a7e06c4403106ad7b5794edb4211))
+
+
+### Features
+
+* allow configurable fetchPriority for poster image ([#373](https://github.com/muxinc/next-video/issues/373)) ([a3b4783](https://github.com/muxinc/next-video/commit/a3b47830ce814fee25eaaafd275ca15857bf5c7e))
+* CLI enhancements ([#391](https://github.com/muxinc/next-video/issues/391)) ([10c34a5](https://github.com/muxinc/next-video/commit/10c34a566ae79183f9b174dae62f26fb78fd737e))
+
+
+
 ## [2.7.1](https://github.com/muxinc/next-video/compare/v2.7.0...v2.7.1) (2026-03-26)
 
 
