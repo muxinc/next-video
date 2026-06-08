@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { callHandler } from './process.js';
-import { createAsset, getAsset } from './assets.js';
+import { assertSafeAssetSource, createAsset, getAsset } from './assets.js';
 import { getVideoConfig } from './config.js';
 
 // App Router
@@ -41,6 +41,12 @@ async function getRequest(url?: string | null) {
     };
   }
 
+  try {
+    await assertSafeAssetSource(url);
+  } catch {
+    return { status: 404, data: { error: 'asset not found' } };
+  }
+
   let asset;
   try {
     asset = await getAsset(url);
@@ -74,6 +80,12 @@ async function postRequest(url?: string | null) {
       status: 400,
       data: { error: 'url parameter is required' }
     };
+  }
+
+  try {
+    await assertSafeAssetSource(url);
+  } catch {
+    return { status: 404, data: { error: 'asset not found' } };
   }
 
   let asset;

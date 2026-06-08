@@ -314,6 +314,9 @@ export default function Page() {
 }
 ```
 
+> [!IMPORTANT]
+> The `/api/video` route is unauthenticated by default. The handler only serves asset descriptors that resolve inside the configured video `folder` (default `videos/`) — requests for paths outside that folder return `404`. If you expose this route in production, consider gating it behind authentication.
+
 </details>
 
 ### Adopt existing Mux videos

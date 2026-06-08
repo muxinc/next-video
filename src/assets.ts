@@ -67,6 +67,21 @@ async function getAssetPath(filePath: string) {
   return path.join(folder, remoteSourceAssetPath(filePath));
 }
 
+// Throws if `url` resolves outside the configured video `folder`. Remote URLs pass through.
+export async function assertSafeAssetSource(url: string) {
+  if (isRemote(url)) return;
+
+  const { folder } = await getVideoConfig();
+  if (!folder) throw new Error('Missing video `folder` config.');
+
+  const folderAbs = path.resolve(cwd(), folder);
+  const assetAbs = path.resolve(cwd(), url);
+  const rel = path.relative(folderAbs, assetAbs);
+  if (rel === '' || rel.startsWith('..') || path.isAbsolute(rel)) {
+    throw new Error('Asset path is outside the configured video folder.');
+  }
+}
+
 function defaultRemoteSourceAssetPath(url: string) {
   const urlObj = new URL(url);
   // Strip the https from the asset path.

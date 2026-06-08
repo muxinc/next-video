@@ -36,7 +36,7 @@ export function camelCase(name: string) {
 }
 
 export function isRemote(filePath: string) {
-  return /^https?:\/\//.test(filePath);
+  return /^https?:\/\//i.test(filePath);
 }
 
 export function toSafePath(str: string) {
