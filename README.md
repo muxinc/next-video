@@ -698,7 +698,7 @@ export { handler as default } from '@/next-video';
 
 You can delay loading the full video player until the user shows real intent to watch. This reduces initial data usage and improves performance, especially when rendering multiple videos.
 
-Below is a simple wrapper component that displays a poster and a play button, and only mounts the actual video element when the user clicks. This uses dynamic import to ensure the <Video> component is lazy-loaded and not included in the initial bundle.
+Below is a simple wrapper component that displays a poster and a play button, and only mounts the actual video element when the user clicks. This uses dynamic import to ensure the `<Video>` component is lazy-loaded and not included in the initial bundle.
 
 ```js
 "use client";
@@ -731,7 +731,7 @@ export default function VideoExample() {
 How It Works: 	
   
   •	The wrapper initially renders only the poster image and play button.
-	•	The <Video> element is not mounted until the user clicks the play button.
+	•	The `<Video>` element is not mounted until the user clicks the play button.
 	•	This ensures no network requests or DOM elements for the video are loaded until necessary.
 	•	You can adapt this pattern for hover, scroll, or other interactions to trigger lazy loading.
 
