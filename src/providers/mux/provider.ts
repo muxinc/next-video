@@ -5,7 +5,7 @@ import { createReadStream } from 'node:fs';
 import fs from 'node:fs/promises';
 
 import chalk from 'chalk';
-import Mux from '@mux/mux-node';
+import Mux from '@mux/ts';
 import { fetch as uFetch } from 'undici';
 import { minimatch } from 'minimatch';
 
@@ -315,7 +315,7 @@ export async function uploadRequestedFile(asset: Asset) {
   const newAssetSettings = getNewAssetSettings(filePath, muxConfig);
 
   const assetObj = await mux.video.assets.create({
-    input: [
+    inputs: [
       {
         url: filePath,
       },
