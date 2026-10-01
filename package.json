@@ -97,9 +97,9 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.717.0",
     "@inquirer/prompts": "^7.8.6",
-    "@mux/mux-node": "9.0.1",
     "@mux/mux-video": "^0.30.5",
     "@mux/playback-core": "^0.33.3",
+    "@mux/ts": "15.4.0",
     "@next/env": "15.5.9",
     "@paralleldrive/cuid2": "^2.2.2",
     "@vercel/blob": "^2.0.1",

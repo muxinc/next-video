@@ -4,7 +4,7 @@ import http from 'node:http';
 import path from 'node:path';
 import { describe, it, before, after, mock } from 'node:test';
 
-import Mux from '@mux/mux-node';
+import Mux from '@mux/ts';
 import yargs from 'yargs';
 import log from '../../src/utils/logger.js';
 
