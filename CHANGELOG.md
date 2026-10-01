@@ -1,3 +1,13 @@
+## [2.8.2](https://github.com/muxinc/next-video/compare/v2.8.1...v2.8.2) (2026-10-01)
+
+
+### Bug Fixes
+
+* await next.config write in the ESM branch ([#429](https://github.com/muxinc/next-video/issues/429)) ([15948c7](https://github.com/muxinc/next-video/commit/15948c7ea7462884cebb9e338144aa05d231deb0))
+* migrate from @mux/mux-node to @mux/ts v15 ([#428](https://github.com/muxinc/next-video/issues/428)) ([312a065](https://github.com/muxinc/next-video/commit/312a0655eb4f19ecb01d46552cb8d9446728d2de))
+
+
+
 ## [2.8.1](https://github.com/muxinc/next-video/compare/v2.8.0...v2.8.1) (2026-06-08)
 
 
