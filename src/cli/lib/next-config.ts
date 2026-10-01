@@ -104,7 +104,7 @@ ${generateCode(mod).code}
     }
 
     // @ts-ignore
-    writeFile(mod, configPath);
+    await writeFile(mod, configPath);
 
     return { type, configPath };
   }
