@@ -1,3 +1,7 @@
+## [2.8.3](https://github.com/muxinc/next-video/compare/v2.8.2...v2.8.3) (2026-10-28)
+
+
+
 ## [2.8.2](https://github.com/muxinc/next-video/compare/v2.8.1...v2.8.2) (2026-10-01)
 
 
