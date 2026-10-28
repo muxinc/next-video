@@ -40,7 +40,6 @@ jobs:
       id-token: write
 
     env:
-      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       CONVENTIONAL_GITHUB_RELEASER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
@@ -50,8 +49,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-          # this line is required for the setup-node action to be able to run the npm publish below.
-          registry-url: 'https://registry.npmjs.org'
       - uses: fregante/setup-git-user@v1
       - run: npm ci
       - run: npm run build --if-present
