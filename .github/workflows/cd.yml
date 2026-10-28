@@ -37,10 +37,9 @@ jobs:
     environment: production
     permissions:
       contents: write
-      id-token: write
+      id-token: write # npm trusted publishing (OIDC) and provenance
 
     env:
-      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       CONVENTIONAL_GITHUB_RELEASER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
@@ -49,9 +48,8 @@ jobs:
           fetch-depth: 0 # Fetch all history for all tags and branches
       - uses: actions/setup-node@v4
         with:
+          # Node 24 bundles npm 11.5.1+, which OIDC publishing needs
           node-version: 24
-          # this line is required for the setup-node action to be able to run the npm publish below.
-          registry-url: 'https://registry.npmjs.org'
       - uses: fregante/setup-git-user@v1
       - run: npm ci
       - run: npm run build --if-present
