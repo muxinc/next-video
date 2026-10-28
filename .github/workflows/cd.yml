@@ -37,7 +37,7 @@ jobs:
     environment: production
     permissions:
       contents: write
-      id-token: write # npm trusted publishing (OIDC) and provenance
+      id-token: write
 
     env:
       CONVENTIONAL_GITHUB_RELEASER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -48,7 +48,6 @@ jobs:
           fetch-depth: 0 # Fetch all history for all tags and branches
       - uses: actions/setup-node@v4
         with:
-          # Node 24 bundles npm 11.5.1+, which OIDC publishing needs
           node-version: 24
       - uses: fregante/setup-git-user@v1
       - run: npm ci
