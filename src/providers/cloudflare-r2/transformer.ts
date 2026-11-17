@@ -5,7 +5,7 @@ export function transform(asset: Asset) {
   if (!providerMetadata) return asset;
 
   const src = new URL(providerMetadata.bucketUrlPublic);
-  src.pathname = providerMetadata.key;
+  src.pathname = providerMetadata.key.split('/').map(encodeURIComponent).join('/');
 
   const source: AssetSource = { src: `${src}` };
 
